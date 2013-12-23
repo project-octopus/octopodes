@@ -23,6 +23,29 @@
       "url": "https://www.flickr.com/photos/christopheradams/3174263710/"
     },
     {
+      "_id": "webpage1",
+      "@context": "http://schema.org",
+      "@type": "WebPage",
+      "hasPart": {
+        "@type": "CreativeWork",
+        "associatedMedia": {
+          "@type": "MediaObject",
+          "contentUrl": "http://www.thecourier.co.uk/polopoly_fs/1.829.1352144574!/image/image.jpg_gen/derivatives/box_620/image.jpg"
+        },
+        "creator": "Flickr user christopheradams",
+        "isBasedOnUrl": "http://www.flickr.com/photos/christopheradams/3174263710/sizes/l/",
+        "license": "Photo used under Creative Commons licence courtesy of Flickr user christopheradams.",
+        "name": "Stanley Wong"
+      },
+      "lastReviewed": "2014-09-01T10:37:27+00:00",
+      "name": "St Andrews Museum secures exclusive Stanley Wong exhibition",
+      "reviewedBy": {
+        "@type": "Person",
+        "@id": "user1"
+      },
+      "url": "http://www.thecourier.co.uk/lifestyle/leisure/books/st-andrews-museum-secures-exclusive-stanley-wong-exhibition-1.27891"
+    },
+    {
       "_id": "baddata_webpage",
       "@context": "http://schema.org",
       "@type": "WebPage",

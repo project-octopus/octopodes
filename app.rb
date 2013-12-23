@@ -92,6 +92,12 @@ class CollectionResource < OctopusResource
     @request.query["prevkey"]
   end
 
+  def limit
+    min, max, default = 1, 500, 10
+    req = @request.query["limit"]
+    (req =~ /^\d+$/) ? [min, [req.to_i, max].min].max : default
+  end
+
 end
 
 class HomeResource < CollectionResource
@@ -211,14 +217,11 @@ class ReviewsResource < CollectionResource
                 :rel => "template", :prompt => "Add a Work"}
     end
 
+     links << {:href => @request.base_uri.to_s + 'domains',
+               :rel => "domains", :prompt => "Domains"}
+
      links << {:href => @request.base_uri.to_s + 'reviews;queries',
                :rel => "queries", :prompt => "Search"}
-  end
-
-  def limit
-    min, max, default = 1, 500, 10
-    req = @request.query["limit"]
-    (req =~ /^\d+$/) ? [min, [req.to_i, max].min].max : default
   end
 
   def url
@@ -227,6 +230,56 @@ class ReviewsResource < CollectionResource
 
   def include_queries?
     request.path_info[:queries] === true
+  end
+end
+
+class DomainsResource < ReviewsResource
+
+  def base_uri
+    @request.base_uri.to_s + 'domains/'
+  end
+
+  private
+  def title
+    "Domains of all Works"
+  end
+
+  def collection
+    documents.base_uri = base_uri
+    documents.include_template = false
+    documents.links = links
+    documents.to_cj
+  end
+
+  def documents
+    @documents ||= WebPages::domains
+  end
+end
+
+class DomainResource < DomainsResource
+
+  def base_uri
+    @request.base_uri.to_s + 'domains/' + domain + '/'
+  end
+
+  private
+  def title
+    "Web pages for " + domain
+  end
+
+  def domain
+    request.path_info[:domain]
+  end
+
+  def collection
+    documents.base_uri = base_uri
+    documents.include_template = false
+    documents.links = links
+    documents.to_cj
+  end
+
+  def documents
+    @documents ||= WebPages::by_domain(domain, limit, startkey, prevkey)
   end
 end
 
@@ -757,6 +810,10 @@ App = Webmachine::Application.new do |app|
     add ["reviews;template"], ReviewsTemplateResource
     add ["reviews;queries"], ReviewsResource, :queries => true
     add ["reviews", :id], ReviewResource
+
+    add ["domains"], DomainsResource
+    add ["domains", :domain], DomainResource
+    add ["domains", :domain, :id], FeedItemResource
 
     add ["signups"], SignupsResource
     add ["signups", :identity], SignupResource

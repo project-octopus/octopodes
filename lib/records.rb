@@ -260,7 +260,6 @@ class WebPages < Datastore
     params << ["limit", limit]
 
     uri.query = URI.encode_www_form(params)
-    puts uri.to_s
 
     response = server.get(uri.to_s)
     JSON.parse(response.body)
@@ -290,6 +289,35 @@ class WebPages < Datastore
     url.nil? || url.empty? || url =~ /\A#{URI::regexp}\z/
   end
 
+  def self.domains
+    uri = URI("#{db.path}/_design/all/_view/domains?group=true&group_level=1")
+    response = server.get(uri.to_s)
+
+    DomainDocuments.new(response.body)
+  end
+
+  def self.by_domain(domain, limit = nil, startkey = nil, prevkey = nil)
+    endkey = "[\"#{domain}\", {}]"
+    uri = URI("#{db.path}/_design/all/_view/domains")
+    params = [["reduce", "false"], ["endkey", endkey], ["include_docs", "true"]]
+
+    if startkey.nil?
+      params << ["startkey", "[\"#{domain}\"]"]
+    else
+      params << ["startkey", startkey]
+    end
+
+    if limit
+      params << ["limit", limit + 1]
+    end
+
+    uri.query = URI.encode_www_form(params)
+
+    response = server.get(uri.to_s)
+
+    WebPageDocuments.new(response.body, limit, startkey, prevkey, true)
+  end
+
 end
 
 class Documents
@@ -298,11 +326,12 @@ class Documents
                 :include_queries, :include_items, :include_item_link,
                 :queries
 
-  def initialize(json = '{}', limit = nil, startkey = nil, prevkey = nil)
+  def initialize(json = '{}', limit = nil, startkey = nil, prevkey = nil, include_docs = false)
     @limit = limit
     @startkey = startkey
     @prevkey = prevkey
     @next_startkey = nil
+    @include_docs = include_docs
     @error = nil
     @base_uri = ''
     @links = []
@@ -472,7 +501,7 @@ class WebPageDocuments < Documents
       maker.channel.title = "Project Octopus"
 
       (@documents["rows"] || []).each do |row|
-        doc = row["value"]
+        doc = @include_docs ? row["doc"] : row["value"]
         item_id = doc["_id"]
         part = doc.key?("hasPart") ? doc["hasPart"] : {}
 
@@ -504,7 +533,7 @@ class WebPageDocuments < Documents
   private
   def items
     @items ||= (@documents["rows"] || []).map do |row|
-      doc = row["value"]
+      doc = @include_docs ? row["doc"] : row["value"]
       item_id = doc["_id"]
       part = doc.key?("hasPart") ? doc["hasPart"] : {}
       media = part.key?("associatedMedia") ? part["associatedMedia"] : {}
@@ -561,6 +590,21 @@ class WebPageDocuments < Documents
     queries = !@queries.nil? ? @queries : {}
     [{:name => "url", :prompt => "URL", :value => queries["url"]},
      {:name => "limit", :prompt => "Limit", :value => queries["limit"]}]
+  end
+
+end
+
+class DomainDocuments < Documents
+
+  private
+  def items
+    @items ||= (@documents["rows"] || []).map do |row|
+      domain = row["key"].first
+      count = row["value"]
+      data = [{:name => "domain", :prompt => "Domain", :value => domain},
+              {:name => "count", :prompt => "Records", :value => count}]
+      {:id => domain, :data => data, :links => []}
+    end
   end
 
 end
