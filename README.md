@@ -11,3 +11,7 @@ To run locally:
 Run the command:
 
     bundle exec rspec
+
+## Credits
+
+Octopus by Jason Grube from The Noun Project
