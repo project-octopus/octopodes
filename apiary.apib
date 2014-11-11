@@ -1,10 +1,11 @@
 FORMAT: 1A
+HOST: http://tako.io
 
 # octopodes
 A prototype hypermedia API for recording the use of creative works and media objects on the World Wide Web.
 
 # Group Works
-Notes related resources of the **Works API**
+Works related resources of the **API**
 
 ## Works Collection [/works]
 ### List all Works [GET]
@@ -13,14 +14,88 @@ Notes related resources of the **Works API**
 ### Create a Note [POST]
 + Request (vnd.collection+json)
 
-+ Response 201 (application/json)
+        {
+            "template": {
+                "data": [
+                    {
+                        "name": "url",
+                        "value": "http://example.com/the-night-watch"
+                    },
+                    {
+                        "name": "creator",
+                        "value": "John Snow"
+                    },
+                    {
+                        "name": "license",
+                        "value": "https://creativecommons.org/publicdomain/zero/1.0/"
+                    }
+                ]
+            }
+        }
+
++ Response 201 (vnd.collection+json)
 
 
 ## Work [/works/{id}]
 A single Work object with all its details
 
 + Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Work to perform action with. Has example value.
+    + id (required, string, `1`) ... Alphanumeric `id` of the Work to perform action with. Has example value.
 
-### Retrieve a Note [GET]
-+ Response 200 (application/json)
+### Retrieve a Work [GET]
++ Response 200 (vnd.collection+json)
+
+        {
+            "collection": {
+                "version": "1.0",
+                "href": "http://tako.io/works/",
+                "items": [
+                    {
+                        "href": "http://tako.io/works/ab324c53b..",
+                        "data": [
+                            {
+                                "name": "creator",
+                                "value": "John Snow",
+                                "prompt": "Creator"
+                            },
+                            {
+                                "name": "name",
+                                "value": "The Night Watch",
+                                "prompt": "Title"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "url",
+                                "value": "http://example.com/the-night-watch",
+                                "prompt": "URL"
+                            },
+                            {
+                                "name": "license",
+                                "value": "https://creativecommons.org/publicdomain/zero/1.0/",
+                                "prompt": "License"
+                            }
+                        ]
+                    }
+                ],
+                "template": {
+                    "data": [
+                        {
+                            "name": "url",
+                            "value": "http://example.com/the-night-watch",
+                            "prompt": "URL"
+                        },
+                        {
+                            "name": "creator",
+                            "value": "John Snow",
+                            "prompt": "Creator of the Work"
+                        },
+                        {
+                            "name": "license",
+                            "value": "https://creativecommons.org/publicdomain/zero/1.0/",
+                            "prompt": "License"
+                        }
+                    ]
+                }
+            }
+        }
