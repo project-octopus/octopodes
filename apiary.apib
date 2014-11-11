@@ -1,0 +1,26 @@
+FORMAT: 1A
+
+# octopodes
+A prototype hypermedia API for recording the use of creative works and media objects on the World Wide Web.
+
+# Group Works
+Notes related resources of the **Works API**
+
+## Works Collection [/works]
+### List all Works [GET]
++ Response 200 (vnd.collection+json)
+
+### Create a Note [POST]
++ Request (vnd.collection+json)
+
++ Response 201 (application/json)
+
+
+## Work [/works/{id}]
+A single Work object with all its details
+
++ Parameters
+    + id (required, number, `1`) ... Numeric `id` of the Work to perform action with. Has example value.
+
+### Retrieve a Note [GET]
++ Response 200 (application/json)
