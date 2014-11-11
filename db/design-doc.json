@@ -1,0 +1,26 @@
+{
+  "_id": "_design/all",
+
+  "validate_doc_update": "function(newDoc, oldDoc, userCtx) { if (newDoc['@type'] === 'WebPage') { if (!newDoc.url) { throw({forbidden: 'Document must have a url.'}); } } }",
+
+  "views": {
+    "urls": {
+      "map": "function(doc) { emit(doc.url, doc.url); }"
+    },
+    "webpages": {
+      "map": "function(doc) { if(doc['@type'] === 'WebPage') { emit(doc._id,doc); } }"
+    },
+    "persons": {
+      "map": "function(doc) { if(doc['@type'] === 'Person') { emit(doc.url,doc); } }"
+    },
+    "reviews": {
+      "map": "function(doc) { if(doc['@type'] === 'WebPage') { emit([doc.lastReviewed, doc._id],doc); } }"
+    },
+    "by_name": {
+      "map": "function(doc) { if ('name' in doc) { emit(doc.name, doc['@type']); } }"
+    },
+    "by_reviewer": {
+      "map": "function(doc) { if (doc['@type'] === 'Person') { emit([doc._id], doc); } else if (doc['@type'] === 'WebPage') { emit([doc.reviewedBy['@id'], doc._id], doc); } }"
+    }
+  }
+}

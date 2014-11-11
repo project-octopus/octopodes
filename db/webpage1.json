@@ -1,0 +1,12 @@
+{
+  "_id": "webpage1",
+  "@context": "http://schema.org",
+  "@type": "WebPage",
+  "lastReviewed": "2014-10-01T10:37:27+00:00",
+  "name": "File:Jan Asselijn - The Threatened Swan.jpg",
+  "reviewedBy": {
+    "@type": "Person",
+    "@id": "person1"
+  },
+  "url": "http://commons.wikimedia.org/wiki/File:Jan_Asselijn_-_The_Threatened_Swan.jpg"
+}
