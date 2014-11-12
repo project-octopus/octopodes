@@ -11,12 +11,71 @@ Works related resources of the **API**
 ### List all Works [GET]
 + Response 200 (vnd.collection+json)
 
-### Create a Note [POST]
+        {
+            "collection": {
+                "version": "1.0",
+                "href": "http://tako.io/works/",
+                "items": [
+                    {
+                        "href": "http://tako.io/works/ab324c53b..",
+                        "data": [
+                            {
+                                "name": "creator",
+                                "value": "John Snow",
+                                "prompt": "Creator"
+                            },
+                            {
+                                "name": "name",
+                                "value": "The Night Watch",
+                                "prompt": "Title"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "url",
+                                "value": "http://example.com/the-night-watch",
+                                "prompt": "URL"
+                            },
+                            {
+                                "name": "license",
+                                "value": "https://creativecommons.org/publicdomain/zero/1.0/",
+                                "prompt": "License"
+                            }
+                        ]
+                    }
+                ],
+                "template": {
+                    "data": [
+                        {
+                            "name": "url",
+                            "value": "",
+                            "prompt": "URL"
+                        },
+                        {
+                            "name": "creator",
+                            "value": "",
+                            "prompt": "Creator of the Work"
+                        },
+                        {
+                            "name": "license",
+                            "value": "",
+                            "prompt": "License"
+                        }
+                    ]
+                }
+            }
+        }
+
+### Create a Work [POST]
 + Request (vnd.collection+json)
 
         {
             "template": {
                 "data": [
+                    {
+                        "name": "name",
+                        "value": "The Night Watch"
+                    },
                     {
                         "name": "url",
                         "value": "http://example.com/the-night-watch"
