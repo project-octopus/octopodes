@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/SebastianEdwards/collection-json.git
+  revision: 424ebae9c272158dba0062150b6799b2b05c0f00
+  specs:
+    collection-json (0.1.7)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -8,7 +14,6 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     as-notifications (1.0.1)
-    collection-json (0.1.7)
     diff-lcs (1.2.5)
     i18n (0.6.11)
     json (1.8.1)
@@ -50,7 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  collection-json
+  collection-json!
   json_spec
   rack-test
   rspec
