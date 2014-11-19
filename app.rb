@@ -100,7 +100,7 @@ class ReviewsResource < CollectionResource
   end
 
   def to_html
-    CollectionTemplate.new(collection, "Creative Works").render
+    CollectionTemplate.new(collection).render
   end
 
   def to_cj
@@ -191,7 +191,7 @@ class ReviewResource < CollectionResource
   end
 
   def to_html
-    CollectionTemplate.new(collection, "Creative Works").render
+    CollectionTemplate.new(collection).render
   end
 
   def to_cj

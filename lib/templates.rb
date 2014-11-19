@@ -4,7 +4,7 @@ class CollectionTemplate
   include ERB::Util
   attr_accessor :href
 
-  def initialize(collection, title = "Octopus Project")
+  def initialize(collection, title = "Project Octopus")
     @title = title
     @href = collection.href
     @items = collection.items
@@ -16,7 +16,7 @@ class CollectionTemplate
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Octopus Project</title>
+        <title><%= @title %></title>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/paper/bootstrap.min.css">
         <style>
           body {
