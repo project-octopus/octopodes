@@ -87,7 +87,11 @@ class CollectionTemplate
                   <% for link in @item.links %>
                     <dd>
                       <%= link.prompt %>:
-                      <strong><%= link.href %></strong>
+                      <strong>
+                        <a href="<%= link.href %>">
+                          <%= link.href %>
+                        </a>
+                        </strong>
                       </dd>
                   <% end %>
                   <% for datum in @item.data %>

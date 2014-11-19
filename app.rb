@@ -45,14 +45,17 @@ class CollectionResource < Webmachine::Resource
             if part.key?("license")
               item.add_data "license", prompt: "License", value: part["license"]
             end
-            if part.key?("isBasedOnUrl")
-              item.add_data "is_based_on_url", prompt: "Original URL", value: part["isBasedOnUrl"]
-            end
           end
           if doc.key?("lastReviewed")
               item.add_data "date", prompt: "Date", value: doc["lastReviewed"]
           end
           item.add_link doc["url"], "full", prompt: "Web Page URL"
+          if doc.key?("hasPart")
+            part = doc["hasPart"]
+            if part.key?("isBasedOnUrl")
+              item.add_link part["isBasedOnUrl"], "isBasedOnUrl", prompt: "Original URL"
+            end
+          end
         end
       end
       if include_template?
