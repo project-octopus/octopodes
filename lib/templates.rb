@@ -38,12 +38,6 @@ class CollectionTemplate
         <div class="row">
           <div class="col-xs-10">
             <h1><a href="<%= @href %>"><%= @title %></a></h1>
-            <% unless @error.nil? %>
-              <div class="error">
-                Error: <%= @error.title %><br/>
-                <%= @error.message %>
-              </div>
-            <% end %>
           </div>
           <div class="col-xs-2">
             <h1>
@@ -53,6 +47,12 @@ class CollectionTemplate
         </div>
         <div class="row">
           <div class="col-lg-12">
+            <% unless @error.nil? %>
+              <div class="error">
+                Error: <%= @error.title %><br/>
+                <%= @error.message %>
+              </div>
+            <% end %>
             <hr/>
             <% unless @inputs.nil? %>
             <form role="form" method="POST" class="form-horizontal">
