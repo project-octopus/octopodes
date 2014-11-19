@@ -97,7 +97,7 @@ class CollectionTemplate
                     <%= link.prompt %>:
                     <strong>
                       <a href="<%= link.href %>">
-                        <%= link.href[0..20] %>...
+                        <%= link.href[0..28] %>...
                       </a>
                       </strong>
                     </dd>
