@@ -80,7 +80,7 @@ class CollectionTemplate
                   <% end %>
                   <% for datum in @item.data %>
                     <% unless datum.value.nil? %>
-                      <dd><%= datum.prompt %>: <%= datum.value %></dd>
+                      <dd><%= datum.prompt %>: <%= h(datum.value) %></dd>
                     <% end %>
                   <% end %>
               </dl>
