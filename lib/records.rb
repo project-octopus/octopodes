@@ -37,7 +37,7 @@ class Reviews
 
   attr_writer :database
 
-  def create(id, url, name, creator, license)
+  def create(id, url, name, creator, license, is_based_on_url)
     uri = "/#{@database}"
     lastReviewed = Time.now.utc.iso8601
 
@@ -45,6 +45,7 @@ class Reviews
     unless creator.to_s.empty? then part["creator"] = creator end
     unless license.to_s.empty? then part["license"] = license end
     unless name.to_s.empty? then part["name"] = name end
+    unless is_based_on_url.to_s.empty? then part["isBasedOnUrl"] = is_based_on_url end
 
     json = {
       "_id" => id,

@@ -45,19 +45,23 @@ class CollectionResource < Webmachine::Resource
             if part.key?("license")
               item.add_data "license", prompt: "License", value: part["license"]
             end
+            if part.key?("isBasedOnUrl")
+              item.add_data "is_based_on_url", prompt: "Original URL", value: part["isBasedOnUrl"]
+            end
           end
           if doc.key?("lastReviewed")
               item.add_data "date", prompt: "Date", value: doc["lastReviewed"]
           end
-          item.add_link doc["url"], "full", prompt: "URL"
+          item.add_link doc["url"], "full", prompt: "Web Page URL"
         end
       end
       if include_template?
         builder.set_template do |template|
+          template.add_data "url", prompt: "Web Page URL"
           template.add_data "name", prompt: "Title"
           template.add_data "creator", prompt: "Creator"
           template.add_data "license", prompt: "License"
-          template.add_data "url", prompt: "URL"
+          template.add_data "is_based_on_url", prompt: "Based on URL"
         end
       end
       unless @error.nil?
@@ -120,7 +124,10 @@ class ReviewsResource < CollectionResource
         ld = data.find { |d| d.name === "license" }
         license = !ld.nil? ? ld.value : nil
 
-        rev = Reviews.instance.create(create_path, url, name, creator, license)
+        bd = data.find { |d| d.name === "is_based_on_url" }
+        is_based_on_url = !bd.nil? ? bd.value : nil
+
+        rev = Reviews.instance.create(create_path, url, name, creator, license, is_based_on_url)
         unless rev["error"].nil?
           @error = {"title" => rev["error"], "message" => rev["reason"]}
         end
@@ -143,7 +150,8 @@ class ReviewsResource < CollectionResource
     creator = data.assoc('creator') ? data.assoc('creator').last : nil
     license = data.assoc('license') ? data.assoc('license').last : nil
     url = data.assoc('url') ? data.assoc('url').last : nil
-    rev = Reviews.instance.create(create_path, url, name, creator, license)
+    is_based_on_url = data.assoc('is_based_on_url') ? data.assoc('is_based_on_url').last : nil
+    rev = Reviews.instance.create(create_path, url, name, creator, license, is_based_on_url)
 
     if rev["ok"] === true
       # Clients (e.g., web browsers) submitting urlencoded data should
