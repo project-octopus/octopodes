@@ -16,6 +16,7 @@ class CollectionTemplate
       <html>
       <head>
         <title>Reviews</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/paper/bootstrap.min.css">
         <style>
           body {
             font-family: monospace;
@@ -32,8 +33,10 @@ class CollectionTemplate
         </style>
       </head>
       <body>
+      <div class="container-fluid">
+      <div class="row">
+      <div class="col-lg-12">
       <h1><a href="<%= @href %>">Reviews</a></h1>
-      <div>
       <% unless @error.nil? %>
         <div class="error">
           Error: <%= @error.title %><br/>
@@ -61,16 +64,27 @@ class CollectionTemplate
       <% end %>
       <hr/>
       <% unless @inputs.nil? %>
-      <form method="POST">
+      <form role="form" method="POST" class="form-horizontal">
       <% for @input in @inputs %>
-        <label for="<%= @input.name %>">
+        <div class="form-group">
+        <label class="col-sm-2 control-label" for="<%= @input.name %>">
           <%= @input.prompt %>
         </label>
-        <input type="text" name="<%= @input.name %>" autocomplete="off"/>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name="<%= @input.name %>" autocomplete="off"/>
+        </div>
+        </div>
       <% end %>
-      <input type="submit" value="Submit"/>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <input class="btn btn-default" type="submit" value="Submit"/>
+        </div>
+      </div
       </form>
       <% end %>
+      </div>
+      </div>
+      </div>
       </div>
     }
   end
