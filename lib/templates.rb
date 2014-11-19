@@ -84,24 +84,24 @@ class CollectionTemplate
                   <%= @item.href %>
                 </a>
                 </dt>
-                  <% for link in @item.links %>
+                <% for datum in @item.data %>
+                  <% unless datum.value.nil? %>
                     <dd>
-                      <%= link.prompt %>:
-                      <strong>
-                        <a href="<%= link.href %>">
-                          <%= link.href %>
-                        </a>
-                        </strong>
-                      </dd>
+                      <%= datum.prompt %>:
+                      <strong><%= h(datum.value) %></strong>
+                    </dd>
                   <% end %>
-                  <% for datum in @item.data %>
-                    <% unless datum.value.nil? %>
-                      <dd>
-                        <%= datum.prompt %>:
-                        <strong><%= h(datum.value) %></strong>
-                      </dd>
-                    <% end %>
-                  <% end %>
+                <% end %>
+                <% for link in @item.links %>
+                  <dd>
+                    <%= link.prompt %>:
+                    <strong>
+                      <a href="<%= link.href %>">
+                        <%= link.href[0..20] %>...
+                      </a>
+                      </strong>
+                    </dd>
+                <% end %>
               </dl>
               <hr/>
               </body>
