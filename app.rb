@@ -93,7 +93,7 @@ class ReviewsResource < CollectionResource
   end
 
   def to_html
-    CollectionTemplate.new(collection).render
+    CollectionTemplate.new(collection, 'Reviews').render
   end
 
   def to_cj
@@ -180,7 +180,7 @@ class ReviewResource < CollectionResource
   end
 
   def to_html
-    CollectionTemplate.new(collection).render
+    CollectionTemplate.new(collection, "Reviews").render
   end
 
   def to_cj
@@ -208,6 +208,7 @@ App = Webmachine::Application.new do |app|
     config.adapter = :Rack
   end
   app.routes do
+    add [], ReviewsResource
     add ["reviews"], ReviewsResource
     add ["reviews", :id], ReviewResource
     add ['trace', '*'], Webmachine::Trace::TraceResource

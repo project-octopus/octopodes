@@ -4,7 +4,8 @@ class CollectionTemplate
   include ERB::Util
   attr_accessor :href
 
-  def initialize(collection)
+  def initialize(collection, title = "Octopus Project")
+    @title = title
     @href = collection.href
     @items = collection.items
     @error = collection.error
@@ -36,7 +37,7 @@ class CollectionTemplate
       <div class="container-fluid">
         <div class="row">
           <div class="col-lg-12">
-            <h1><a href="<%= @href %>">Reviews</a></h1>
+            <h1><a href="<%= @href %>"><%= @title %></a></h1>
             <% unless @error.nil? %>
               <div class="error">
                 Error: <%= @error.title %><br/>
