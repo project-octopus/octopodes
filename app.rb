@@ -97,7 +97,7 @@ class ReviewsResource < CollectionResource
   end
 
   def to_html
-    CollectionTemplate.new(collection, 'Web Pages').render
+    CollectionTemplate.new(collection, "Creative Works").render
   end
 
   def to_cj
@@ -188,7 +188,7 @@ class ReviewResource < CollectionResource
   end
 
   def to_html
-    CollectionTemplate.new(collection, "Web Pages").render
+    CollectionTemplate.new(collection, "Creative Works").render
   end
 
   def to_cj
