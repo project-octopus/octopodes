@@ -36,7 +36,7 @@ class CollectionTemplate
       <body>
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-12">
+          <div class="col-xs-10">
             <h1><a href="<%= @href %>"><%= @title %></a></h1>
             <% unless @error.nil? %>
               <div class="error">
@@ -44,6 +44,15 @@ class CollectionTemplate
                 <%= @error.message %>
               </div>
             <% end %>
+          </div>
+          <div class="col-xs-2">
+            <h1>
+            <img height="40px" src="https://raw.githubusercontent.com/project-octopus/octopodes/master/vendor/assets/icon_15331/icon_15331_small.png"/>
+            </h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
             <hr/>
             <% unless @inputs.nil? %>
             <form role="form" method="POST" class="form-horizontal">
