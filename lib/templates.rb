@@ -17,6 +17,7 @@ class CollectionTemplate
       <html>
       <head>
         <title><%= @title %></title>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/paper/bootstrap.min.css">
         <style>
           body {
@@ -41,7 +42,7 @@ class CollectionTemplate
           </div>
           <div class="col-xs-2">
             <h1>
-            <img height="40px" src="https://raw.githubusercontent.com/project-octopus/octopodes/master/vendor/assets/icon_15331/icon_15331_small.png"/>
+            <img height="40px" src="/assets/octopus.png"/>
             </h1>
           </div>
         </div>

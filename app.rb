@@ -2,6 +2,7 @@ require 'webmachine'
 require 'webmachine/adapters/rack'
 require 'json'
 require 'collection-json'
+require 'filemagic'
 
 require_relative 'lib/records'
 require_relative 'lib/templates'
@@ -214,12 +215,70 @@ class ReviewResource < CollectionResource
 
 end
 
+class AssetsResource < Webmachine::Resource
+  def allowed_methods
+    ["HEAD", "GET"]
+  end
+
+  def content_types_provided
+    [["*/*", :to_file]]
+  end
+
+  def resource_exists?
+    File.expand_path(file_path).start_with?(base_path) and File.file?(file_path)
+    true
+  end
+
+  def last_modified
+    File.mtime(file_path)
+  end
+
+  def to_file
+    response.headers["Content-Type"] = mime_type
+    File.open(file_path, "r")
+  end
+
+  private
+  def base_path
+    File.expand_path("public/assets")
+  end
+
+  def file_path
+    File.join(base_path, filename)
+  end
+
+  def filename
+    request.path_info[:filename]
+  end
+
+  def mime_type
+    @mime_type ||= FileMagic.new(FileMagic::MAGIC_MIME).file(file_path)
+  end
+end
+
+class FaviconResource < AssetsResource
+  def content_types_provided
+    [["image/x-icon", :to_file]]
+  end
+
+  private
+  def base_path
+    File.expand_path("public")
+  end
+
+  def filename
+    "favicon.ico"
+  end
+end
+
 App = Webmachine::Application.new do |app|
   app.configure do |config|
     config.adapter = :Rack
   end
   app.routes do
     add [], ReviewsResource
+    add ["favicon.ico"], FaviconResource
+    add ["assets", :filename], AssetsResource
     add ["reviews"], ReviewsResource
     add ["reviews", :id], ReviewResource
     add ['trace', '*'], Webmachine::Trace::TraceResource

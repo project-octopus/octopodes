@@ -1,4 +1,4 @@
-![Octopus](/vendor/assets/icon_15331/icon_15331_small.png?raw=true)
+![Octopus](/public/assets/octopus.png?raw=true)
 
 ## About
 
@@ -10,6 +10,7 @@ A prototype hypermedia API for recording the use of creative works and media obj
 * Bundler
 * CouchDB
 * curl
+* libmagic
 
 ## Set Up
 
