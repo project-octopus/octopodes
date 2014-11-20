@@ -43,3 +43,7 @@ Run the command:
 ## Credits
 
 Octopus by Jason Grube from The Noun Project
+
+## API documentation
+
+	http://docs.octopodes.apiary.io/
