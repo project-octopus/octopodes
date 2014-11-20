@@ -3,6 +3,7 @@ source "https://rubygems.org"
 gem 'webmachine'
 gem 'collection-json', :git => 'https://github.com/SebastianEdwards/collection-json.git'
 
+gem 'configatron'
 gem 'ruby-filemagic'
 
 gem 'rspec'

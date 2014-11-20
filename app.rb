@@ -2,10 +2,13 @@ require 'webmachine'
 require 'webmachine/adapters/rack'
 require 'json'
 require 'collection-json'
+require 'configatron'
 require 'filemagic'
 
 require_relative 'lib/records'
 require_relative 'lib/templates'
+
+WebPages.instance.database = configatron.octopus.database
 
 class CollectionResource < Webmachine::Resource
   def content_types_provided
@@ -97,7 +100,7 @@ class ReviewsResource < CollectionResource
   end
 
   def create_path
-    @create_path ||= Database.instance.uuid
+    @create_path ||= WebPages.instance.uuid
   end
 
   def to_html
@@ -131,7 +134,7 @@ class ReviewsResource < CollectionResource
         bd = data.find { |d| d.name === "is_based_on_url" }
         is_based_on_url = !bd.nil? ? bd.value : nil
 
-        rev = Reviews.instance.create(create_path, url, name, creator, license, is_based_on_url)
+        rev = WebPages.instance.create(create_path, url, name, creator, license, is_based_on_url)
         unless rev["error"].nil?
           @error = {"title" => rev["error"], "message" => rev["reason"]}
         end
@@ -155,7 +158,7 @@ class ReviewsResource < CollectionResource
     license = data.assoc('license') ? data.assoc('license').last : nil
     url = data.assoc('url') ? data.assoc('url').last : nil
     is_based_on_url = data.assoc('is_based_on_url') ? data.assoc('is_based_on_url').last : nil
-    rev = Reviews.instance.create(create_path, url, name, creator, license, is_based_on_url)
+    rev = WebPages.instance.create(create_path, url, name, creator, license, is_based_on_url)
 
     if rev["ok"] === true
       # Clients (e.g., web browsers) submitting urlencoded data should
@@ -174,7 +177,7 @@ class ReviewsResource < CollectionResource
   private
 
   def documents
-    @documents ||= Reviews.instance.all
+    @documents ||= WebPages.instance.all
   end
 end
 
@@ -210,7 +213,7 @@ class ReviewResource < CollectionResource
   end
 
   def documents
-    @documents ||= Reviews.instance.find(id)
+    @documents ||= WebPages.instance.find(id)
   end
 
 end

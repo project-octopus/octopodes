@@ -3,10 +3,11 @@ require 'net/http'
 module Couch
 
   class Server
-    def initialize(host, port, username = nil, password = nil)
+    def initialize(scheme, host, port, user = nil, password = nil)
+      @scheme = scheme
       @host = host
       @port = port
-      @username = username
+      @user = user
       @password = password
     end
 
@@ -33,10 +34,10 @@ module Couch
     end
 
     def request(req)
-      unless @username.nil? or @password.nil?
-        req.basic_auth(@username, @password)
+      unless @user.nil? or @password.nil?
+        req.basic_auth(@user, @password)
       end
-      Net::HTTP.start(@host, @port) { |http|http.request(req) }
+      Net::HTTP.start(@host, @port, :use_ssl => @scheme == 'https') { |http|http.request(req) }
     end
 
     private

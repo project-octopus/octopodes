@@ -55,8 +55,6 @@ resource "Reviews" do
     example "Posting a review as Collection+JSON" do
       do_request
 
-      puts response_body
-
       expect(response_headers).to include("Location")
 
       expect(status).to eq(201)

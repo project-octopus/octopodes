@@ -3,14 +3,10 @@ require 'time'
 require 'json'
 require_relative 'couch'
 
-class Database
+class Documents
   include Singleton
 
-  attr_writer :host, :port, :username, :password
-
-  def server
-    @server ||= Couch::Server.new(host, port)
-  end
+  attr_writer :database
 
   def uuid
     uuids['uuids'][0]
@@ -22,23 +18,23 @@ class Database
   end
 
   private
-  def host
-    @host || 'localhost'
+  def db
+    @uri ||= URI(@database)
   end
 
-  def port
-    @port || '5984'
+  def password
+    !db.password.nil? ? URI::decode(db.password) : nil
+  end
+
+  def server
+    @server ||= Couch::Server.new(db.scheme, db.host, db.port, db.user, password)
   end
 
 end
 
-class Reviews
-  include Singleton
-
-  attr_writer :database
+class WebPages < Documents
 
   def create(id, url, name, creator, license, is_based_on_url)
-    uri = "/#{@database}"
     lastReviewed = Time.now.utc.iso8601
 
     part = {"@type" => "CreativeWork"}
@@ -55,27 +51,22 @@ class Reviews
       "lastReviewed" => lastReviewed,
       "url" => url
     }.to_json
-    response = server.post(uri, json)
+    response = server.post(db.path, json)
     JSON.parse(response.body)
   end
 
   def all
-    response = server.get("/#{@database}/_design/all/_view/reviews?descending=true")
+    response = server.get("#{db.path}/_design/all/_view/reviews?descending=true")
     JSON.parse(response.body)
   end
 
   def find(id)
-    uri = URI("/#{@database}/_design/all/_view/webpages")
+    uri = URI("#{db.path}/_design/all/_view/webpages")
     params = [["startkey", "\"#{id}\""], ["endkey", "\"#{id}\""]]
     uri.query = URI.encode_www_form(params)
 
     response = server.get(uri.to_s)
     JSON.parse(response.body)
-  end
-
-  private
-  def server
-    Database.instance.server
   end
 
 end
