@@ -16,6 +16,7 @@ class CollectionTemplate
       <!DOCTYPE html>
       <html>
       <head>
+        <meta charset="utf-8"></meta>
         <title><%= @title %></title>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/paper/bootstrap.min.css">

@@ -84,19 +84,29 @@ resource "Reviews" do
     end
   end
 
-  post "reviews" do
-    parameter :name, "Title"
-    parameter :url, "URL"
+  raw_form_posts = [
+    "url=http%3A%2F%2FURL.com&name=Some+Title&creator=&license=&is_based_on_url=",
+    "url=http%3A%2F%2FURL.org%2Fabc&name=Moros%2C+Zaragoza%2C+Espa%C3%B1a&creator=&license=&is_based_on_url="
+  ]
 
-    let(:accept_header) { "text/html" }
-    let(:content_type) { "application/x-www-form-urlencoded" }
+  raw_form_posts.each do |raw_post|
 
-    example "Posting a review as www-form" do
-      do_request(:name => "The WebPage Title", :url => "http://example.org/web")
+    post "reviews" do
+      parameter :name, "Title"
+      parameter :url, "URL"
 
-      expect(response_headers).to include("Location")
+      let(:accept_header) { "text/html" }
+      let(:content_type) { "application/x-www-form-urlencoded" }
 
-      expect(status).to eq(303)
+      let(:raw_post) { raw_post }
+
+      example "Posting a review as www-form" do
+        do_request
+
+        expect(response_headers).to include("Location")
+
+        expect(status).to eq(303)
+      end
     end
   end
 
