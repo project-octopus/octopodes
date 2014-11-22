@@ -22,7 +22,7 @@ class CollectionResource < Webmachine::Resource
   end
 
   def trace?
-    true
+    configatron.webmachine.trace
   end
 
   private
@@ -284,6 +284,9 @@ App = Webmachine::Application.new do |app|
     add ["assets", :filename], AssetsResource
     add ["reviews"], ReviewsResource
     add ["reviews", :id], ReviewResource
-    add ['trace', '*'], Webmachine::Trace::TraceResource
+
+    if configatron.webmachine.trace
+      add ['trace', '*'], Webmachine::Trace::TraceResource
+    end
   end
 end
