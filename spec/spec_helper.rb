@@ -15,6 +15,7 @@ require 'json'
 
 RspecApiDocumentation.configure do |config|
   config.app = Webmachine::Adapters::Rack.new(App.configuration, App.dispatcher)
+  config.format = :markdown
 end
 
 RSpec.configure do |config|

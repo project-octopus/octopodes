@@ -29,7 +29,7 @@ resource "Reviews" do
     '{"template":{"data":[{"name": "whatever", "value": "wrong"}]}}'
   ]
 
-  bad_raw_posts.each do |raw_post|
+  bad_raw_posts.each_with_index do |raw_post, index|
 
     post "reviews" do
       let(:accept_header) { "application/vnd.collection+json" }
@@ -37,7 +37,7 @@ resource "Reviews" do
 
       let(:raw_post) { raw_post }
 
-      example "Posting a review as Collection+JSON with bad input" do
+      example "Posting a review as Collection+JSON with bad input #{index}", :document => false  do
         do_request
 
         expect(status).to eq(422)
@@ -64,7 +64,7 @@ resource "Reviews" do
   get "reviews" do
     let(:accept_header) { "text/html" }
 
-    example "Getting all reviews" do
+    example "Getting all reviews", :document => false do
       do_request
 
       expect(status).to eq(200)
@@ -75,7 +75,7 @@ resource "Reviews" do
     let(:accept_header) { "text/html" }
     let(:content_type) { "application/x-www-form-urlencoded" }
 
-    example "Posting a review as www-form with no data" do
+    example "Posting a review as www-form with no data", :document => false do
       do_request
 
       expect(status).to eq(422)
@@ -87,7 +87,7 @@ resource "Reviews" do
     "url=http%3A%2F%2FURL.org%2Fabc&name=Moros%2C+Zaragoza%2C+Espa%C3%B1a&creator=&license=&is_based_on_url="
   ]
 
-  raw_form_posts.each do |raw_post|
+  raw_form_posts.each_with_index do |raw_post, index|
 
     post "reviews" do
       parameter :name, "Title"
@@ -98,7 +98,7 @@ resource "Reviews" do
 
       let(:raw_post) { raw_post }
 
-      example "Posting a review as www-form" do
+      example "Posting a review as www-form #{index}", :document => false do
         do_request
 
         expect(response_headers).to include("Location")
@@ -124,7 +124,7 @@ resource "Review" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:id) { "webpage0" }
 
-    example "Getting a review" do
+    example "Getting a review as Collection+JSON" do
       do_request
 
       expect(response_body).to have_json_path("collection")
@@ -136,7 +136,7 @@ resource "Review" do
   get "reviews/:id" do
     let(:id) { "xxx" }
 
-    example "Getting a non-existent item" do
+    example "Getting a non-existent item", :document => false do
       do_request
 
       expect(status).to eq(404)

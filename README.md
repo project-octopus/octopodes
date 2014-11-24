@@ -12,7 +12,7 @@ A prototype hypermedia API for recording the use of creative works and media obj
 * rake
 * libmagic
 
-# Installation
+## Installation
 
 You need to install the above requirements using the package manager for your operating system. You probably already have Ruby (>= 1.9.3) but the rest you will need to download.
 
@@ -77,10 +77,14 @@ When you are finished you can delete the test database:
 
     rake octopus:db:delete[test]
 
+## Documentation
+
+[Read the Documentation](doc/api/index.markdown)
+
+Documentation is generated with the following task:
+
+    bundle exec rake docs:generate
+
 ## Credits
 
 Octopus by Jason Grube from The Noun Project
-
-## API documentation
-
-	http://docs.octopodes.apiary.io/
