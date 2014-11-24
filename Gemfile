@@ -6,6 +6,8 @@ gem 'collection-json', :git => 'https://github.com/SebastianEdwards/collection-j
 gem 'configatron'
 gem 'ruby-filemagic'
 
+gem 'rake'
+
 gem 'rspec'
 gem 'rspec_api_documentation'
 gem 'rack-test'
