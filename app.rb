@@ -21,6 +21,18 @@ class CollectionResource < Webmachine::Resource
      ["application/vnd.collection+json", :from_cj]]
   end
 
+  def base_uri
+    @request.base_uri.to_s + '/'
+  end
+
+  def to_html
+    CollectionTemplate.new(collection).render
+  end
+
+  def to_cj
+    collection.to_json
+  end
+
   def trace?
     configatron.webmachine.trace
   end
@@ -33,48 +45,37 @@ class CollectionResource < Webmachine::Resource
   def collection
     @collection ||= CollectionJSON.generate_for(base_uri) do |builder|
       builder.set_version("1.0")
-      (documents["rows"] || []).each do |row|
-        doc = row["value"]
-        item_id = doc["_id"]
-        item_uri = base_uri + "#{item_id}"
-        builder.add_item(item_uri) do |item|
-          if doc.key?("hasPart")
-            part = doc["hasPart"]
-            if part.key?("name")
-              item.add_data "name", prompt: "Title", value: part["name"]
-            end
-            if part.key?("creator")
-              item.add_data "creator", prompt: "Creator", value: part["creator"]
-            end
-            if part.key?("license")
-              item.add_data "license", prompt: "License", value: part["license"]
-            end
+      (items || []).each do |i|
+        builder.add_item(i[:href]) do |item|
+          (i[:data] || []).each do |d|
+            item.add_data d[:name], prompt: d[:prompt], value: d[:value]
           end
-          if doc.key?("lastReviewed")
-              item.add_data "date", prompt: "Date", value: doc["lastReviewed"]
-          end
-          item.add_link doc["url"], "full", prompt: "Web Page URL"
-          if doc.key?("hasPart")
-            part = doc["hasPart"]
-            if part.key?("isBasedOnUrl")
-              item.add_link part["isBasedOnUrl"], "isBasedOnUrl", prompt: "Original URL"
-            end
+          (i[:links] || []).each do |l|
+            item.add_link l[:href], l[:rel], prompt: l[:prompt]
           end
         end
       end
       if include_template?
         builder.set_template do |template|
-          template.add_data "url", prompt: "Web Page URL"
-          template.add_data "name", prompt: "Title"
-          template.add_data "creator", prompt: "Creator"
-          template.add_data "license", prompt: "License"
-          template.add_data "is_based_on_url", prompt: "Based on URL"
+          (template_data || []).each do |datum|
+            template.add_data datum[:name], prompt: datum[:prompt]
+          end
         end
       end
       unless @error.nil?
         builder.set_error @error
       end
     end
+  end
+
+  def documents
+    {}
+  end
+
+  def items
+  end
+
+  def template_data
   end
 end
 
@@ -91,10 +92,6 @@ class ReviewsResource < CollectionResource
     @request.base_uri.to_s + 'reviews/'
   end
 
-  def resource_exists?
-    true
-  end
-
   def post_is_create?
     true
   end
@@ -103,38 +100,13 @@ class ReviewsResource < CollectionResource
     @create_path ||= WebPages.instance.uuid
   end
 
-  def to_html
-    CollectionTemplate.new(collection).render
-  end
-
-  def to_cj
-    collection.to_json
-  end
-
   def from_cj
     begin
       cj_raw = '{"collection":' + request.body.to_s + '}'
       cj_doc = CollectionJSON.parse(cj_raw)
 
       if !cj_doc.template.nil? && !cj_doc.template.data.nil?
-        data = cj_doc.template.data
-
-        nd = data.find { |d| d.name === "name" }
-        name = !nd.nil? ? nd.value : nil
-
-        ud = data.find { |d| d.name === "url" }
-        url = !ud.nil? ? ud.value : nil
-
-        cd = data.find { |d| d.name === "creator" }
-        creator = !cd.nil? ? cd.value : nil
-
-        ld = data.find { |d| d.name === "license" }
-        license = !ld.nil? ? ld.value : nil
-
-        bd = data.find { |d| d.name === "is_based_on_url" }
-        is_based_on_url = !bd.nil? ? bd.value : nil
-
-        rev = WebPages.instance.create(create_path, url, name, creator, license, is_based_on_url)
+        rev = WebPages.instance.create_from_collection(create_path, cj_doc)
         unless rev["error"].nil?
           @error = {"title" => rev["error"], "message" => rev["reason"]}
         end
@@ -153,12 +125,7 @@ class ReviewsResource < CollectionResource
 
   def from_urlencoded
     data = URI::decode_www_form(request.body.to_s)
-    name = data.assoc('name') ? data.assoc('name').last : nil
-    creator = data.assoc('creator') ? data.assoc('creator').last : nil
-    license = data.assoc('license') ? data.assoc('license').last : nil
-    url = data.assoc('url') ? data.assoc('url').last : nil
-    is_based_on_url = data.assoc('is_based_on_url') ? data.assoc('is_based_on_url').last : nil
-    rev = WebPages.instance.create(create_path, url, name, creator, license, is_based_on_url)
+    rev = WebPages.instance.create_from_form(create_path, data)
 
     if rev["ok"] === true
       # Clients (e.g., web browsers) submitting urlencoded data should
@@ -175,9 +142,16 @@ class ReviewsResource < CollectionResource
   end
 
   private
-
   def documents
     @documents ||= WebPages.instance.all
+  end
+
+  def items
+    @items ||= WebPages.instance.cj_items(documents, base_uri)
+  end
+
+  def template_data
+    WebPages.instance.cj_template_data
   end
 end
 
@@ -194,16 +168,7 @@ class ReviewResource < CollectionResource
     !(documents["rows"].nil? || documents["rows"].empty?)
   end
 
-  def to_html
-    CollectionTemplate.new(collection).render
-  end
-
-  def to_cj
-    collection.to_json
-  end
-
   private
-
   def include_template?
     false
   end
@@ -214,6 +179,10 @@ class ReviewResource < CollectionResource
 
   def documents
     @documents ||= WebPages.instance.find(id)
+  end
+
+  def items
+    WebPages.instance.cj_items(documents, base_uri)
   end
 
 end

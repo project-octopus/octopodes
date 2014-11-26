@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'rspec_api_documentation/dsl'
 
+require 'configatron'
+
 resource "Reviews" do
   header "Accept", :accept_header
   header "Content-Type", :content_type
@@ -18,6 +20,11 @@ resource "Reviews" do
       do_request
 
       expect(response_body).to have_json_path("collection")
+      expect(response_body).to have_json_path("collection/items")
+      expect(response_body).to have_json_size(1).at_path("collection/items")
+      expect(response_body).to have_json_path("collection/template")
+      expect(response_body).to have_json_path("collection/template/data")
+      expect(response_body).to have_json_size(5).at_path("collection/template/data")
 
       expect(status).to eq(200)
     end
@@ -128,6 +135,9 @@ resource "Review" do
       do_request
 
       expect(response_body).to have_json_path("collection")
+      expect(response_body).to have_json_path("collection/items")
+      expect(response_body).to have_json_size(1).at_path("collection/items")
+      expect(response_body).not_to have_json_path("collection/template")
 
       expect(status).to eq(200)
     end

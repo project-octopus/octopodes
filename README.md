@@ -38,13 +38,13 @@ The site will be available at `http://localhost:8080`
 
 ## Testing
 
-Add test data to the database:
-
-    rake octopus:db:fixtures
-
-Then run the test suite:
+Run the test suite:
 
     bundle exec rspec
+
+***Note:*** Running tests will re-create the database and delete it when the tests are over.
+
+Consult the next section on how to configure a database just for testing.
 
 ## Custom database
 
@@ -67,15 +67,9 @@ To customize the database used by the tests:
 
     cp config/environments/default.rb config/environments/test.rb
 
-Edit `test.rb`, then set up the database and run the tests:
+Edit `test.rb` and change your database details. then run the tests:
 
-    rake octopus:db:create[test]
-    rake octopus:db:fixtures[test]
     bundle exec rspec
-
-When you are finished you can delete the test database:
-
-    rake octopus:db:delete[test]
 
 ## Documentation
 
