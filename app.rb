@@ -229,7 +229,6 @@ class AssetsResource < Webmachine::Resource
 
   def resource_exists?
     File.expand_path(file_path).start_with?(base_path) and File.file?(file_path)
-    true
   end
 
   def last_modified
