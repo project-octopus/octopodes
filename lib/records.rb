@@ -34,14 +34,17 @@ end
 
 class WebPages < Documents
 
-  def create(id, url, name, creator, license, is_based_on_url)
+  def create(id, data)
     lastReviewed = Time.now.utc.iso8601
 
-    part = {"@type" => "CreativeWork"}
-    unless creator.to_s.empty? then part["creator"] = creator end
-    unless license.to_s.empty? then part["license"] = license end
-    unless name.to_s.empty? then part["name"] = name end
-    unless is_based_on_url.to_s.empty? then part["isBasedOnUrl"] = is_based_on_url end
+    part = {
+      "@type" => "CreativeWork",
+      "creator" => data["creator"],
+      "license" => data["license"],
+      "name" => data["name"],
+      "isBasedOnUrl" => data["isBasedOnUrl"]
+    }
+    part.each { |k,v| part.delete(k) if v.nil? }
 
     json = {
       "_id" => id,
@@ -49,41 +52,30 @@ class WebPages < Documents
       "@type" => "WebPage",
       "hasPart" => part,
       "lastReviewed" => lastReviewed,
-      "url" => url
+      "url" => data["url"]
     }.to_json
     response = server.post(db.path, json)
     JSON.parse(response.body)
   end
 
   def create_from_collection(id, collection)
-    data = collection.template.data
 
-    nd = data.find { |d| d.name === "name" }
-    name = !nd.nil? ? nd.value : nil
+    data = collection.template.data.inject({}) do |hash, cj_data|
+      nv = cj_data.to_hash
+      hash[nv[:name]] = nv[:value]
+      hash
+    end
 
-    ud = data.find { |d| d.name === "url" }
-    url = !ud.nil? ? ud.value : nil
-
-    cd = data.find { |d| d.name === "creator" }
-    creator = !cd.nil? ? cd.value : nil
-
-    ld = data.find { |d| d.name === "license" }
-    license = !ld.nil? ? ld.value : nil
-
-    bd = data.find { |d| d.name === "isBasedOnUrl" }
-    is_based_on_url = !bd.nil? ? bd.value : nil
-
-    create(id, url, name, creator, license, is_based_on_url)
+    create(id, data)
   end
 
   def create_from_form(id, decoded_www_form)
-    data = decoded_www_form
-    name = data.assoc('name') ? data.assoc('name').last : nil
-    creator = data.assoc('creator') ? data.assoc('creator').last : nil
-    license = data.assoc('license') ? data.assoc('license').last : nil
-    url = data.assoc('url') ? data.assoc('url').last : nil
-    is_based_on_url = data.assoc('isBasedOnUrl') ? data.assoc('isBasedOnUrl').last : nil
-    create(id, url, name, creator, license, is_based_on_url)
+    data = decoded_www_form.inject({}) do |hash, value|
+      hash[value.first] = value.last
+      hash
+    end
+
+    create(id, data)
   end
 
  def all
