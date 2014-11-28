@@ -1,6 +1,7 @@
 require 'singleton'
 require 'time'
 require 'json'
+require 'collection-json'
 require_relative 'couch'
 
 class Documents
@@ -81,6 +82,7 @@ class WebPages < Documents
  def all
     response = server.get("#{db.path}/_design/all/_view/reviews?descending=true")
     JSON.parse(response.body)
+    WebPageDocuments.new(response.body)
   end
 
   def find(id)
@@ -89,14 +91,63 @@ class WebPages < Documents
     uri.query = URI.encode_www_form(params)
 
     response = server.get(uri.to_s)
-    JSON.parse(response.body)
+
+    WebPageDocuments.new(response.body)
   end
 
-  def cj_items(documents, base_uri)
-    (documents["rows"] || []).map do |row|
+end
+
+class WebPageDocuments
+
+  attr_accessor :error, :base_uri, :include_template
+
+  def initialize(json)
+    @documents = JSON.parse(json)
+    @error = nil
+    @base_uri = ''
+    @include_template = true
+  end
+
+  def count
+    items.size
+  end
+
+  def to_json
+    to_cj.to_json
+  end
+
+  def to_cj
+    CollectionJSON.generate_for(@base_uri) do |builder|
+      builder.set_version("1.0")
+      (items || []).each do |i|
+        href = @base_uri + i[:id]
+        builder.add_item(href) do |item|
+          (i[:data] || []).each do |d|
+            item.add_data d[:name], prompt: d[:prompt], value: d[:value]
+          end
+          (i[:links] || []).each do |l|
+            item.add_link l[:href], l[:rel], prompt: l[:prompt]
+          end
+        end
+      end
+      if @include_template
+        builder.set_template do |template|
+          (template_data || []).each do |datum|
+            template.add_data datum[:name], prompt: datum[:prompt]
+          end
+        end
+      end
+      unless @error.nil?
+        builder.set_error @error
+      end
+    end
+  end
+
+  private
+  def items
+    @items ||= (@documents["rows"] || []).map do |row|
       doc = row["value"]
       item_id = doc["_id"]
-      item_uri = base_uri + "#{item_id}"
       part = doc.key?("hasPart") ? doc["hasPart"] : []
 
       data = [cj_item_datum(part, "name", "name", "Title"),
@@ -109,11 +160,11 @@ class WebPages < Documents
                cj_item_link(part, "isBasedOnUrl", "isBasedOnUrl", "Original URL")]
       links.reject!(&:nil?)
 
-      {:href => item_uri, :data => data, :links => links}
+      {:id => item_id, :data => data, :links => links}
     end
   end
 
-  def cj_template_data
+  def template_data
     [{:name => "url", :prompt => "Web Page URL"},
      {:name => "name", :prompt => "Title"},
      {:name => "creator", :prompt => "Creator"},
@@ -121,7 +172,6 @@ class WebPages < Documents
      {:name => "isBasedOnUrl", :prompt => "Based on URL"}]
   end
 
-  private
   def cj_item_datum(hash, key, name, prompt)
     if hash.key?(key)
       {:name => name, :prompt => prompt, :value => hash[key]}

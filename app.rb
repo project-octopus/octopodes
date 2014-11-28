@@ -38,45 +38,12 @@ class CollectionResource < Webmachine::Resource
   end
 
   private
-  def include_template?
-    true
-  end
-
   def collection
-    @collection ||= CollectionJSON.generate_for(base_uri) do |builder|
+    CollectionJSON.generate_for(base_uri) do |builder|
       builder.set_version("1.0")
-      (items || []).each do |i|
-        builder.add_item(i[:href]) do |item|
-          (i[:data] || []).each do |d|
-            item.add_data d[:name], prompt: d[:prompt], value: d[:value]
-          end
-          (i[:links] || []).each do |l|
-            item.add_link l[:href], l[:rel], prompt: l[:prompt]
-          end
-        end
-      end
-      if include_template?
-        builder.set_template do |template|
-          (template_data || []).each do |datum|
-            template.add_data datum[:name], prompt: datum[:prompt]
-          end
-        end
-      end
-      unless @error.nil?
-        builder.set_error @error
-      end
     end
   end
 
-  def documents
-    {}
-  end
-
-  def items
-  end
-
-  def template_data
-  end
 end
 
 class ReviewsResource < CollectionResource
@@ -142,16 +109,14 @@ class ReviewsResource < CollectionResource
   end
 
   private
+  def collection
+    documents.base_uri = base_uri
+    documents.error = @error
+    documents.to_cj
+  end
+
   def documents
     @documents ||= WebPages.instance.all
-  end
-
-  def items
-    @items ||= WebPages.instance.cj_items(documents, base_uri)
-  end
-
-  def template_data
-    WebPages.instance.cj_template_data
   end
 end
 
@@ -165,24 +130,23 @@ class ReviewResource < CollectionResource
   end
 
   def resource_exists?
-    !(documents["rows"].nil? || documents["rows"].empty?)
+    documents.count >= 1
   end
 
   private
-  def include_template?
-    false
-  end
 
   def id
     request.path_info[:id]
   end
 
-  def documents
-    @documents ||= WebPages.instance.find(id)
+  def collection
+    documents.base_uri = base_uri
+    documents.include_template = false
+    documents.to_cj
   end
 
-  def items
-    WebPages.instance.cj_items(documents, base_uri)
+  def documents
+    @documents ||= WebPages.instance.find(id)
   end
 
 end

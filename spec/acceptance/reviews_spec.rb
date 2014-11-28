@@ -47,6 +47,9 @@ resource "Reviews" do
       example "Posting a review as Collection+JSON with bad input #{index}", :document => false  do
         do_request
 
+        expect(response_body).to have_json_path("collection")
+        expect(response_body).to have_json_path("collection/error")
+
         expect(status).to eq(422)
       end
     end
