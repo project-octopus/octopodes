@@ -26,9 +26,9 @@ Cookie: </pre>
 
 <pre>Content-Type: application/vnd.collection+json
 Vary: Accept
-Location: http://example.org/reviews/32c4118539df961a61fdabd28f28afc2
+Location: http://example.org/reviews/32c4118539df961a61fdabd28f6157d9
 Content-Length: 0
-Date: Mon, 24 Nov 2014 10:55:46 GMT
+Date: Fri, 28 Nov 2014 11:09:59 GMT
 Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
 
 #### Status
