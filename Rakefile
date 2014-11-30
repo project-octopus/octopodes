@@ -46,14 +46,12 @@ namespace :octopus do
 
       server = Couch::Server.new(uri.scheme, uri.host, uri.port, uri.user, password)
 
-      fixture = File.read("db/webpage0.json")
-      response = server.put("#{uri.path}/webpage0", fixture)
+      fixtures = File.read("db/fixtures.json")
+      response = server.post("#{uri.path}/_bulk_docs", fixtures)
 
       case response.code.to_s
       when "201", "202"
         puts "Added test data to #{database}"
-      when "409"
-        puts "Test data already loaded in #{database}"
       else
         puts "There was a problem loading test data into #{database}"
         puts response.body

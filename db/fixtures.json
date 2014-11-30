@@ -1,0 +1,22 @@
+{
+  "docs": [
+    {
+      "_id": "webpage0",
+      "@context": "http://schema.org",
+      "@type": "WebPage",
+      "hasPart": {
+        "@type": "CreativeWork",
+        "creator": "Christopher Adams",
+        "license": "https://creativecommons.org/licenses/by/2.0/",
+        "name": "Stanley Wong"
+      },
+      "lastReviewed": "2014-09-01T10:37:27+00:00",
+      "name": "Stanley Wong | Flickr - Photo Sharing!",
+      "reviewedBy": {
+        "@type": "Person",
+        "@id": "person1"
+      },
+      "url": "https://www.flickr.com/photos/christopheradams/3174263710/"
+    }
+  ]
+}
