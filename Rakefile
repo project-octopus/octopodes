@@ -1,5 +1,6 @@
 require 'rspec/core/rake_task'
 require 'net/http'
+require 'json'
 require 'configatron'
 
 require_relative 'lib/couch.rb'
@@ -29,6 +30,34 @@ namespace :octopus do
         puts "The database #{database} already exists"
       else
         puts "There was a problem creating #{database}"
+        puts response.body
+      end
+
+    end
+
+    desc "Update database"
+    task :update, :environment do |t, args|
+      environment = args[:environment] || 'default'
+      load "config/environments/#{environment}.rb"
+
+      database = configatron.octopus.database
+      uri = URI(database)
+
+      password = !uri.password.nil? ? URI::decode(uri.password) : nil
+
+      server = Couch::Server.new(uri.scheme, uri.host, uri.port, uri.user, password)
+
+      current_doc = JSON.parse(server.get("#{uri.path}/_design/all").body)
+
+      new_doc = JSON.parse(File.read("db/design-doc.json"))
+      new_doc["_rev"] = current_doc["_rev"]
+      response = server.put("#{uri.path}/_design/all", new_doc.to_json)
+
+      case response.code.to_s
+      when "201", "202"
+        puts "Updated #{database}"
+      else
+        puts "There was a problem updating #{database}"
         puts response.body
       end
 

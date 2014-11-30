@@ -28,6 +28,12 @@ Run rake to set up the database
 
 Your database will be created at `http://localhost:5984/project-octopus`
 
+## Updating
+
+If you already have a database, update it with the latest design documents:
+
+    rake octopus:db:update
+
 ## Usage
 
 To run locally:
@@ -60,6 +66,10 @@ Edit `development.rb` and change your database details. Then set up the database
 
     rake octopus:db:create[development]
     bundle exec ruby boot.rb
+
+Updating the database is just as easy:
+
+    rake octopus:db:update[development]
 
 ### Testing
 
