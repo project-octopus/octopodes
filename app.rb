@@ -8,6 +8,8 @@ require 'filemagic'
 require_relative 'lib/records'
 require_relative 'lib/templates'
 
+I18n.config.enforce_available_locales = true
+
 WebPages.instance.database = configatron.octopus.database
 
 class CollectionResource < Webmachine::Resource
