@@ -5,6 +5,7 @@ gem 'collection-json', :git => 'https://github.com/SebastianEdwards/collection-j
 
 gem 'configatron'
 gem 'ruby-filemagic'
+gem 'bcrypt'
 
 gem 'rake'
 

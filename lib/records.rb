@@ -2,9 +2,10 @@ require 'singleton'
 require 'time'
 require 'json'
 require 'collection-json'
+require 'bcrypt'
 require_relative 'couch'
 
-class Documents
+class Datastore
   include Singleton
 
   attr_writer :database
@@ -33,7 +34,74 @@ class Documents
 
 end
 
-class WebPages < Documents
+class Users < Datastore
+  def create(id, data)
+    username = data["username"]
+    if (find(username).count >= 1)
+      {"error" => "conflict", "reason" => "Username `#{username}` is taken."}
+    else
+      created = Time.now.utc.iso8601
+      password = BCrypt::Password.create(data["password"])
+
+      json = {
+        "_id" => id,
+        "@id" => username,
+        "@context" => "https://w3id.org/identity/v1",
+        "@type" => "Identity",
+        "created" => created,
+        "password" => password
+      }.to_json
+      response = server.post(db.path, json)
+      JSON.parse(response.body)
+    end
+  end
+
+  def create_from_collection(id, collection)
+    data = collection.template.data.inject({}) do |hash, cj_data|
+      nv = cj_data.to_hash
+      hash[nv[:name]] = nv[:value]
+      hash
+    end
+
+    create(id, data)
+  end
+
+  def create_from_form(id, decoded_www_form)
+    data = decoded_www_form.inject({}) do |hash, value|
+      hash[value.first] = value.last
+      hash
+    end
+
+    create(id, data)
+  end
+
+  def all
+    response = server.get("#{db.path}/_design/all/_view/identities")
+    JSON.parse(response.body)
+    UserDocuments.new(response.body)
+  end
+
+  def find(username)
+    uri = URI("#{db.path}/_design/all/_view/users")
+    params = [["endkey", "[\"#{username}\"]"],
+              ["startkey", "[\"#{username}\", {}]"],
+              ["limit", "1"], ["descending", "true"]]
+    uri.query = URI.encode_www_form(params)
+
+    response = server.get(uri.to_s)
+
+    UserDocuments.new(response.body)
+  end
+
+  def usernames
+    uri = URI("#{db.path}/_design/all/_view/usernames?group=true")
+    response = server.get(uri.to_s)
+
+    UserDocuments.new(response.body)
+  end
+end
+
+class WebPages < Datastore
 
   def create(id, data)
     lastReviewed = Time.now.utc.iso8601
@@ -97,7 +165,7 @@ class WebPages < Documents
 
 end
 
-class WebPageDocuments
+class Documents
 
   attr_accessor :error, :base_uri, :include_template
 
@@ -145,6 +213,51 @@ class WebPageDocuments
 
   private
   def items
+    []
+  end
+
+  def template_data
+    []
+  end
+
+  def cj_item_datum(hash, key, name, prompt)
+    if hash.key?(key)
+      {:name => name, :prompt => prompt, :value => hash[key]}
+    end
+  end
+
+  def cj_item_link(hash, key, rel, prompt)
+    if hash.key?(key)
+      {:href => hash[key], :rel => rel, :prompt => prompt}
+    end
+  end
+end
+
+class UserDocuments < Documents
+
+  private
+  def items
+    @items ||= (@documents["rows"] || []).map do |row|
+      doc = row["value"]
+      item_id = doc["@id"]
+
+      data = [cj_item_datum(doc, "@id", "username", "Username")]
+      links = []
+
+      {:id => item_id, :data => data, :links => links}
+    end
+  end
+
+  def template_data
+    [{:name => "username", :prompt => "Username"},
+     {:name => "password", :prompt => "Password"}]
+  end
+end
+
+class WebPageDocuments < Documents
+
+  private
+  def items
     @items ||= (@documents["rows"] || []).map do |row|
       doc = row["value"]
       item_id = doc["_id"]
@@ -170,18 +283,6 @@ class WebPageDocuments
      {:name => "creator", :prompt => "Creator"},
      {:name => "license", :prompt => "License"},
      {:name => "isBasedOnUrl", :prompt => "Based on URL"}]
-  end
-
-  def cj_item_datum(hash, key, name, prompt)
-    if hash.key?(key)
-      {:name => name, :prompt => prompt, :value => hash[key]}
-    end
-  end
-
-  def cj_item_link(hash, key, rel, prompt)
-    if hash.key?(key)
-      {:href => hash[key], :rel => rel, :prompt => prompt}
-    end
   end
 
 end

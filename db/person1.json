@@ -1,6 +1,6 @@
 {
   "_id": "person1",
-  "@id": "mailto:chris@raysend.com",
+  "@id": "user1",
   "@context": "http://schema.org",
   "@type": "Person",
   "name": "Christopher Adams",

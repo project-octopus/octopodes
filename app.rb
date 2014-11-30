@@ -11,6 +11,7 @@ require_relative 'lib/templates'
 I18n.config.enforce_available_locales = true
 
 WebPages.instance.database = configatron.octopus.database
+Users.instance.database = configatron.octopus.database
 
 class CollectionResource < Webmachine::Resource
   def content_types_provided
@@ -136,7 +137,6 @@ class ReviewResource < CollectionResource
   end
 
   private
-
   def id
     request.path_info[:id]
   end
@@ -149,6 +149,105 @@ class ReviewResource < CollectionResource
 
   def documents
     @documents ||= WebPages.instance.find(id)
+  end
+
+end
+
+
+class UsersResource < CollectionResource
+  def allowed_methods
+    ["GET", "POST"]
+  end
+
+  def base_uri
+    @request.base_uri.to_s + 'users/'
+  end
+
+  def post_is_create?
+    true
+  end
+
+  def create_path
+    @create_path ||= Users.instance.uuid
+  end
+
+  def from_cj
+    begin
+      cj_raw = '{"collection":' + request.body.to_s + '}'
+      cj_doc = CollectionJSON.parse(cj_raw)
+
+      if !cj_doc.template.nil? && !cj_doc.template.data.nil?
+        rev = Users.instance.create_from_collection(create_path, cj_doc)
+        unless rev["error"].nil?
+          @error = {"title" => rev["error"], "message" => rev["reason"]}
+        end
+      else
+        @error = {"title" => "Bad Input", "message" => "Missing template data"}
+      end
+    rescue JSON::ParserError
+      @error = {"title" => "Bad Input", "message" => "Malformed Collection+JSON"}
+    end
+
+    unless @error.nil?
+      @response.body = to_cj
+      @response.code = 422 # Unprocessable Entity
+    end
+  end
+
+  def from_urlencoded
+    data = URI::decode_www_form(request.body.to_s)
+    rev = Users.instance.create_from_form(create_path, data)
+
+    if rev["ok"] === true
+      # Clients (e.g., web browsers) submitting urlencoded data should
+      # redirect to the newly created resource, since they won't act on
+      # a 201 Created response.
+      @response.do_redirect
+    end
+
+    unless rev["error"].nil?
+      @error = {"title" => rev["error"], "message" => rev["reason"]}
+      @response.body = to_html
+      @response.code = 422 # Unprocessable Entity
+    end
+  end
+
+  private
+  def collection
+    documents.base_uri = base_uri
+    documents.error = @error
+    documents.to_cj
+  end
+
+  def documents
+    @documents ||= Users.instance.usernames
+  end
+
+end
+
+class UserResource < CollectionResource
+
+  def base_uri
+    @request.base_uri.to_s + 'users/'
+  end
+
+  def resource_exists?
+    documents.count >= 1
+  end
+
+  private
+  def username
+    request.path_info[:username]
+  end
+
+  def collection
+    documents.base_uri = base_uri
+    documents.include_template = false
+    documents.to_cj
+  end
+
+  def documents
+    @documents ||= Users.instance.find(username)
   end
 
 end
@@ -218,6 +317,9 @@ App = Webmachine::Application.new do |app|
     add ["assets", :filename], AssetsResource
     add ["reviews"], ReviewsResource
     add ["reviews", :id], ReviewResource
+
+    add ["users"], UsersResource
+    add ["users", :username], UserResource
 
     if configatron.webmachine.trace
       add ['trace', '*'], Webmachine::Trace::TraceResource
