@@ -70,7 +70,7 @@ resource "Users" do
 
     let(:raw_post) { '{"template":{"data":[{"name": "username", "value": "user1"}, {"name": "password", "value": "a password"}]}}' }
 
-    example "Creating a user with a registered name" do
+    example "Creating a user with a registered name", :document => false do
       do_request
 
       expect(status).to eq(422)

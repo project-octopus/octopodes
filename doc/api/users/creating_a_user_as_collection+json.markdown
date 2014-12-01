@@ -1,8 +1,8 @@
-# Reviews API
+# Users API
 
-## Posting a review as Collection+JSON
+## Creating a user as Collection+JSON
 
-### POST reviews
+### POST users
 ### Request
 
 #### Headers
@@ -14,11 +14,11 @@ Cookie: </pre>
 
 #### Route
 
-<pre>POST reviews</pre>
+<pre>POST users</pre>
 
 #### Body
 
-<pre>{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}]}}</pre>
+<pre>{"template":{"data":[{"name": "username", "value": "newuser"}, {"name": "password", "value": "new password"}]}}</pre>
 
 ### Response
 
@@ -26,9 +26,9 @@ Cookie: </pre>
 
 <pre>Content-Type: application/vnd.collection+json
 Vary: Accept
-Location: http://example.org/reviews/32c4118539df961a61fdabd28f88bc93
+Location: http://example.org/users/32c4118539df961a61fdabd28f8919f2
 Content-Length: 0
-Date: Mon, 01 Dec 2014 12:23:35 GMT
+Date: Mon, 01 Dec 2014 12:23:36 GMT
 Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
 
 #### Status
