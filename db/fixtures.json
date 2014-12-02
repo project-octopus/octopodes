@@ -25,7 +25,7 @@
       "@type": "Identity",
       "created": "2014-08-12T14:18:55+00:00",
       "email": "christopher@fabricatorz.com",
-      "password": "$2a$10$tbRREbCsMCP6mEzTX.kasenAsMSPhONnhJfeIp/Qi5pL9KBMZwuli"
+      "password": "$2a$10$dgRnX6Zdyx9Nof9cNmdXeu9dK75eeRdIhDoyxpZYADYplrxeFeVU2"
     },
     {
       "_id": "identity1",
@@ -34,7 +34,7 @@
       "@type": "Identity",
       "created": "2014-06-01T14:13:22+00:00",
       "email": "chris@raysend.com",
-      "password": "$2a$10$TAFkM0WPYx7MhvuU1jmxgOrfCjOVARvMS1s99UrREmKSP06czBrmO"
+      "password": "$2a$10$hhOpbP513xRCHlj7pUxnmOGRrcLDev0CEYqSnX6PRNpJd.J9uzl8q"
     },
     {
       "_id": "identity0",
@@ -43,7 +43,7 @@
       "@type": "Identity",
       "created": "2014-10-11T03:21:43+00:00",
       "email": "hi@project-octopus.org",
-      "password": "$2a$04$k6Ku3kDE2Qf91SkywhpvSOTXWUC1T14ILcSoaBH1ysVZP/5G0FeR6"
+      "password": "$2a$10$2qfh/REeNJCboHcqlJAewOZ0LfM6rmgYCXJqwszp7n66tCOjFLHBW"
     }
   ]
 }

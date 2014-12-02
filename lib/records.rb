@@ -99,6 +99,22 @@ class Users < Datastore
 
     UserDocuments.new(response.body)
   end
+
+  def is_authorized?(username, password)
+    identity = find(username).first
+
+    if !identity.empty?
+      user_id = identity["value"]["@id"]
+      user_secret = identity["value"]["password"]
+      is_authorized = BCrypt::Password.new(user_secret) == password
+    else
+      # Spend time checking even if the user does not exist
+      BCrypt::Password.new((0...16).map { (65 + rand(26)).chr }.join) == password
+      is_authorized = false
+    end
+
+    is_authorized
+  end
 end
 
 class WebPages < Datastore
@@ -178,6 +194,10 @@ class Documents
 
   def count
     items.size
+  end
+
+  def first
+    !@documents["rows"].empty? ? @documents["rows"][0] : []
   end
 
   def to_json

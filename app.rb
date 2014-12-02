@@ -307,6 +307,18 @@ class FaviconResource < AssetsResource
   end
 end
 
+class ProtectedResource < CollectionResource
+  include Webmachine::Resource::Authentication
+
+  def is_authorized?(authorization_header)
+    basic_auth(authorization_header, "Project Octopus") do |user, pass|
+      user == "admin" && pass == "admin"
+      Users.instance.is_authorized?(user, pass)
+    end
+  end
+
+end
+
 App = Webmachine::Application.new do |app|
   app.configure do |config|
     config.adapter = :Rack
@@ -320,6 +332,7 @@ App = Webmachine::Application.new do |app|
 
     add ["users"], UsersResource
     add ["users", :username], UserResource
+    add ["auth"], ProtectedResource
 
     if configatron.webmachine.trace
       add ['trace', '*'], Webmachine::Trace::TraceResource
