@@ -120,7 +120,7 @@ class Users < Datastore
       is_authorized = BCrypt::Password.new(user_secret) == password
     else
       # Spend time checking even if the user does not exist
-      BCrypt::Password.new((0...16).map { (65 + rand(26)).chr }.join) == password
+      BCrypt::Password.create((0...16).map { (65 + rand(26)).chr }.join) == password
       is_authorized = false
     end
 
