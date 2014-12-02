@@ -4,7 +4,7 @@ class CollectionTemplate
   include ERB::Util
   attr_accessor :href
 
-  def initialize(collection, title = "Project Octopus")
+  def initialize(collection, title = nil)
     @title = title
     @href = collection.href
     @items = collection.items
@@ -17,7 +17,7 @@ class CollectionTemplate
       <html>
       <head>
         <meta charset="utf-8"></meta>
-        <title><%= @title %></title>
+        <title>Project Octopus <%= @title %></title>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/paper/bootstrap.min.css">
         <style>
@@ -36,15 +36,33 @@ class CollectionTemplate
         </style>
       </head>
       <body>
+      <nav class="navbar" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">
+              <img height="23px" src="/assets/octopus.png"/>
+            </a>
+          </div>
+          <ul class="nav navbar-nav">
+          <li>
+          <a href="/">Project Octopus - Showing the use of creative works, one URL at a time.</a>
+          </li>
+          </ul>
+        </div>
+      </nav>
       <div class="container-fluid">
         <div class="row">
-          <div class="col-xs-10">
-            <h1><a href="<%= @href %>"><%= @title %></a></h1>
+          <div class="col-sm-10 col-sm-offset-2">
+            <ul class="nav nav-tabs">
+              <li><a href="/">Home</a></li>
+              <li><a href="/reviews">Works</a></li>
+              <li><a href="/registrations">Register</a></li>
+            </ul>
           </div>
-          <div class="col-xs-2">
-            <h1>
-            <img height="40px" src="/assets/octopus.png"/>
-            </h1>
+        </div>
+        <div class="row">
+          <div class="col-sm-8 col-sm-offset-2">
+            <h6><%= @title %></h6>
           </div>
         </div>
         <div class="row">
@@ -55,7 +73,6 @@ class CollectionTemplate
                 <%= @error.message %>
               </div>
             <% end %>
-            <hr/>
             <% unless @inputs.nil? %>
             <form role="form" method="POST" class="form-horizontal">
             <% for @input in @inputs %>

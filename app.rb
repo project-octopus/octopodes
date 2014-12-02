@@ -29,7 +29,7 @@ class CollectionResource < Webmachine::Resource
   end
 
   def to_html
-    CollectionTemplate.new(collection).render
+    CollectionTemplate.new(collection, title).render
   end
 
   def to_cj
@@ -41,6 +41,10 @@ class CollectionResource < Webmachine::Resource
   end
 
   private
+  def title
+    "Welcome to Project Octopus"
+  end
+
   def collection
     CollectionJSON.generate_for(base_uri) do |builder|
       builder.set_version("1.0")
@@ -112,6 +116,10 @@ class ReviewsResource < CollectionResource
   end
 
   private
+  def title
+    "Creative Works Re-used on the Web"
+  end
+
   def collection
     documents.base_uri = base_uri
     documents.error = @error
@@ -139,6 +147,10 @@ class ReviewResource < CollectionResource
   private
   def id
     request.path_info[:id]
+  end
+
+  def title
+    "Creative Work Re-used on the Web"
   end
 
   def collection
@@ -212,6 +224,10 @@ class RegistrationsResource < CollectionResource
   end
 
   private
+  def title
+    "Sign up for Project Octopus"
+  end
+
   def collection
     documents.base_uri = base_uri
     documents.error = @error
@@ -237,6 +253,10 @@ class RegistrationResource < CollectionResource
   private
   def identity
     request.path_info[:identity]
+  end
+
+  def title
+    "Registration Submitted"
   end
 
   def collection
@@ -381,7 +401,7 @@ App = Webmachine::Application.new do |app|
     config.adapter = :Rack
   end
   app.routes do
-    add [], ReviewsResource
+    add [], CollectionResource
     add ["favicon.ico"], FaviconResource
     add ["assets", :filename], AssetsResource
     add ["reviews"], ReviewsResource
