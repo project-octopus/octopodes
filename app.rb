@@ -394,6 +394,11 @@ class ProtectedResource < CollectionResource
     end
   end
 
+  private
+  def title
+    "Thank you for logging in"
+  end
+
 end
 
 App = Webmachine::Application.new do |app|
@@ -411,7 +416,7 @@ App = Webmachine::Application.new do |app|
     add ["registrations", :identity], RegistrationResource
     add ["users"], UsersResource
     add ["users", :username], UserResource
-    add ["auth"], ProtectedResource
+    add ["login"], ProtectedResource
 
     if configatron.webmachine.trace
       add ['trace', '*'], Webmachine::Trace::TraceResource

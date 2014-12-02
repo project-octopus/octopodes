@@ -57,6 +57,7 @@ class CollectionTemplate
               <li><a href="/">Home</a></li>
               <li><a href="/reviews">Works</a></li>
               <li><a href="/registrations">Register</a></li>
+              <li><a href="/login">Login</a></li>
             </ul>
           </div>
         </div>

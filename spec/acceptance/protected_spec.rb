@@ -6,7 +6,7 @@ resource "Protected" do
   header "Content-Type", :content_type
   header "Authorization", :authorization
 
-  get "auth" do
+  get "login" do
     let(:accept_header) { "application/vnd.collection+json" }
 
     example "Authenticating with no authorization", :document => false do
@@ -16,7 +16,7 @@ resource "Protected" do
     end
   end
 
-  get "auth" do
+  get "login" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:authorization) { "Basic " + Base64.encode64("user1:oldpass").strip }
 
@@ -27,7 +27,7 @@ resource "Protected" do
     end
   end
 
-  get "auth" do
+  get "login" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
