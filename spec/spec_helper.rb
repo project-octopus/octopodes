@@ -23,7 +23,7 @@ end
 RSpec.configure do |config|
   config.include JsonSpec::Helpers
 
-  config.before(:suite) do
+  config.before(:all) do
     load 'Rakefile'
     capture_stdout {Rake.application['octopus:db:delete'].invoke('test')}
     capture_stdout {Rake.application['octopus:db:delete'].reenable}
@@ -33,7 +33,7 @@ RSpec.configure do |config|
     capture_stdout {Rake.application['octopus:db:fixtures'].reenable}
   end
 
-  config.after(:suite) do
+  config.after(:all) do
     capture_stdout {Rake.application['octopus:db:delete'].invoke('test')}
     capture_stdout {Rake.application['octopus:db:delete'].reenable}
   end

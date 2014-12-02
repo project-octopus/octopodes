@@ -153,14 +153,13 @@ class ReviewResource < CollectionResource
 
 end
 
-
-class UsersResource < CollectionResource
+class RegistrationsResource < CollectionResource
   def allowed_methods
     ["GET", "POST"]
   end
 
   def base_uri
-    @request.base_uri.to_s + 'users/'
+    @request.base_uri.to_s + 'registrations/'
   end
 
   def post_is_create?
@@ -216,6 +215,64 @@ class UsersResource < CollectionResource
   def collection
     documents.base_uri = base_uri
     documents.error = @error
+    documents.to_cj
+  end
+
+  def documents
+    @documents ||= RegistrationDocuments.new
+  end
+
+end
+
+class RegistrationResource < CollectionResource
+
+  def base_uri
+    @request.base_uri.to_s + 'registrations/'
+  end
+
+  def resource_exists?
+    documents.count >= 1
+  end
+
+  private
+  def identity
+    request.path_info[:identity]
+  end
+
+  def collection
+    documents.base_uri = base_uri
+    documents.include_template = false
+    documents.include_item_link = false
+    documents.to_cj
+  end
+
+  def documents
+    @documents ||= Users.instance.identify(identity)
+  end
+
+end
+
+class UsersResource < CollectionResource
+  def allowed_methods
+    ["GET"]
+  end
+
+  def base_uri
+    @request.base_uri.to_s + 'users/'
+  end
+
+  def post_is_create?
+    true
+  end
+
+  def create_path
+    @create_path ||= Users.instance.uuid
+  end
+
+  private
+  def collection
+    documents.base_uri = base_uri
+    documents.include_template = false
     documents.to_cj
   end
 
@@ -330,6 +387,8 @@ App = Webmachine::Application.new do |app|
     add ["reviews"], ReviewsResource
     add ["reviews", :id], ReviewResource
 
+    add ["registrations"], RegistrationsResource
+    add ["registrations", :identity], RegistrationResource
     add ["users"], UsersResource
     add ["users", :username], UserResource
     add ["auth"], ProtectedResource

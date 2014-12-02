@@ -100,6 +100,17 @@ class Users < Datastore
     UserDocuments.new(response.body)
   end
 
+  def identify(identity)
+    uri = URI("#{db.path}/_design/all/_view/identities")
+    params = [["startkey", "\"#{identity}\""],
+              ["endkey", "\"#{identity}\""]]
+    uri.query = URI.encode_www_form(params)
+
+    response = server.get(uri.to_s)
+
+    RegistrationDocuments.new(response.body)
+  end
+
   def is_authorized?(username, password)
     identity = find(username).first
 
@@ -183,13 +194,14 @@ end
 
 class Documents
 
-  attr_accessor :error, :base_uri, :include_template
+  attr_accessor :error, :base_uri, :include_template, :include_item_link
 
-  def initialize(json)
+  def initialize(json = '{}')
     @documents = JSON.parse(json)
     @error = nil
     @base_uri = ''
     @include_template = true
+    @include_item_link = true
   end
 
   def count
@@ -208,7 +220,7 @@ class Documents
     CollectionJSON.generate_for(@base_uri) do |builder|
       builder.set_version("1.0")
       (items || []).each do |i|
-        href = @base_uri + i[:id]
+        href = @include_item_link ? @base_uri + i[:id] : ''
         builder.add_item(href) do |item|
           (i[:data] || []).each do |d|
             item.add_data d[:name], prompt: d[:prompt], value: d[:value]
@@ -262,6 +274,27 @@ class UserDocuments < Documents
       item_id = doc["@id"]
 
       data = [cj_item_datum(doc, "@id", "username", "Username")]
+      links = []
+
+      {:id => item_id, :data => data, :links => links}
+    end
+  end
+
+  def template_data
+    [{:name => "password", :prompt => "Password"}]
+  end
+end
+
+class RegistrationDocuments < Documents
+  private
+  def items
+    @items ||= (@documents["rows"] || []).map do |row|
+      doc = row["value"]
+      item_id = doc["_id"]
+
+      data = [cj_item_datum(doc, "@id", "username", "Username"),
+              cj_item_datum(doc, "created", "created", "Registered"),
+              {:name => "message", :prompt => "Message", :value => "Your registration was successful. You may now login."}]
       links = []
 
       {:id => item_id, :data => data, :links => links}

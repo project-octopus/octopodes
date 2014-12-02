@@ -59,12 +59,13 @@ class CollectionTemplate
             <% unless @inputs.nil? %>
             <form role="form" method="POST" class="form-horizontal">
             <% for @input in @inputs %>
+              <% @type = @input.name == "password" ? "password" : "text" %>
               <div class="form-group">
               <label class="col-sm-2 control-label" for="<%= @input.name %>">
                 <%= @input.prompt %>
               </label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" name="<%= @input.name %>" autocomplete="off"/>
+                <input type="<%= @type %>" class="form-control" name="<%= @input.name %>" autocomplete="off"/>
               </div>
               </div>
             <% end %>
