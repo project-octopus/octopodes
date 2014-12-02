@@ -81,6 +81,10 @@ Edit `test.rb` and change your database details. then run the tests:
 
     bundle exec rspec
 
+## Migrations
+
+The software is currently in beta and does not offer data migrations between updates. Your current database may not be compatible with the latest commit.
+
 ## Documentation
 
 [Read the Documentation](doc/api/index.markdown)
@@ -88,6 +92,12 @@ Edit `test.rb` and change your database details. then run the tests:
 Documentation is generated with the following task:
 
     bundle exec rake docs:generate
+
+## Security
+
+The software only supports Basic Authentication.
+
+Passwords are stored in the same database as all other documents, using the bcrypt hash algorithm.
 
 ## Credits
 
