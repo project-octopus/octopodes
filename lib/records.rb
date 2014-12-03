@@ -100,6 +100,14 @@ class Users < Datastore
     UserDocuments.new(response.body)
   end
 
+  def count
+    uri = URI("#{db.path}/_design/all/_view/usernames?group=true")
+    response = server.get(uri.to_s)
+
+    docs = JSON.parse(response.body)
+    docs["rows"].size
+  end
+
   def identify(identity)
     uri = URI("#{db.path}/_design/all/_view/identities")
     params = [["startkey", "\"#{identity}\""],
@@ -188,6 +196,16 @@ class WebPages < Datastore
     response = server.get(uri.to_s)
 
     WebPageDocuments.new(response.body)
+  end
+
+  def count
+    uri = URI("#{db.path}/_design/all/_view/webpage_count")
+    response = server.get(uri.to_s)
+
+    docs = JSON.parse(response.body)
+    puts docs["rows"][0]
+
+    !docs["rows"].empty? ? docs["rows"][0]["value"] : 0
   end
 
 end

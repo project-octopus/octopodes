@@ -82,6 +82,20 @@ class CollectionResource < OctopusResource
 
 end
 
+class HomeResource < CollectionResource
+  def collection
+    reviews = WebPages.instance.count
+    users = Users.instance.count
+    CollectionJSON.generate_for(base_uri) do |builder|
+      builder.set_version("1.0")
+      builder.add_item(nil) do |item|
+        item.add_data "webpageCount", prompt: "Web Pages Reviewed", value: reviews
+        item.add_data "userCount", prompt: "Active Users", value: users
+      end
+    end
+  end
+end
+
 class ReviewsResource < CollectionResource
   def allowed_methods
     ["GET", "POST"]
@@ -449,7 +463,7 @@ App = Webmachine::Application.new do |app|
     config.adapter = :Rack
   end
   app.routes do
-    add [], CollectionResource
+    add [], HomeResource
     add ["favicon.ico"], FaviconResource
     add ["assets", :filename], AssetsResource
     add ["reviews"], ReviewsResource

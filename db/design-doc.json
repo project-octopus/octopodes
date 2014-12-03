@@ -5,10 +5,14 @@
 
   "views": {
     "urls": {
-      "map": "function(doc) { emit(doc.url, doc.url); }"
+      "map": "function(doc) { if (doc.url) { emit(doc.url, doc.url); } }"
     },
     "webpages": {
       "map": "function(doc) { if(doc['@type'] === 'WebPage') { emit(doc._id,doc); } }"
+    },
+    "webpage_count" : {
+      "map": "function(doc) { if(doc['@type'] === 'WebPage') { emit(doc.url,1); } }",
+      "reduce": "_count"
     },
     "persons": {
       "map": "function(doc) { if(doc['@type'] === 'Person') { emit(doc.url,doc); } }"
