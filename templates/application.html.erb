@@ -9,6 +9,10 @@
     body {
       font-family: monospace;
     }
+    h1, h2, h3, h4, h5, h6 {
+      font-size: 1em;
+      font-weight: bold;
+    }
     label {
       display: block;
     }
@@ -41,14 +45,10 @@
       <ul class="nav nav-tabs">
         <li><a href="/">Home</a></li>
         <li><a href="/reviews">Works</a></li>
+        <li><a href="/about">About</a></li>
         <li><a href="/registrations">Register</a></li>
         <li><a href="/login">Login</a></li>
       </ul>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-      <h6><%= @title %></h6>
     </div>
   </div>
   <%= partial @content %>

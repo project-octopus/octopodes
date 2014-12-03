@@ -35,3 +35,12 @@ class CollectionTemplate < ApplicationTemplate
   end
 
 end
+
+class PagesTemplate < ApplicationTemplate
+
+  def initialize(page)
+    @layout = File.read(File.expand_path('templates/application.html.erb'))
+    @content = File.read(File.expand_path("templates/#{page}.html.erb"))
+  end
+
+end

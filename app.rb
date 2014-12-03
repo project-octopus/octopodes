@@ -401,6 +401,20 @@ class ProtectedResource < CollectionResource
 
 end
 
+class AboutResource < Webmachine::Resource
+  def allowed_methods
+    ["GET"]
+  end
+
+  def content_types_provided
+    [["text/html", :to_html]]
+  end
+
+  def to_html
+    PagesTemplate.new("about").render
+  end
+end
+
 App = Webmachine::Application.new do |app|
   app.configure do |config|
     config.adapter = :Rack
@@ -417,6 +431,8 @@ App = Webmachine::Application.new do |app|
     add ["users"], UsersResource
     add ["users", :username], UserResource
     add ["login"], ProtectedResource
+
+    add ["about"], AboutResource
 
     if configatron.webmachine.trace
       add ['trace', '*'], Webmachine::Trace::TraceResource
