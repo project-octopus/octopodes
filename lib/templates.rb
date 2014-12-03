@@ -3,7 +3,7 @@ require 'erb'
 class ApplicationTemplate
   include ERB::Util
 
-  def initialize(collection, title = nil)
+  def initialize
     @layout = File.read(File.expand_path('templates/application.html.erb'))
     @content = File.read(File.expand_path('templates/blank.html.erb'))
   end
@@ -22,8 +22,9 @@ end
 class CollectionTemplate < ApplicationTemplate
   attr_accessor :href
 
-  def initialize(collection, title = nil)
+  def initialize(collection, title, menu)
     @title = title
+    @menu = menu
     @href = collection.href
     @items = collection.items
     @error = collection.error
@@ -38,7 +39,9 @@ end
 
 class PagesTemplate < ApplicationTemplate
 
-  def initialize(page)
+  def initialize(page, title, menu)
+    @title = title
+    @menu = menu
     @layout = File.read(File.expand_path('templates/application.html.erb'))
     @content = File.read(File.expand_path("templates/#{page}.html.erb"))
   end

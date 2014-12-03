@@ -34,6 +34,8 @@ resource "Login" do
       do_request
 
       expect(response_body).to include("Thank you for logging in")
+      expect(response_body).not_to include("Registration")
+      expect(response_body).not_to include("Login")
 
       expect(status).to eq(200)
     end

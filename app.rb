@@ -13,7 +13,36 @@ I18n.config.enforce_available_locales = true
 WebPages.instance.database = configatron.octopus.database
 Users.instance.database = configatron.octopus.database
 
-class CollectionResource < Webmachine::Resource
+class OctopusResource < Webmachine::Resource
+  include Webmachine::Resource::Authentication
+
+  def is_authorized?(authorization_header)
+    user_auth(authorization_header)
+    true
+  end
+
+  private
+  def user_auth(authorization_header)
+    basic_auth(authorization_header, "Project Octopus") do |user, pass|
+      @user = Users.instance.is_authorized?(user, pass)
+    end
+  end
+
+  def menu
+    base = @request.base_uri.to_s
+    menu_items = [{:href => "#{base}", :prompt => "Home"},
+                  {:href => "#{base}reviews", :prompt => "Works"},
+                  {:href => "#{base}about", :prompt => "About"}]
+    if @user.nil?
+      menu_items << {:href => "#{base}registrations", :prompt => "Register"}
+      menu_items << {:href => "#{base}login", :prompt => "Login"}
+    end
+
+    menu_items
+  end
+end
+
+class CollectionResource < OctopusResource
   def content_types_provided
     [["text/html", :to_html],
      ["application/vnd.collection+json", :to_cj]]
@@ -29,7 +58,7 @@ class CollectionResource < Webmachine::Resource
   end
 
   def to_html
-    CollectionTemplate.new(collection, title).render
+    CollectionTemplate.new(collection, title, menu).render
   end
 
   def to_cj
@@ -385,17 +414,13 @@ class FaviconResource < AssetsResource
 end
 
 class LoginResource < CollectionResource
-  include Webmachine::Resource::Authentication
-
   def content_types_provided
     [["text/html", :to_html]]
   end
 
   def is_authorized?(authorization_header)
-    @response.body = CollectionTemplate.new(collection, "Please try again or register for an account").render
-    basic_auth(authorization_header, "Project Octopus") do |user, pass|
-      Users.instance.is_authorized?(user, pass)
-    end
+    @response.body = CollectionTemplate.new(collection, "Please try again or register for an account", menu).render
+    user_auth(authorization_header)
   end
 
   private
@@ -405,7 +430,7 @@ class LoginResource < CollectionResource
 
 end
 
-class AboutResource < Webmachine::Resource
+class AboutResource < OctopusResource
   def allowed_methods
     ["GET"]
   end
@@ -415,7 +440,7 @@ class AboutResource < Webmachine::Resource
   end
 
   def to_html
-    PagesTemplate.new("about").render
+    PagesTemplate.new("about", "About", menu).render
   end
 end
 

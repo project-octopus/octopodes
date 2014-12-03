@@ -43,11 +43,9 @@
   <div class="row">
     <div class="col-sm-10 col-sm-offset-2">
       <ul class="nav nav-tabs">
-        <li><a href="/">Home</a></li>
-        <li><a href="/reviews">Works</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/registrations">Register</a></li>
-        <li><a href="/login">Login</a></li>
+        <% for m in @menu %>
+          <li><a href="<%= m[:href] %>"><%= m[:prompt] %></a></li>
+        <% end %>
       </ul>
     </div>
   </div>
