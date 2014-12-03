@@ -391,9 +391,9 @@ class LoginResource < CollectionResource
     [["text/html", :to_html]]
   end
 
-  def is_authorized?(auth)
+  def is_authorized?(authorization_header)
     @response.body = CollectionTemplate.new(collection, "Please try again or register for an account").render
-    @is_authorized = basic_auth(auth, "Project Octopus") do |user, pass|
+    basic_auth(authorization_header, "Project Octopus") do |user, pass|
       Users.instance.is_authorized?(user, pass)
     end
   end
