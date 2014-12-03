@@ -1,7 +1,25 @@
 require 'erb'
 
-class CollectionTemplate
+class ApplicationTemplate
   include ERB::Util
+
+  def initialize(collection, title = nil)
+    @layout = File.read(File.expand_path('templates/application.html.erb'))
+    @content = File.read(File.expand_path('templates/blank.html.erb'))
+  end
+
+  def partial content
+    t = ERB.new(content)
+    t.result(binding)
+  end
+
+  def render()
+    ERB.new(@layout).result(binding)
+  end
+
+end
+
+class CollectionTemplate < ApplicationTemplate
   attr_accessor :href
 
   def initialize(collection, title = nil)
@@ -12,11 +30,8 @@ class CollectionTemplate
     unless collection.template.nil?
       @inputs = collection.template.data
     end
-    @template = File.read(File.expand_path('templates/application.html.erb'))
-  end
-
-  def render()
-    ERB.new(@template).result(binding)
+    @layout = File.read(File.expand_path('templates/application.html.erb'))
+    @content = File.read(File.expand_path('templates/collection.html.erb'))
   end
 
 end
