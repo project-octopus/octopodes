@@ -384,12 +384,11 @@ class FaviconResource < AssetsResource
   end
 end
 
-class ProtectedResource < CollectionResource
+class LoginResource < CollectionResource
   include Webmachine::Resource::Authentication
 
   def is_authorized?(authorization_header)
     basic_auth(authorization_header, "Project Octopus") do |user, pass|
-      user == "admin" && pass == "admin"
       Users.instance.is_authorized?(user, pass)
     end
   end
@@ -430,7 +429,7 @@ App = Webmachine::Application.new do |app|
     add ["registrations", :identity], RegistrationResource
     add ["users"], UsersResource
     add ["users", :username], UserResource
-    add ["login"], ProtectedResource
+    add ["login"], LoginResource
 
     add ["about"], AboutResource
 

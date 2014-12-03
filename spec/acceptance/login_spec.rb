@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rspec_api_documentation/dsl'
 
-resource "Protected" do
+resource "Login" do
   header "Accept", :accept_header
   header "Content-Type", :content_type
   header "Authorization", :authorization
