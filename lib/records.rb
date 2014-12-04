@@ -116,7 +116,7 @@ class Users < Datastore
 
     response = server.get(uri.to_s)
 
-    RegistrationDocuments.new(response.body)
+    SignupDocuments.new(response.body)
   end
 
   def is_authorized?(username, password)
@@ -303,7 +303,7 @@ class UserDocuments < Documents
   end
 end
 
-class RegistrationDocuments < Documents
+class SignupDocuments < Documents
   private
   def items
     @items ||= (@documents["rows"] || []).map do |row|

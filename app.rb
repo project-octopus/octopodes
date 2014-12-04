@@ -34,7 +34,7 @@ class OctopusResource < Webmachine::Resource
                   {:href => "#{base}reviews", :prompt => "Works"},
                   {:href => "#{base}about", :prompt => "About"}]
     if @user.nil?
-      menu_items << {:href => "#{base}registrations", :prompt => "Register"}
+      menu_items << {:href => "#{base}signups", :prompt => "Sign up"}
       menu_items << {:href => "#{base}login", :prompt => "Login"}
     end
 
@@ -208,13 +208,13 @@ class ReviewResource < CollectionResource
 
 end
 
-class RegistrationsResource < CollectionResource
+class SignupsResource < CollectionResource
   def allowed_methods
     ["GET", "POST"]
   end
 
   def base_uri
-    @request.base_uri.to_s + 'registrations/'
+    @request.base_uri.to_s + 'signups/'
   end
 
   def post_is_create?
@@ -278,15 +278,15 @@ class RegistrationsResource < CollectionResource
   end
 
   def documents
-    @documents ||= RegistrationDocuments.new
+    @documents ||= SignupDocuments.new
   end
 
 end
 
-class RegistrationResource < CollectionResource
+class SignupResource < CollectionResource
 
   def base_uri
-    @request.base_uri.to_s + 'registrations/'
+    @request.base_uri.to_s + 'signups/'
   end
 
   def resource_exists?
@@ -299,7 +299,7 @@ class RegistrationResource < CollectionResource
   end
 
   def title
-    "Registration Submitted"
+    "Sign-up Submitted"
   end
 
   def collection
@@ -433,7 +433,7 @@ class LoginResource < CollectionResource
   end
 
   def is_authorized?(authorization_header)
-    @response.body = CollectionTemplate.new(collection, "Please try again or register for an account", menu).render
+    @response.body = CollectionTemplate.new(collection, "Please try again or sign up for an account", menu).render
     user_auth(authorization_header)
   end
 
@@ -469,8 +469,8 @@ App = Webmachine::Application.new do |app|
     add ["reviews"], ReviewsResource
     add ["reviews", :id], ReviewResource
 
-    add ["registrations"], RegistrationsResource
-    add ["registrations", :identity], RegistrationResource
+    add ["signups"], SignupsResource
+    add ["signups", :identity], SignupResource
     add ["users"], UsersResource
     add ["users", :username], UserResource
     add ["login"], LoginResource
