@@ -24,7 +24,8 @@ class OctopusResource < Webmachine::Resource
   private
   def user_auth(authorization_header)
     basic_auth(authorization_header, "Project Octopus") do |user, pass|
-      @user = Users.instance.is_authorized?(user, pass)
+      @user = Users.instance.check_auth(user, pass)
+      !@user.empty?
     end
   end
 
@@ -33,9 +34,11 @@ class OctopusResource < Webmachine::Resource
     menu_items = [{:href => "#{base}", :prompt => "Home"},
                   {:href => "#{base}reviews", :prompt => "Works"},
                   {:href => "#{base}about", :prompt => "About"}]
-    if @user.nil?
+    if @user.nil? || @user.empty?
       menu_items << {:href => "#{base}signups", :prompt => "Sign up"}
       menu_items << {:href => "#{base}login", :prompt => "Login"}
+    else
+      menu_items << {:href => "#{base}users/#{@user[:username]}", :prompt => "Account"}
     end
 
     menu_items
@@ -99,10 +102,6 @@ end
 class ReviewsResource < CollectionResource
   def allowed_methods
     ["GET", "POST"]
-  end
-
-  def malformed_request?
-    false
   end
 
   def base_uri
@@ -324,14 +323,6 @@ class UsersResource < CollectionResource
     @request.base_uri.to_s + 'users/'
   end
 
-  def post_is_create?
-    true
-  end
-
-  def create_path
-    @create_path ||= Users.instance.uuid
-  end
-
   private
   def collection
     documents.base_uri = base_uri
@@ -356,11 +347,23 @@ class UserResource < CollectionResource
   end
 
   private
+  def title
+    "User #{username}"
+  end
+
   def username
     request.path_info[:username]
   end
 
   def collection
+
+    u = @user
+    client_is_owner = !u.nil? && !u.empty? && u[:username] == username
+    if client_is_owner
+      documents.links = [{:href => base_uri + "#{username}/settings/",
+                          :rel => "settings", :prompt => "Settings"}]
+    end
+
     documents.base_uri = base_uri
     documents.include_template = false
     documents.to_cj
@@ -368,6 +371,101 @@ class UserResource < CollectionResource
 
   def documents
     @documents ||= Users.instance.find(username)
+  end
+
+end
+
+class IdentitiesResource < UserResource
+
+  def allowed_methods
+    ["GET", "POST"]
+  end
+
+  def content_types_provided
+    [["text/html", :to_html]]
+  end
+
+  def content_types_accepted
+    [["application/x-www-form-urlencoded", :from_urlencoded]]
+  end
+
+  def base_uri
+    @request.base_uri.to_s + "users/#{username}/settings/"
+  end
+
+  def post_is_create?
+    true
+  end
+
+  def create_path
+    @create_path ||= Users.instance.uuid
+  end
+
+  def is_authorized?(authorization_header)
+    auth = user_auth(authorization_header)
+    if !auth
+      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
+    end
+    auth
+  end
+
+  def forbidden?
+    forbidden = @user.nil? || @user.empty? || @user[:username] != username
+    if forbidden
+      @response.body = PagesTemplate.new("blank", "Forbidden", menu).render
+    end
+    forbidden
+  end
+
+  def from_urlencoded
+    data = URI::decode_www_form(request.body.to_s)
+    rev = Users.instance.save_from_form(create_path, username, data)
+
+    if rev["ok"] === true
+      @response.do_redirect
+    end
+
+    unless rev["error"].nil?
+      @error = {"title" => rev["error"], "message" => rev["reason"]}
+      @response.body = to_html
+      @response.code = 422 # Unprocessable Entity
+    end
+  end
+
+  private
+  def title
+    "Change Your Password"
+  end
+
+  def collection
+    documents.links = [{:href => base_uri, :rel => "settings",
+                        :prompt => "Settings"}]
+    documents.base_uri = base_uri
+    documents.error = @error
+    documents.include_template = true
+    documents.include_items = false
+    documents.to_cj
+  end
+
+end
+
+class IdentityResource < CollectionResource
+
+  def content_types_provided
+    [["text/html", :to_html]]
+  end
+
+  def is_authorized?(authorization_header)
+    true
+  end
+
+  def resource_exists?
+    true
+  end
+
+  private
+  def title
+    "Please login again"
   end
 
 end
@@ -473,6 +571,8 @@ App = Webmachine::Application.new do |app|
     add ["signups", :identity], SignupResource
     add ["users"], UsersResource
     add ["users", :username], UserResource
+    add ["users", :username, "settings"], IdentitiesResource
+    add ["users", :username, "settings", :setting], IdentityResource
     add ["login"], LoginResource
 
     add ["about"], AboutResource

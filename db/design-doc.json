@@ -1,7 +1,7 @@
 {
   "_id": "_design/all",
 
-  "validate_doc_update": "function(newDoc, oldDoc, userCtx) { if (newDoc['@type'] === 'WebPage') { if (!newDoc.url) { throw({forbidden: 'Document must have a url.'}); } } if (newDoc['@type'] === 'Identity') { if (!newDoc['@id'] || !newDoc.password) { throw({forbidden: 'User must have a username and password.'}); } } }",
+  "validate_doc_update": "function(newDoc, oldDoc, userCtx) { if (newDoc['@type'] === 'WebPage') { if (!newDoc.url) { throw({forbidden: 'Document must have a url.'}); } } if (newDoc['@type'] === 'Identity') { if (!newDoc['@id'] || !newDoc['password']) { throw({forbidden: 'User must have a username and password.'}); } } }",
 
   "views": {
     "urls": {

@@ -10,6 +10,7 @@ resource "Login" do
       do_request
 
       expect(response_body).to include("Please try again")
+      expect(response_body).not_to include("Account")
 
       expect(status).to eq(401)
     end
@@ -34,6 +35,7 @@ resource "Login" do
       do_request
 
       expect(response_body).to include("Thank you for logging in")
+      expect(response_body).to include("Account")
       expect(response_body).not_to include("Registration")
       expect(response_body).not_to include("Login")
 

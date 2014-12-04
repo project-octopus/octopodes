@@ -40,8 +40,19 @@ class Users < Datastore
     if (find(username).count >= 1)
       {"error" => "conflict", "reason" => "Username `#{username}` is taken."}
     else
+      save(id, username, data)
+    end
+  end
+
+  def save(id, username, data)
+    password = data['password']
+    if username.nil? || username.empty?
+      {"error" => "forbidden", "reason" => "User must have a username and password."}
+    elsif password.nil? || password.empty?
+      {"error" => "forbidden", "reason" => "Password cannot be blank."}
+    else
       created = Time.now.utc.iso8601
-      password = BCrypt::Password.create(data["password"])
+      hash = BCrypt::Password.create(password)
 
       json = {
         "_id" => id,
@@ -49,7 +60,7 @@ class Users < Datastore
         "@context" => "https://w3id.org/identity/v1",
         "@type" => "Identity",
         "created" => created,
-        "password" => password
+        "password" => hash
       }.to_json
       response = server.post(db.path, json)
       JSON.parse(response.body)
@@ -67,12 +78,15 @@ class Users < Datastore
   end
 
   def create_from_form(id, decoded_www_form)
-    data = decoded_www_form.inject({}) do |hash, value|
-      hash[value.first] = value.last
-      hash
-    end
+    data = trans_form_data(decoded_www_form)
 
     create(id, data)
+  end
+
+  def save_from_form(id, username, decoded_www_form)
+    data = trans_form_data(decoded_www_form)
+
+    save(id, username, data)
   end
 
   def all
@@ -119,21 +133,33 @@ class Users < Datastore
     SignupDocuments.new(response.body)
   end
 
-  def is_authorized?(username, password)
+  def check_auth(username, password)
     identity = find(username).first
+    user = {}
 
     if !identity.empty?
       user_id = identity["value"]["@id"]
       user_secret = identity["value"]["password"]
       is_authorized = BCrypt::Password.new(user_secret) == password
+      if is_authorized
+        user = {:username => user_id}
+      end
     else
       # Spend time checking even if the user does not exist
       BCrypt::Password.create((0...16).map { (65 + rand(26)).chr }.join) == password
-      is_authorized = false
     end
 
-    is_authorized
+    user
   end
+
+  private
+  def trans_form_data(decoded_www_form)
+    decoded_www_form.inject({}) do |hash, value|
+      hash[value.first] = value.last
+      hash
+    end
+  end
+
 end
 
 class WebPages < Datastore
@@ -212,13 +238,15 @@ end
 
 class Documents
 
-  attr_accessor :error, :base_uri, :include_template, :include_item_link
+  attr_accessor :error, :base_uri, :links, :include_template, :include_items, :include_item_link
 
   def initialize(json = '{}')
     @documents = JSON.parse(json)
     @error = nil
     @base_uri = ''
+    @links = []
     @include_template = true
+    @include_items = true
     @include_item_link = true
   end
 
@@ -237,14 +265,19 @@ class Documents
   def to_cj
     CollectionJSON.generate_for(@base_uri) do |builder|
       builder.set_version("1.0")
+      (@links || []).each do |l|
+        builder.add_link l[:href], l[:rel], prompt: l[:prompt]
+      end
       (items || []).each do |i|
         href = @include_item_link ? @base_uri + i[:id] : ''
-        builder.add_item(href) do |item|
-          (i[:data] || []).each do |d|
-            item.add_data d[:name], prompt: d[:prompt], value: d[:value]
-          end
-          (i[:links] || []).each do |l|
-            item.add_link l[:href], l[:rel], prompt: l[:prompt]
+        if @include_items
+          builder.add_item(href) do |item|
+            (i[:data] || []).each do |d|
+              item.add_data d[:name], prompt: d[:prompt], value: d[:value]
+            end
+            (i[:links] || []).each do |l|
+              item.add_link l[:href], l[:rel], prompt: l[:prompt]
+            end
           end
         end
       end

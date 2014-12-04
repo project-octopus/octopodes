@@ -34,7 +34,9 @@ resource "Signups" do
   bad_raw_posts = [
     '', '{}', '{"template":{}}', '{"template":{"data":[]}}',
     '{"template":{"data":[{"name": "n", "val": "v"}]}}',
-    '{"template":{"data":[{"name": "whatever", "value": "wrong"}]}}'
+    '{"template":{"data":[{"name": "whatever", "value": "wrong"}]}}',
+    '{"template":{"data":[{"name": "username", "value": "no_password"}]}}',
+    '{"template":{"data":[{"name": "password", "value": "no_username"}]}}'
   ]
 
   bad_raw_posts.each_with_index do |raw_post, index|

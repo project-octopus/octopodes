@@ -26,6 +26,7 @@ class CollectionTemplate < ApplicationTemplate
     @title = title
     @menu = menu
     @href = collection.href
+    @links = collection.links
     @items = collection.items
     @error = collection.error
     unless collection.template.nil?
