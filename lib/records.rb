@@ -1,6 +1,7 @@
 require 'singleton'
 require 'time'
 require 'json'
+require 'rss'
 require 'collection-json'
 require 'bcrypt'
 require_relative 'couch'
@@ -365,6 +366,33 @@ class SignupDocuments < Documents
 end
 
 class WebPageDocuments < Documents
+
+  def to_atom
+    RSS::Maker.make("atom") do |maker|
+      maker.channel.author = "Project Octopus"
+      maker.channel.updated = Time.now.to_s
+      maker.channel.about = "Project Octopus Feed"
+      maker.channel.title = "Project Octopus"
+
+      (@documents["rows"] || []).each do |row|
+        doc = row["value"]
+        item_id = doc["_id"]
+        part = doc.key?("hasPart") ? doc["hasPart"] : {}
+
+        name = part.key?("name") ? part["name"] : "something"
+        creator = part.key?("creator") ? part["creator"] : "a creator"
+        webpage_host = URI(doc["url"]).host
+
+        title = "#{webpage_host} uses #{name} by #{creator}"
+
+        maker.items.new_item do |item|
+          item.link = @base_uri + item_id
+          item.title = title
+          item.updated = doc["lastReviewed"]
+        end
+      end
+    end
+  end
 
   private
   def items

@@ -509,6 +509,26 @@ class IdentityResource < CollectionResource
 
 end
 
+class FeedResource < Webmachine::Resource
+  def content_types_provided
+    [["application/atom+xml", :to_atom]]
+  end
+
+  def base_uri
+    @request.base_uri.to_s + 'reviews/'
+  end
+
+  def to_atom
+    documents.base_uri = base_uri
+    documents.to_atom.to_s
+  end
+
+  private
+  def documents
+    @documents ||= WebPages.instance.all
+  end
+end
+
 class AssetsResource < Webmachine::Resource
   def allowed_methods
     ["HEAD", "GET"]
@@ -615,6 +635,8 @@ App = Webmachine::Application.new do |app|
     add ["users", :username, "settings"], IdentitiesResource
     add ["users", :username, "settings", :setting], IdentityResource
     add ["login"], LoginResource
+
+    add ["feed"], FeedResource
 
     add ["about"], AboutResource
 
