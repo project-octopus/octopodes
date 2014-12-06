@@ -164,7 +164,7 @@ end
 
 class WebPages < Datastore
 
-  def create(id, data)
+  def create(id, data, username)
     lastReviewed = Time.now.utc.iso8601
 
     part = {
@@ -176,11 +176,17 @@ class WebPages < Datastore
     }
     part.each { |k,v| part.delete(k) if v.nil? }
 
+    reviewedBy = {
+      "@type" => "Person",
+      "@id" => username
+    }
+
     json = {
       "_id" => id,
       "@context" => "http://schema.org",
       "@type" => "WebPage",
       "hasPart" => part,
+      "reviewedBy" => reviewedBy,
       "lastReviewed" => lastReviewed,
       "url" => data["url"]
     }.to_json
@@ -188,7 +194,7 @@ class WebPages < Datastore
     JSON.parse(response.body)
   end
 
-  def create_from_collection(id, collection)
+  def create_from_collection(id, collection, username)
 
     data = collection.template.data.inject({}) do |hash, cj_data|
       nv = cj_data.to_hash
@@ -196,16 +202,16 @@ class WebPages < Datastore
       hash
     end
 
-    create(id, data)
+    create(id, data, username)
   end
 
-  def create_from_form(id, decoded_www_form)
+  def create_from_form(id, decoded_www_form, username)
     data = decoded_www_form.inject({}) do |hash, value|
       hash[value.first] = value.last
       hash
     end
 
-    create(id, data)
+    create(id, data, username)
   end
 
  def all
@@ -365,11 +371,13 @@ class WebPageDocuments < Documents
     @items ||= (@documents["rows"] || []).map do |row|
       doc = row["value"]
       item_id = doc["_id"]
-      part = doc.key?("hasPart") ? doc["hasPart"] : []
+      part = doc.key?("hasPart") ? doc["hasPart"] : {}
+      reviewedBy = doc.key?("reviewedBy") ? doc["reviewedBy"] : {}
 
       data = [cj_item_datum(part, "name", "name", "Title"),
               cj_item_datum(part, "creator", "creator", "Creator"),
               cj_item_datum(part, "license", "license", "License"),
+              cj_item_datum(reviewedBy, "@id", "reviewedBy", "Reviewed By"),
               cj_item_datum(doc, "lastReviewed", "date", "Date")]
       data.reject!(&:nil?)
 

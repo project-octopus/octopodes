@@ -131,7 +131,7 @@ class ReviewsResource < CollectionResource
       cj_doc = CollectionJSON.parse(cj_raw)
 
       if !cj_doc.template.nil? && !cj_doc.template.data.nil?
-        rev = WebPages.instance.create_from_collection(create_path, cj_doc)
+        rev = WebPages.instance.create_from_collection(create_path, cj_doc, @user[:username])
         unless rev["error"].nil?
           @error = {"title" => rev["error"], "message" => rev["reason"]}
         end
@@ -150,7 +150,7 @@ class ReviewsResource < CollectionResource
 
   def from_urlencoded
     data = URI::decode_www_form(request.body.to_s)
-    rev = WebPages.instance.create_from_form(create_path, data)
+    rev = WebPages.instance.create_from_form(create_path, data, @user[:username])
 
     if rev["ok"] === true
       # Clients (e.g., web browsers) submitting urlencoded data should
