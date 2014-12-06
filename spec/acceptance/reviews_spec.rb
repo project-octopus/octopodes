@@ -69,6 +69,7 @@ resource "Reviews" do
     post "reviews" do
       let(:accept_header) { "application/vnd.collection+json" }
       let(:content_type) { "application/vnd.collection+json" }
+      let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
       let(:raw_post) { raw_post }
 
@@ -84,9 +85,9 @@ resource "Reviews" do
   end
 
   post "reviews" do
-
-      let(:accept_header) { "application/vnd.collection+json" }
-      let(:content_type) { "application/vnd.collection+json" }
+    let(:accept_header) { "application/vnd.collection+json" }
+    let(:content_type) { "application/vnd.collection+json" }
+    let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
     let(:raw_post) { '{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}]}}' }
 
@@ -96,6 +97,22 @@ resource "Reviews" do
       expect(response_headers).to include("Location")
 
       expect(status).to eq(201)
+    end
+  end
+
+  ["reviews", "reviews;template"].each do |post_review_url|
+
+    post post_review_url  do
+      let(:accept_header) { "application/vnd.collection+json" }
+      let(:content_type) { "application/vnd.collection+json" }
+
+      let(:raw_post) { '{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}]}}' }
+
+      example "Posting to #{post_review_url} without authorization", :document => false do
+        do_request
+
+        expect(status).to eq(401)
+      end
     end
   end
 
@@ -112,6 +129,7 @@ resource "Reviews" do
   post "reviews" do
     let(:accept_header) { "text/html" }
     let(:content_type) { "application/x-www-form-urlencoded" }
+    let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
     example "Posting a review as www-form with no data", :document => false do
       do_request
@@ -133,6 +151,7 @@ resource "Reviews" do
 
       let(:accept_header) { "text/html" }
       let(:content_type) { "application/x-www-form-urlencoded" }
+      let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
       let(:raw_post) { raw_post }
 

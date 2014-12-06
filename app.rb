@@ -104,6 +104,15 @@ class ReviewsResource < CollectionResource
     ["GET", "POST"]
   end
 
+  def is_authorized?(authorization_header)
+    return true unless request.post?
+    auth = user_auth(authorization_header)
+    if auth != true
+      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
+    end
+    auth
+  end
+
   def base_uri
     @request.base_uri.to_s + 'reviews/'
   end
