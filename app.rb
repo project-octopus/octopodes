@@ -32,7 +32,7 @@ class OctopusResource < Webmachine::Resource
   def menu
     base = @request.base_uri.to_s
     menu_items = [{:href => "#{base}", :prompt => "Home"},
-                  {:href => "#{base}reviews", :prompt => "Works"},
+                  {:href => "#{base}reviews", :prompt => "Data"},
                   {:href => "#{base}about", :prompt => "About"}]
     if @user.nil? || @user.empty?
       menu_items << {:href => "#{base}signups", :prompt => "Sign up"}
@@ -165,11 +165,41 @@ class ReviewsResource < CollectionResource
   def collection
     documents.base_uri = base_uri
     documents.error = @error
+    documents.include_template = false
+    documents.links = links
     documents.to_cj
   end
 
   def documents
     @documents ||= WebPages.instance.all
+  end
+
+  def links
+    [{:href => @request.base_uri.to_s + 'reviews;template',
+     :rel => "template", :prompt => "Add Website"}]
+  end
+end
+
+class ReviewsTemplateResource < ReviewsResource
+
+  def is_authorized?(authorization_header)
+    auth = user_auth(authorization_header)
+    if auth != true
+      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
+    end
+    auth
+  end
+
+  def collection
+    documents.base_uri = base_uri
+    documents.error = @error
+    documents.include_items = false
+    documents.links = links
+    documents.to_cj
+  end
+
+  def documents
+    @documents ||= WebPageDocuments.new
   end
 end
 
@@ -403,7 +433,7 @@ class IdentitiesResource < UserResource
 
   def is_authorized?(authorization_header)
     auth = user_auth(authorization_header)
-    if !auth
+    if auth != true
       @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
     end
     auth
@@ -564,7 +594,9 @@ App = Webmachine::Application.new do |app|
     add [], HomeResource
     add ["favicon.ico"], FaviconResource
     add ["assets", :filename], AssetsResource
+
     add ["reviews"], ReviewsResource
+    add ["reviews;template"], ReviewsTemplateResource
     add ["reviews", :id], ReviewResource
 
     add ["signups"], SignupsResource
