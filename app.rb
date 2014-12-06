@@ -105,8 +105,8 @@ class ReviewsResource < CollectionResource
   end
 
   def is_authorized?(authorization_header)
-    return true unless request.post?
     auth = user_auth(authorization_header)
+    return true unless request.post?
     if auth != true
       @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
     end
