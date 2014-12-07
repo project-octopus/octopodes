@@ -31,8 +31,7 @@ class OctopusResource < Webmachine::Resource
 
   def menu
     base = @request.base_uri.to_s
-    menu_items = [{:href => "#{base}", :prompt => "Home"},
-                  {:href => "#{base}reviews", :prompt => "Data"},
+    menu_items = [{:href => "#{base}reviews", :prompt => "Data"},
                   {:href => "#{base}about", :prompt => "About"}]
     if @user.nil? || @user.empty?
       menu_items << {:href => "#{base}signups", :prompt => "Sign up"}

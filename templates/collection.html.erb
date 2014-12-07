@@ -1,7 +1,7 @@
 <% unless @links.empty? %>
 <div class="row">
   <div class="col-sm-8 col-sm-offset-2">
-    <ul class="nav nav-pills">
+    <ul class="nav nav-tabs">
     <% for link in @links %>
       <li><a href="<%= link.href %>"><%= link.prompt %></a>
     <% end %>
