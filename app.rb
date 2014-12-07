@@ -515,7 +515,7 @@ class FeedResource < Webmachine::Resource
   end
 
   def base_uri
-    @request.base_uri.to_s + 'reviews/'
+    @request.base_uri.to_s + 'u/'
   end
 
   def to_atom
@@ -526,6 +526,37 @@ class FeedResource < Webmachine::Resource
   private
   def documents
     @documents ||= WebPages.instance.all
+  end
+end
+
+class FeedItemResource < Webmachine::Resource
+  def allowed_methods
+    ["GET"]
+  end
+
+  def resource_exists?
+    false
+  end
+
+  def previously_existed?
+    documents.count >= 1
+  end
+
+  def moved_temporarily?
+    request.base_uri.to_s + 'reviews/' + id
+  end
+
+  def trace?
+    configatron.webmachine.trace
+  end
+
+  private
+  def id
+    request.path_info[:id]
+  end
+
+  def documents
+    @documents ||= WebPages.instance.find(id)
   end
 end
 
@@ -637,6 +668,7 @@ App = Webmachine::Application.new do |app|
     add ["login"], LoginResource
 
     add ["feed"], FeedResource
+    add ["u", :id], FeedItemResource
 
     add ["about"], AboutResource
 

@@ -20,3 +20,24 @@ resource "Feed" do
 
   end
 end
+
+resource "FeedItem" do
+
+  get "/u/:id" do
+    let(:id) { "webpage0" }
+
+    example "Getting feed item", :document => false do
+      do_request
+      expect(status).to eq(307)
+    end
+  end
+
+  get "/u/:id" do
+    let(:id) { "xxx" }
+
+    example "Getting non-existent feed item", :document => false do
+      do_request
+      expect(status).to eq(404)
+    end
+  end
+end
