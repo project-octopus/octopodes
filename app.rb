@@ -73,7 +73,7 @@ class CollectionResource < OctopusResource
 
   private
   def title
-    "Welcome to Project Octopus"
+    "Showing the use of creative works, one URL at a time"
   end
 
   def collection
