@@ -108,11 +108,23 @@ class Users < Datastore
     UserDocuments.new(response.body)
   end
 
-  def usernames
-    uri = URI("#{db.path}/_design/all/_view/usernames?group=true")
-    response = server.get(uri.to_s)
+  def usernames(limit = nil, startkey = nil, prevkey = nil)
+    uri = URI("#{db.path}/_design/all/_view/usernames")
+    params  = [["group", "true"]]
 
-    UserDocuments.new(response.body)
+    if startkey
+      params << ["startkey", startkey]
+    end
+
+    if limit
+      params << ["limit", limit + 1]
+    end
+
+    uri.query = URI.encode_www_form(params)
+    puts uri.to_s
+
+    response = server.get(uri.to_s)
+    UserDocuments.new(response.body, limit, startkey, prevkey)
   end
 
   def count
@@ -215,10 +227,23 @@ class WebPages < Datastore
     create(id, data, username)
   end
 
- def all
-    response = server.get("#{db.path}/_design/all/_view/reviews?descending=true")
+  def all(limit = nil, startkey = nil, prevkey = nil)
+    uri = URI("#{db.path}/_design/all/_view/reviews")
+    params  = [["descending", "true"]]
+
+    if startkey
+      params << ["startkey", startkey]
+    end
+
+    if limit
+      params << ["limit", limit + 1]
+    end
+
+    uri.query = URI.encode_www_form(params)
+
+    response = server.get(uri.to_s)
     JSON.parse(response.body)
-    WebPageDocuments.new(response.body)
+    WebPageDocuments.new(response.body, limit, startkey, prevkey)
   end
 
   def find(id)
@@ -236,7 +261,6 @@ class WebPages < Datastore
     response = server.get(uri.to_s)
 
     docs = JSON.parse(response.body)
-    puts docs["rows"][0]
 
     !docs["rows"].empty? ? docs["rows"][0]["value"] : 0
   end
@@ -247,14 +271,31 @@ class Documents
 
   attr_accessor :error, :base_uri, :links, :include_template, :include_items, :include_item_link
 
-  def initialize(json = '{}')
-    @documents = JSON.parse(json)
+  def initialize(json = '{}', limit = nil, startkey = nil, prevkey = nil)
+    @limit = limit
+    @startkey = startkey
+    @prevkey = prevkey
+    @next_startkey = nil
     @error = nil
     @base_uri = ''
     @links = []
     @include_template = true
     @include_items = true
     @include_item_link = true
+
+    @documents = JSON.parse(json)
+    rows = @documents["rows"]
+    if limit && !rows.nil? && !rows.empty?
+      if rows.size > limit
+        last = rows.pop
+        key = last["key"]
+        if key.kind_of?(Array)
+          @next_startkey =  "[" + last["key"].map{ |i| '"' + i + '"' }.join(",") + "]"
+        else
+          @next_startkey =  '"' + key + '"'
+        end
+      end
+    end
   end
 
   def count
@@ -272,7 +313,7 @@ class Documents
   def to_cj
     CollectionJSON.generate_for(@base_uri) do |builder|
       builder.set_version("1.0")
-      (@links || []).each do |l|
+      (links || []).each do |l|
         builder.add_link l[:href], l[:rel], prompt: l[:prompt]
       end
       (items || []).each do |i|
@@ -308,6 +349,24 @@ class Documents
 
   def template_data
     []
+  end
+
+  def links
+    if @startkey
+      start_key = URI(@base_uri)
+      start_key.query = URI.encode_www_form([["startkey", @prevkey]])
+      @links << {:href => start_key, :rel => "previous", :prompt => "Previous"}
+    end
+
+    if @next_startkey
+      next_key = URI(@base_uri)
+      next_params = [["startkey", @next_startkey],
+                     ["prevkey", @startkey]]
+      next_key.query = URI.encode_www_form(next_params)
+      @links << {:href => next_key, :rel => "next", :prompt => "Next"}
+    end
+
+    @links
   end
 
   def cj_item_datum(hash, key, name, prompt)

@@ -26,7 +26,14 @@ class CollectionTemplate < ApplicationTemplate
     @title = title
     @menu = menu
     @href = collection.href
-    @links = collection.links
+
+    links = (collection.links || []).partition do |l|
+      l.rel != "previous" && l.rel != "next"
+    end
+
+    @links = links[0]
+    @pagination = links[1]
+
     @items = collection.items
     @error = collection.error
     unless collection.template.nil?

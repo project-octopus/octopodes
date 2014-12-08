@@ -82,6 +82,14 @@ class CollectionResource < OctopusResource
     end
   end
 
+  def startkey
+    @request.query["startkey"]
+  end
+
+  def prevkey
+    @request.query["prevkey"]
+  end
+
 end
 
 class HomeResource < CollectionResource
@@ -179,7 +187,7 @@ class ReviewsResource < CollectionResource
   end
 
   def documents
-    @documents ||= WebPages.instance.all
+    @documents ||= WebPages.instance.all(10, startkey, prevkey)
   end
 
   def links
@@ -369,7 +377,7 @@ class UsersResource < CollectionResource
   end
 
   def documents
-    @documents ||= Users.instance.usernames
+    @documents ||= Users.instance.usernames(10, startkey, prevkey)
   end
 
 end

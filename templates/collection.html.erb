@@ -3,7 +3,7 @@
   <div class="col-sm-8 col-sm-offset-2">
     <ul class="nav nav-tabs">
     <% for link in @links %>
-      <li><a href="<%= link.href %>"><%= link.prompt %></a>
+      <li><a href="<%= link.href %>" rel="<%= link.rel %>"><%= link.prompt %></a>
     <% end %>
     </ul>
   </div>
@@ -76,3 +76,14 @@
     <% end %>
   </div>
 </div>
+<% unless @pagination.empty? %>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+    <ul class="pagination">
+    <% for link in @pagination %>
+      <li><a href="<%= link.href %>" rel="<%= link.rel %>"><%= link.prompt %></a>
+    <% end %>
+    </ul>
+  </div>
+</div>
+<% end %>
