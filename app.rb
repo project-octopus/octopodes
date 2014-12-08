@@ -591,7 +591,7 @@ class AssetsResource < Webmachine::Resource
 
   private
   def base_path
-    File.expand_path("public/assets")
+    File.expand_path("public")
   end
 
   def file_path
@@ -599,11 +599,18 @@ class AssetsResource < Webmachine::Resource
   end
 
   def filename
-    request.path_info[:filename]
+    request.disp_path
   end
 
   def mime_type
-    @mime_type ||= FileMagic.new(FileMagic::MAGIC_MIME).file(file_path)
+    case File.extname(file_path)
+    when '.css'
+      'text/css'
+    when '.js'
+      'application/javascript'
+    else
+      FileMagic.new(FileMagic::MAGIC_MIME).file(file_path)
+    end
   end
 end
 
@@ -660,7 +667,7 @@ App = Webmachine::Application.new do |app|
   app.routes do
     add [], HomeResource
     add ["favicon.ico"], FaviconResource
-    add ["assets", :filename], AssetsResource
+    add ["assets", '*'], AssetsResource
 
     add ["reviews"], ReviewsResource
     add ["reviews;template"], ReviewsTemplateResource

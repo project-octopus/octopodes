@@ -24,6 +24,17 @@ resource "Assets" do
     end
   end
 
+  get "assets/stylesheets/styles.css" do
+    let(:accept_header) { "text/css" }
+
+    example "Getting a stylesheet", :document => false do
+      do_request
+
+      expect(response_headers["Content-Type"]).to eq("text/css")
+      expect(status).to eq(200)
+    end
+  end
+
   get "assets/xxx" do
     let(:accept_header) { "*/*" }
 
