@@ -7,6 +7,9 @@ gem 'configatron'
 gem 'ruby-filemagic'
 gem 'bcrypt'
 
+gem 'compass'
+gem 'bootstrap-sass'
+
 gem 'rake'
 
 gem 'rspec'
