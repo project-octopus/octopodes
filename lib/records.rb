@@ -121,7 +121,6 @@ class Users < Datastore
     end
 
     uri.query = URI.encode_www_form(params)
-    puts uri.to_s
 
     response = server.get(uri.to_s)
     UserDocuments.new(response.body, limit, startkey, prevkey)

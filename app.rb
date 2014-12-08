@@ -31,7 +31,7 @@ class OctopusResource < Webmachine::Resource
 
   def menu
     base = @request.base_uri.to_s
-    menu_items = [{:href => "#{base}reviews", :prompt => "Data"},
+    menu_items = [{:href => "#{base}reviews", :prompt => "Works"},
                   {:href => "#{base}about", :prompt => "About"}]
     if @user.nil? || @user.empty?
       menu_items << {:href => "#{base}signups", :prompt => "Sign up"}
@@ -192,7 +192,7 @@ class ReviewsResource < CollectionResource
 
   def links
     [{:href => @request.base_uri.to_s + 'reviews;template',
-     :rel => "template", :prompt => "Add Website"}]
+     :rel => "template", :prompt => "Add a Work"}]
   end
 end
 
