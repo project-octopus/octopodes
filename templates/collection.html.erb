@@ -48,11 +48,13 @@
   <div class="col-sm-offset-2 col-sm-8">
     <% for @item in @items %>
       <dl>
+        <% if @item.href %>
         <dt>
         <a href="<%= @item.href %>">
-          <%= @item.href %>
+          <%= URI(@item.href).path %>
         </a>
         </dt>
+        <% end %>
         <% for datum in @item.data %>
           <% unless datum.value.nil? %>
             <dd>
@@ -66,7 +68,7 @@
             <%= link.prompt %>:
             <strong>
               <a href="<%= link.href %>">
-                <%= link.href[0..28] %>...
+                <%= URI(link.href).host %>
               </a>
               </strong>
             </dd>

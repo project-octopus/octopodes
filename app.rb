@@ -394,7 +394,7 @@ class UserResource < CollectionResource
 
   private
   def title
-    "User #{username}"
+    "#{username}"
   end
 
   def username
