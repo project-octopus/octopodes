@@ -37,7 +37,7 @@ class OctopusResource < Webmachine::Resource
       menu_items << {:href => "#{base}signups", :prompt => "Sign up"}
       menu_items << {:href => "#{base}login", :prompt => "Login"}
     else
-      menu_items << {:href => "#{base}users/#{@user[:username]}", :prompt => "Account"}
+      menu_items << {:href => "#{base}users/#{@user[:username]}", :prompt => @user[:username]}
     end
 
     menu_items
