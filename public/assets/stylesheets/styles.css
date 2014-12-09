@@ -5528,7 +5528,7 @@ tbody.collapse.in {
 /* line 397, ../../../../../../../../../var/lib/gems/2.0.0/gems/bootstrap-sass-3.3.1.0/assets/stylesheets/bootstrap/_navbar.scss */
 .navbar-default {
   background-color: #fff;
-  border-color: transparent;
+  border-color: #bbb;
 }
 /* line 401, ../../../../../../../../../var/lib/gems/2.0.0/gems/bootstrap-sass-3.3.1.0/assets/stylesheets/bootstrap/_navbar.scss */
 .navbar-default .navbar-brand {
@@ -5541,7 +5541,7 @@ tbody.collapse.in {
 }
 /* line 410, ../../../../../../../../../var/lib/gems/2.0.0/gems/bootstrap-sass-3.3.1.0/assets/stylesheets/bootstrap/_navbar.scss */
 .navbar-default .navbar-text {
-  color: #bbb;
+  color: #212121;
 }
 /* line 415, ../../../../../../../../../var/lib/gems/2.0.0/gems/bootstrap-sass-3.3.1.0/assets/stylesheets/bootstrap/_navbar.scss */
 .navbar-default .navbar-nav > li > a {
@@ -5577,7 +5577,7 @@ tbody.collapse.in {
 /* line 453, ../../../../../../../../../var/lib/gems/2.0.0/gems/bootstrap-sass-3.3.1.0/assets/stylesheets/bootstrap/_navbar.scss */
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
-  border-color: transparent;
+  border-color: #bbb;
 }
 /* line 462, ../../../../../../../../../var/lib/gems/2.0.0/gems/bootstrap-sass-3.3.1.0/assets/stylesheets/bootstrap/_navbar.scss */
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {

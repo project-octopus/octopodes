@@ -29,6 +29,7 @@
       margin-bottom: 0;
     }
     .footer .navbar ul.nav li:nth-of-type(1) {
+      margin-left: -15px;
       font-weight: bold;
     }
     label {
@@ -54,7 +55,7 @@
 </head>
 <body>
 <div class="wrapper">
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-inverse" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="/">
@@ -69,7 +70,7 @@
     <ul class="nav navbar-nav navbar-right">
       <li>
       <a href="/">
-        <img height="23px" alt="Octopus" src="/assets/octopus.png"/>
+        <img height="23px" alt="Octopus" src="/assets/octopus_white_small.png"/>
       </a>
       </li>
         </ul>
@@ -81,20 +82,18 @@
 <div class="push"></div>
 </div>
 <div class="footer">
-<nav class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
         <ul class="nav navbar-nav">
           <li><a href="mailto:hello@project-octopus.org">hello@project-octopus.org</a></li>
           <li><a href="https://github.com/project-octopus/octopodes">Github</a></li>
           <li><a href="https://twitter.com/helloocto">Twitter</a></li>
         </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-          <a href="/">
-            <img height="23px" alt="Octopus" src="/assets/octopus.png"/>
-          </a>
-          </li>
-        </ul>
+        <div class="collapse navbar-collapse">
+          <p class="navbar-text navbar-right">
+            &copy; 2014
+          </p>
+        </div>
   </div
-</div>
+</nav>
 </body>

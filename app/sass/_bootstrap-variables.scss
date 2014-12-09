@@ -349,9 +349,9 @@ $dropdown-caret-color:           $gray-light;
 // $navbar-padding-vertical:          (($navbar-height - $line-height-computed) / 2)
 // $navbar-collapse-max-height:       340px
 
-$navbar-default-color:             $gray-light;
+$navbar-default-color:             $gray-dark;
 $navbar-default-bg:                #fff;
-$navbar-default-border:            transparent;
+$navbar-default-border:            $gray-light;
 
 // Navbar links
 $navbar-default-link-color:                $gray;
