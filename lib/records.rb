@@ -1,4 +1,3 @@
-require 'singleton'
 require 'time'
 require 'json'
 require 'rss'
@@ -7,36 +6,40 @@ require 'bcrypt'
 require_relative 'couch'
 
 class Datastore
-  include Singleton
 
-  attr_writer :database
+  @database = nil
+  @server = nil
 
-  def uuid
+  def self.connect(database)
+    @database = database
+  end
+
+  def self.uuid
     uuids['uuids'][0]
   end
 
-  def uuids
+  def self.uuids
     response = server.get('/_uuids')
     JSON.parse(response.body)
   end
 
   private
-  def db
+  def self.db
     @uri ||= URI(@database)
   end
 
-  def password
+  def self.password
     !db.password.nil? ? URI::decode(db.password) : nil
   end
 
-  def server
+  def self.server
     @server ||= Couch::Server.new(db.scheme, db.host, db.port, db.user, password)
   end
 
 end
 
 class Users < Datastore
-  def create(id, data)
+  def self.create(id, data)
     username = data["username"]
     if (find(username).count >= 1)
       {"error" => "conflict", "reason" => "Username `#{username}` is taken."}
@@ -45,7 +48,7 @@ class Users < Datastore
     end
   end
 
-  def save(id, username, data)
+  def self.save(id, username, data)
     password = data['password']
     if username.nil? || username.empty?
       {"error" => "forbidden", "reason" => "User must have a username and password."}
@@ -68,7 +71,7 @@ class Users < Datastore
     end
   end
 
-  def create_from_collection(id, collection)
+  def self.create_from_collection(id, collection)
     data = collection.template.data.inject({}) do |hash, cj_data|
       nv = cj_data.to_hash
       hash[nv[:name]] = nv[:value]
@@ -78,25 +81,25 @@ class Users < Datastore
     create(id, data)
   end
 
-  def create_from_form(id, decoded_www_form)
+  def self.create_from_form(id, decoded_www_form)
     data = trans_form_data(decoded_www_form)
 
     create(id, data)
   end
 
-  def save_from_form(id, username, decoded_www_form)
+  def self.save_from_form(id, username, decoded_www_form)
     data = trans_form_data(decoded_www_form)
 
     save(id, username, data)
   end
 
-  def all
+  def self.all
     response = server.get("#{db.path}/_design/all/_view/identities")
     JSON.parse(response.body)
     UserDocuments.new(response.body)
   end
 
-  def find(username)
+  def self.find(username)
     uri = URI("#{db.path}/_design/all/_view/users")
     params = [["endkey", "[\"#{username}\"]"],
               ["startkey", "[\"#{username}\", {}]"],
@@ -108,7 +111,7 @@ class Users < Datastore
     UserDocuments.new(response.body)
   end
 
-  def usernames(limit = nil, startkey = nil, prevkey = nil)
+  def self.usernames(limit = nil, startkey = nil, prevkey = nil)
     uri = URI("#{db.path}/_design/all/_view/usernames")
     params  = [["group", "true"]]
 
@@ -126,7 +129,7 @@ class Users < Datastore
     UserDocuments.new(response.body, limit, startkey, prevkey)
   end
 
-  def count
+  def self.count
     uri = URI("#{db.path}/_design/all/_view/usernames?group=true")
     response = server.get(uri.to_s)
 
@@ -134,7 +137,7 @@ class Users < Datastore
     docs["rows"].size
   end
 
-  def identify(identity)
+  def self.identify(identity)
     uri = URI("#{db.path}/_design/all/_view/identities")
     params = [["startkey", "\"#{identity}\""],
               ["endkey", "\"#{identity}\""]]
@@ -145,7 +148,7 @@ class Users < Datastore
     SignupDocuments.new(response.body)
   end
 
-  def check_auth(username, password)
+  def self.check_auth(username, password)
     identity = find(username).first
     user = {}
 
@@ -165,7 +168,7 @@ class Users < Datastore
   end
 
   private
-  def trans_form_data(decoded_www_form)
+  def self.trans_form_data(decoded_www_form)
     decoded_www_form.inject({}) do |hash, value|
       hash[value.first] = value.last
       hash
@@ -176,7 +179,7 @@ end
 
 class WebPages < Datastore
 
-  def create(id, data, username)
+  def self.create(id, data, username)
     lastReviewed = Time.now.utc.iso8601
 
     part = {
@@ -206,7 +209,7 @@ class WebPages < Datastore
     JSON.parse(response.body)
   end
 
-  def create_from_collection(id, collection, username)
+  def self.create_from_collection(id, collection, username)
 
     data = collection.template.data.inject({}) do |hash, cj_data|
       nv = cj_data.to_hash
@@ -217,7 +220,7 @@ class WebPages < Datastore
     create(id, data, username)
   end
 
-  def create_from_form(id, decoded_www_form, username)
+  def self.create_from_form(id, decoded_www_form, username)
     data = decoded_www_form.inject({}) do |hash, value|
       hash[value.first] = value.last
       hash
@@ -226,7 +229,7 @@ class WebPages < Datastore
     create(id, data, username)
   end
 
-  def all(limit = nil, startkey = nil, prevkey = nil)
+  def self.all(limit = nil, startkey = nil, prevkey = nil)
     uri = URI("#{db.path}/_design/all/_view/reviews")
     params  = [["descending", "true"]]
 
@@ -245,7 +248,7 @@ class WebPages < Datastore
     WebPageDocuments.new(response.body, limit, startkey, prevkey)
   end
 
-  def find(id)
+  def self.find(id)
     uri = URI("#{db.path}/_design/all/_view/webpages")
     params = [["startkey", "\"#{id}\""], ["endkey", "\"#{id}\""]]
     uri.query = URI.encode_www_form(params)
@@ -255,7 +258,7 @@ class WebPages < Datastore
     WebPageDocuments.new(response.body)
   end
 
-  def count
+  def self.count
     uri = URI("#{db.path}/_design/all/_view/webpage_count")
     response = server.get(uri.to_s)
 
@@ -331,7 +334,7 @@ class Documents
       if @include_template
         builder.set_template do |template|
           (template_data || []).each do |datum|
-            template.add_data datum[:name], prompt: datum[:prompt]
+            template.add_data datum[:name], prompt: datum[:prompt], value: nil
           end
         end
       end

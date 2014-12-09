@@ -10,8 +10,8 @@ require_relative 'lib/templates'
 
 I18n.config.enforce_available_locales = true
 
-WebPages.instance.database = configatron.octopus.database
-Users.instance.database = configatron.octopus.database
+WebPages::connect(configatron.octopus.database)
+Users::connect(configatron.octopus.database)
 
 class OctopusResource < Webmachine::Resource
   include Webmachine::Resource::Authentication
@@ -24,7 +24,7 @@ class OctopusResource < Webmachine::Resource
   private
   def user_auth(authorization_header)
     basic_auth(authorization_header, "Project Octopus") do |user, pass|
-      @user = Users.instance.check_auth(user, pass)
+      @user = Users::check_auth(user, pass)
       !@user.empty?
     end
   end
@@ -94,8 +94,8 @@ end
 
 class HomeResource < CollectionResource
   def collection
-    reviews = WebPages.instance.count
-    users = Users.instance.count
+    reviews = WebPages::count
+    users = Users::count
     CollectionJSON.generate_for(base_uri) do |builder|
       builder.set_version("1.0")
       builder.add_item(nil) do |item|
@@ -129,7 +129,7 @@ class ReviewsResource < CollectionResource
   end
 
   def create_path
-    @create_path ||= WebPages.instance.uuid
+    @create_path ||= WebPages::uuid
   end
 
   def from_cj
@@ -138,7 +138,7 @@ class ReviewsResource < CollectionResource
       cj_doc = CollectionJSON.parse(cj_raw)
 
       if !cj_doc.template.nil? && !cj_doc.template.data.nil?
-        rev = WebPages.instance.create_from_collection(create_path, cj_doc, @user[:username])
+        rev = WebPages::create_from_collection(create_path, cj_doc, @user[:username])
         unless rev["error"].nil?
           @error = {"title" => rev["error"], "message" => rev["reason"]}
         end
@@ -157,7 +157,7 @@ class ReviewsResource < CollectionResource
 
   def from_urlencoded
     data = URI::decode_www_form(request.body.to_s)
-    rev = WebPages.instance.create_from_form(create_path, data, @user[:username])
+    rev = WebPages::create_from_form(create_path, data, @user[:username])
 
     if rev["ok"] === true
       # Clients (e.g., web browsers) submitting urlencoded data should
@@ -187,7 +187,7 @@ class ReviewsResource < CollectionResource
   end
 
   def documents
-    @documents ||= WebPages.instance.all(10, startkey, prevkey)
+    @documents ||= WebPages::all(10, startkey, prevkey)
   end
 
   def links
@@ -248,7 +248,7 @@ class ReviewResource < CollectionResource
   end
 
   def documents
-    @documents ||= WebPages.instance.find(id)
+    @documents ||= WebPages::find(id)
   end
 
 end
@@ -267,7 +267,7 @@ class SignupsResource < CollectionResource
   end
 
   def create_path
-    @create_path ||= Users.instance.uuid
+    @create_path ||= Users::uuid
   end
 
   def from_cj
@@ -276,7 +276,7 @@ class SignupsResource < CollectionResource
       cj_doc = CollectionJSON.parse(cj_raw)
 
       if !cj_doc.template.nil? && !cj_doc.template.data.nil?
-        rev = Users.instance.create_from_collection(create_path, cj_doc)
+        rev = Users::create_from_collection(create_path, cj_doc)
         unless rev["error"].nil?
           @error = {"title" => rev["error"], "message" => rev["reason"]}
         end
@@ -295,7 +295,7 @@ class SignupsResource < CollectionResource
 
   def from_urlencoded
     data = URI::decode_www_form(request.body.to_s)
-    rev = Users.instance.create_from_form(create_path, data)
+    rev = Users::create_from_form(create_path, data)
 
     if rev["ok"] === true
       # Clients (e.g., web browsers) submitting urlencoded data should
@@ -355,7 +355,7 @@ class SignupResource < CollectionResource
   end
 
   def documents
-    @documents ||= Users.instance.identify(identity)
+    @documents ||= Users::identify(identity)
   end
 
 end
@@ -377,7 +377,7 @@ class UsersResource < CollectionResource
   end
 
   def documents
-    @documents ||= Users.instance.usernames(10, startkey, prevkey)
+    @documents ||= Users::usernames(10, startkey, prevkey)
   end
 
 end
@@ -416,7 +416,7 @@ class UserResource < CollectionResource
   end
 
   def documents
-    @documents ||= Users.instance.find(username)
+    @documents ||= Users::find(username)
   end
 
 end
@@ -444,7 +444,7 @@ class IdentitiesResource < UserResource
   end
 
   def create_path
-    @create_path ||= Users.instance.uuid
+    @create_path ||= Users::uuid
   end
 
   def is_authorized?(authorization_header)
@@ -465,7 +465,7 @@ class IdentitiesResource < UserResource
 
   def from_urlencoded
     data = URI::decode_www_form(request.body.to_s)
-    rev = Users.instance.save_from_form(create_path, username, data)
+    rev = Users::save_from_form(create_path, username, data)
 
     if rev["ok"] === true
       @response.do_redirect
@@ -532,7 +532,7 @@ class FeedResource < Webmachine::Resource
 
   private
   def documents
-    @documents ||= WebPages.instance.all
+    @documents ||= WebPages::all
   end
 end
 
@@ -563,7 +563,7 @@ class FeedItemResource < Webmachine::Resource
   end
 
   def documents
-    @documents ||= WebPages.instance.find(id)
+    @documents ||= WebPages::find(id)
   end
 end
 
