@@ -445,13 +445,17 @@ class WebPageDocuments < Documents
 
         name = part.key?("name") ? part["name"] : "something"
         creator = part.key?("creator") ? part["creator"] : "a creator"
-        webpage_host = URI(doc["url"]).host
+        webpage_url = doc["url"]
+        webpage_host = URI(webpage_url).host
+        original_url = part.key?("isBasedOnUrl") ? part["isBasedOnUrl"] : ""
 
         title = "#{webpage_host} uses #{name} by #{creator}"
+        summary = "#{webpage_url} uses #{name} by #{creator} #{original_url}"
 
         maker.items.new_item do |item|
           item.link = @base_uri + item_id
           item.title = title
+          item.description = summary
           item.updated = doc["lastReviewed"]
         end
       end
