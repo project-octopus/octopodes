@@ -194,15 +194,19 @@ class WebPages < Datastore
     }
     part.each { |k,v| part.delete(k) if v.nil? }
 
+    description = data["description"]
+
     reviewedBy = {
       "@type" => "Person",
       "@id" => username
     }
 
+
     json = {
       "_id" => id,
       "@context" => "http://schema.org",
       "@type" => "WebPage",
+      "description" => description,
       "hasPart" => part,
       "reviewedBy" => reviewedBy,
       "lastReviewed" => lastReviewed,
@@ -474,6 +478,7 @@ class WebPageDocuments < Documents
               cj_item_datum(part, "creator", "creator", "Creator"),
               cj_item_datum(part, "license", "license", "License"),
               cj_item_datum(reviewedBy, "@id", "reviewedBy", "Reviewed By"),
+              cj_item_datum(doc, "description", "description", "Description"),
               cj_item_datum(doc, "lastReviewed", "date", "Date")]
       data.reject!(&:nil?)
 
@@ -490,6 +495,7 @@ class WebPageDocuments < Documents
      {:name => "name", :prompt => "Title"},
      {:name => "creator", :prompt => "Creator"},
      {:name => "license", :prompt => "License"},
+     {:name => "description", :prompt => "Description"},
      {:name => "isBasedOnUrl", :prompt => "Based on URL"}]
   end
 
