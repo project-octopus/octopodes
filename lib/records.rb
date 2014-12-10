@@ -9,8 +9,11 @@ class Datastore
 
   @database = nil
   @server = nil
+  @uri = nil
 
   def self.connect(database)
+    @uri = nil
+    @server = nil
     @database = database
   end
 
