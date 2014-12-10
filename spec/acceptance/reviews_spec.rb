@@ -41,7 +41,7 @@ resource "Reviews" do
       expect(response_body).not_to have_json_path("collection/items")
       expect(response_body).to have_json_path("collection/template")
       expect(response_body).to have_json_path("collection/template/data")
-      expect(response_body).to have_json_size(5).at_path("collection/template/data")
+      expect(response_body).to have_json_size(6).at_path("collection/template/data")
 
       expect(status).to eq(200)
     end
