@@ -112,21 +112,25 @@ resource "User" do
     end
   end
 
-  post "/users/:username/settings" do
+  bad_form_posts = ['', 'test', 'test=', 'password=', 'none=none']
 
-    let(:accept_header) { "text/html" }
-    let(:content_type) { "application/x-www-form-urlencoded" }
+  bad_form_posts.each_with_index do |raw_post, index|
+    post "/users/:username/settings" do
 
-    let(:username) { "user1" }
+      let(:accept_header) { "text/html" }
+      let(:content_type) { "application/x-www-form-urlencoded" }
 
-    let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+      let(:username) { "user1" }
 
-    let(:raw_post) { "none=none" }
+      let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
-    example "Updating a user's settings with no data", :document => false do
-      do_request
+      let(:raw_post) { raw_post }
 
-      expect(status).to eq(422)
+      example "Updating a user's settings with no data", :document => false do
+        do_request
+
+        expect(status).to eq(422)
+      end
     end
   end
 
@@ -149,5 +153,6 @@ resource "User" do
       expect(status).to eq(303)
     end
   end
+
 end
 

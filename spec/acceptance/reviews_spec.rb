@@ -140,7 +140,7 @@ resource "Reviews" do
     end
   end
 
-  bad_form_posts = ['test']
+  bad_form_posts = ['', 'test', 'test=', 'url=']
 
   bad_form_posts.each_with_index do |raw_post, index|
 
@@ -158,7 +158,6 @@ resource "Reviews" do
       end
     end
   end
-
 
   raw_form_posts = [
     "url=http%3A%2F%2FURL.com&name=Some+Title&creator=&license=&is_based_on_url=",

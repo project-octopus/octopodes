@@ -104,4 +104,22 @@ resource "Signups" do
     end
   end
 
+  bad_form_posts = ['', 'test', 'test=', 'username=']
+
+  bad_form_posts.each_with_index do |raw_post, index|
+
+    post "signups" do
+      let(:accept_header) { "text/html" }
+      let(:content_type) { "application/x-www-form-urlencoded" }
+
+      let(:raw_post) { raw_post }
+
+      example "Registering a user with bad input #{index}", :document => false  do
+        do_request
+
+        expect(status).to eq(422)
+      end
+    end
+  end
+
 end
