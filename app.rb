@@ -307,6 +307,7 @@ class SignupsResource < CollectionResource
         @response.do_redirect
       else
         @error = {"title" => rev["error"], "message" => rev["reason"]}
+        @data = Datastore::trans_form_data(data)
       end
     rescue ArgumentError
       @error = {"title" => "Bad Input", "message" => "Malformed WWW Form"}
@@ -326,6 +327,7 @@ class SignupsResource < CollectionResource
   def collection
     documents.base_uri = base_uri
     documents.error = @error
+    documents.data = @data
     documents.to_cj
   end
 

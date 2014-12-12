@@ -104,6 +104,21 @@ resource "Signups" do
     end
   end
 
+  post "signups" do
+
+    let(:accept_header) { "text/html" }
+    let(:content_type) { "application/x-www-form-urlencoded" }
+
+    let(:raw_post) { "username=uniquename&password=" }
+
+    example "Registering a user missing password with www-form", :document => false do
+      do_request
+
+      expect(response_body).to include("uniquename")
+      expect(status).to eq(422)
+    end
+  end
+
   bad_form_posts = ['', 'test', 'test=', 'username=']
 
   bad_form_posts.each_with_index do |raw_post, index|
