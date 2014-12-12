@@ -39,6 +39,14 @@ class Datastore
     @server ||= Couch::Server.new(db.scheme, db.host, db.port, db.user, password)
   end
 
+  private
+  def self.trans_form_data(decoded_www_form)
+    decoded_www_form.inject({}) do |hash, value|
+      hash[value.first] = value.last
+      hash
+    end
+  end
+
 end
 
 class Users < Datastore
@@ -170,14 +178,6 @@ class Users < Datastore
     user
   end
 
-  private
-  def self.trans_form_data(decoded_www_form)
-    decoded_www_form.inject({}) do |hash, value|
-      hash[value.first] = value.last
-      hash
-    end
-  end
-
 end
 
 class WebPages < Datastore
@@ -233,10 +233,7 @@ class WebPages < Datastore
   end
 
   def self.create_from_form(id, decoded_www_form, username)
-    data = decoded_www_form.inject({}) do |hash, value|
-      hash[value.first] = value.last
-      hash
-    end
+    data = trans_form_data(decoded_www_form)
 
     create(id, data, username)
   end
@@ -287,7 +284,7 @@ end
 
 class Documents
 
-  attr_accessor :error, :base_uri, :links, :include_template, :include_items, :include_item_link
+  attr_accessor :data, :error, :base_uri, :links, :include_template, :include_items, :include_item_link
 
   def initialize(json = '{}', limit = nil, startkey = nil, prevkey = nil)
     @limit = limit
@@ -300,6 +297,7 @@ class Documents
     @include_template = true
     @include_items = true
     @include_item_link = true
+    @data = {}
 
     @documents = JSON.parse(json)
     rows = @documents["rows"]
@@ -437,7 +435,8 @@ class SignupDocuments < Documents
   end
 
   def template_data
-    [{:name => "username", :prompt => "Username"},
+    data = !@data.nil? ? @data : {}
+    [{:name => "username", :prompt => "Username", :value => data["username"]},
      {:name => "password", :prompt => "Password"}]
   end
 end
