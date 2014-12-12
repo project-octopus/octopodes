@@ -140,6 +140,26 @@ resource "Reviews" do
     end
   end
 
+  bad_form_posts = ['test']
+
+  bad_form_posts.each_with_index do |raw_post, index|
+
+    post "reviews" do
+      let(:accept_header) { "text/html" }
+      let(:content_type) { "application/x-www-form-urlencoded" }
+      let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+
+      let(:raw_post) { raw_post }
+
+      example "Posting a review with bad input #{index}", :document => false  do
+        do_request
+
+        expect(status).to eq(422)
+      end
+    end
+  end
+
+
   raw_form_posts = [
     "url=http%3A%2F%2FURL.com&name=Some+Title&creator=&license=&is_based_on_url=",
     "url=http%3A%2F%2FURL.org%2Fabc&name=Moros%2C+Zaragoza%2C+Espa%C3%B1a&creator=&license=&is_based_on_url="

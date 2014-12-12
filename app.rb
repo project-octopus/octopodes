@@ -156,18 +156,23 @@ class ReviewsResource < CollectionResource
   end
 
   def from_urlencoded
-    data = URI::decode_www_form(request.body.to_s)
-    rev = WebPages::create_from_form(create_path, data, @user[:username])
+    begin
+      data = URI::decode_www_form(request.body.to_s)
+      rev = WebPages::create_from_form(create_path, data, @user[:username])
 
-    if rev["ok"] === true
-      # Clients (e.g., web browsers) submitting urlencoded data should
-      # redirect to the newly created resource, since they won't act on
-      # a 201 Created response.
-      @response.do_redirect
+      if rev["ok"] === true
+        # Clients (e.g., web browsers) submitting urlencoded data should
+        # redirect to the newly created resource, since they won't act on
+        # a 201 Created response.
+        @response.do_redirect
+      else
+        @error = {"title" => rev["error"], "message" => rev["reason"]}
+      end
+    rescue ArgumentError
+      @error = {"title" => "Bad Input", "message" => "Malformed WWW Form"}
     end
 
-    unless rev["error"].nil?
-      @error = {"title" => rev["error"], "message" => rev["reason"]}
+    unless @error.nil?
       @response.body = to_html
       @response.code = 422 # Unprocessable Entity
     end
