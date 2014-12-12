@@ -350,7 +350,7 @@ class Documents
       if @include_template
         builder.set_template do |template|
           (template_data || []).each do |datum|
-            template.add_data datum[:name], prompt: datum[:prompt], value: nil
+            template.add_data datum[:name], prompt: datum[:prompt], value: datum[:value]
           end
         end
       end
