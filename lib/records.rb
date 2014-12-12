@@ -185,6 +185,8 @@ class WebPages < Datastore
   def self.create(id, data, username)
     lastReviewed = Time.now.utc.iso8601
 
+    if empty_or_valid_url?(data["url"]) && empty_or_valid_url?(data["isBasedOnUrl"])
+
     part = {
       "@type" => "CreativeWork",
       "creator" => data["creator"],
@@ -214,6 +216,9 @@ class WebPages < Datastore
     }.to_json
     response = server.post(db.path, json)
     JSON.parse(response.body)
+    else
+      {"error" => "forbidden", "reason" => "The URL is not valid"}
+    end
   end
 
   def self.create_from_collection(id, collection, username)
@@ -272,6 +277,10 @@ class WebPages < Datastore
     docs = JSON.parse(response.body)
 
     !docs["rows"].empty? ? docs["rows"][0]["value"] : 0
+  end
+
+  def self.empty_or_valid_url?(url)
+    url.nil? || url.empty? || url =~ /\A#{URI::regexp}\z/
   end
 
 end

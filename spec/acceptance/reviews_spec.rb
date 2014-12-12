@@ -61,6 +61,8 @@ resource "Reviews" do
   bad_raw_posts = [
     '', '{}', '{"template":{}}', '{"template":{"data":[]}}',
     '{"template":{"data":[{"name": "n", "val": "v"}]}}',
+    '{"template":{"data":[{"name": "url", "value": "http/ not a url"}]}}',
+    '{"template":{"data":[{"name": "url", "value": "http://example.com"},{"name": "isBasedOnUrl", "value": "http/ not a url"}]}}',
     '{"template":{"data":[{"name": "whatever", "value": "wrong"}]}}'
   ]
 
