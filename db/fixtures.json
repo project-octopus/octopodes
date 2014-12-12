@@ -19,6 +19,24 @@
       "url": "https://www.flickr.com/photos/christopheradams/3174263710/"
     },
     {
+      "_id": "baddata_webpage",
+      "@context": "http://schema.org",
+      "@type": "WebPage",
+      "hasPart": {
+        "@type": "CreativeWork",
+        "creator": "The Creator",
+        "name": "The Work",
+        "isBasedOnUrl": "http://mint-projects /KIK-IRPA, Brussels"
+      },
+      "lastReviewed": "2014-12-01T10:37:27+00:00",
+      "name": "Brussels (Belgium)",
+      "reviewedBy": {
+        "@type": "Person",
+        "@id": "user0"
+      },
+      "url": "http://www.europeana.eu/portal/recordhttp://mint-projects /KIK-IRPA, Brussels"
+    },
+    {
       "_id": "identity2",
       "@id": "user1",
       "@context": "https://w3id.org/identity/v1",

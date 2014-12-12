@@ -379,7 +379,7 @@ class Documents
   end
 
   def cj_item_datum(hash, key, name, prompt)
-    if hash.key?(key)
+    if hash.key?(key) && !hash[key].nil? && !hash[key].empty?
       {:name => name, :prompt => prompt, :value => hash[key]}
     end
   end
@@ -450,7 +450,13 @@ class WebPageDocuments < Documents
         name = part.key?("name") ? part["name"] : "something"
         creator = part.key?("creator") ? part["creator"] : "a creator"
         webpage_url = doc["url"]
-        webpage_host = URI(webpage_url).host
+
+        if webpage_url =~ /\A#{URI::regexp}\z/
+          webpage_host = URI(webpage_url).host
+        else
+          webpage_host = webpage_url[0..15] + '...'
+        end
+
         original_url = part.key?("isBasedOnUrl") ? part["isBasedOnUrl"] : ""
 
         title = "#{webpage_host} uses #{name} by #{creator}"
@@ -480,11 +486,24 @@ class WebPageDocuments < Documents
               cj_item_datum(reviewedBy, "@id", "reviewedBy", "Reviewed By"),
               cj_item_datum(doc, "description", "description", "Description"),
               cj_item_datum(doc, "lastReviewed", "date", "Date")]
-      data.reject!(&:nil?)
 
-      links = [cj_item_link(doc, "url", "full", "Web Page URL"),
-               cj_item_link(part, "isBasedOnUrl", "isBasedOnUrl", "Original URL")]
-      links.reject!(&:nil?)
+      links = []
+      if doc.key?("url")
+        if doc["url"] =~ /\A#{URI::regexp}\z/
+          links << cj_item_link(doc, "url", "full", "Web Page URL")
+        else
+          data << cj_item_datum(doc, "url", "url", "Web Page")
+        end
+      end
+      if part.key?("isBasedOnUrl")
+        if part["isBasedOnUrl"] =~ /\A#{URI::regexp}\z/
+          links << cj_item_link(part, "isBasedOnUrl", "isBasedOnUrl", "Original URL")
+        else
+          data << cj_item_datum(part, "isBasedOnUrl", "isBasedOnUrl", "Original")
+        end
+      end
+
+      data.reject!(&:nil?)
 
       {:id => item_id, :data => data, :links => links}
     end
