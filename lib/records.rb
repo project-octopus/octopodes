@@ -48,6 +48,10 @@ class Datastore
     end
   end
 
+  def self.extract_data(hash, keys)
+    hash.select {|k,v| keys.include?(k) && !v.nil? && !v.empty?}
+  end
+
   def self.save_model(model)
     if model.valid?
       response = server.post(db.path, model.to_json)
@@ -181,42 +185,26 @@ end
 class WebPages < Datastore
 
   def self.create(id, data, username)
-    lastReviewed = Time.now.utc.iso8601
+    webpage_keys = ["description", "url"]
+    work_keys = ["creator", "isBasedOnUrl", "name", "license"]
 
-    if empty_or_valid_url?(data["url"]) && empty_or_valid_url?(data["isBasedOnUrl"])
+    webpage_data = extract_data(data, webpage_keys)
+    work_data = extract_data(data,work_keys)
 
-    part = {
-      "@type" => "CreativeWork",
-      "creator" => data["creator"],
-      "license" => data["license"],
-      "name" => data["name"],
-      "isBasedOnUrl" => data["isBasedOnUrl"]
-    }
-    part.each { |k,v| part.delete(k) if v.nil? }
+    webpage = WebPage.new(webpage_data).tap do |w|
+      w.doc_id = id
 
-    description = data["description"]
+      w.reviewedBy = Person.new.tap do |p|
+        p.id = username
+        p.context = nil
+      end
 
-    reviewedBy = {
-      "@type" => "Person",
-      "@id" => username
-    }
-
-
-    json = {
-      "_id" => id,
-      "@context" => "http://schema.org",
-      "@type" => "WebPage",
-      "description" => description,
-      "hasPart" => part,
-      "reviewedBy" => reviewedBy,
-      "lastReviewed" => lastReviewed,
-      "url" => data["url"]
-    }.to_json
-    response = server.post(db.path, json)
-    JSON.parse(response.body)
-    else
-      {"error" => "forbidden", "reason" => "The URL is not valid"}
+      w.work = CreativeWork.new(work_data).tap do |c|
+        c.context = nil
+      end
     end
+
+    save_model(webpage)
   end
 
   def self.create_from_collection(id, collection, username)

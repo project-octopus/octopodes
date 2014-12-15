@@ -52,7 +52,7 @@ class Thing < Schema
   property 'description'
   property 'name'
 
-  validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
+  validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => true, :unless => Proc.new {|thing| thing.type == "WebPage" }
 end
 
 # Class that models a Schema.org Person
@@ -67,8 +67,11 @@ class CreativeWork < Thing
   property :type, from: "@type", required: true, default: "CreativeWork"
 
   property 'creator'
-  property 'isBasedOnUrl'
   property 'license'
+
+  property :isBasedOnUrl, from: 'isBasedOnUrl'
+
+  validates :isBasedOnUrl, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 end
 
 # Class that models a Schema.org WebPage
@@ -78,11 +81,18 @@ class WebPage < CreativeWork
 
   property 'lastReviewed', default: Time.now.utc.iso8601
 
-  property 'hasPart'
-  property 'reviewedBy'
+  property :work, from: 'hasPart'
+  property :reviewedBy, from: 'reviewedBy'
 
   coerce_key :reviewedBy, Person
-  coerce_key :hasPart, CreativeWork
+  coerce_key :work, CreativeWork
 
-  validates_presence_of :id, :doc_id
+  validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => false
+
+  validate :part_valid
+
+  private
+  def part_valid
+    errors.add(:work, 'Url is invalid') unless self.work.valid?
+  end
 end
