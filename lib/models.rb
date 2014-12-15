@@ -53,7 +53,9 @@ class Thing < Schema
   property 'description'
   property 'name'
 
-  validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => true, :unless => Proc.new {|thing| thing.type == "WebPage" }
+  # URL validation can exclude Thing subclasses that do it themselves
+  validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => true,
+                  :unless => Proc.new {|thing| thing.type == "WebPage" }
 end
 
 # Class that models a Schema.org Person
