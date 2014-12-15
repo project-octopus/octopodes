@@ -13,6 +13,7 @@ class Schema < Thrash
   include ActiveModel::Validations
 
   property :doc_id, from: "_id"
+  property :doc_rev, from: "_rev"
   property :id, from: "@id"
   property :context, from: "@context"
   property :type, from: "@type", default: "Document"
