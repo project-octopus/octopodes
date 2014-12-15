@@ -69,9 +69,9 @@ class CreativeWork < Thing
   property 'creator'
   property 'license'
 
-  property :isBasedOnUrl, from: 'isBasedOnUrl'
+  property :based_on_url, from: 'isBasedOnUrl'
 
-  validates :isBasedOnUrl, :format => /\A#{URI::regexp}\z/, :allow_blank => true
+  validates :based_on_url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 end
 
 # Class that models a Schema.org WebPage
@@ -93,6 +93,8 @@ class WebPage < CreativeWork
 
   private
   def part_valid
-    errors.add(:work, 'Url is invalid') unless self.work.valid?
+    work_is_valid = self.work.valid?
+    work_err_messages = self.work.errors.full_messages.join(", ")
+    errors.add(:work, work_err_messages) unless work_is_valid
   end
 end
