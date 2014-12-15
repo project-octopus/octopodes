@@ -1,20 +1,49 @@
 require 'hashie'
 require 'active_model'
+require 'bcrypt'
 
 require_relative 'thrash'
 
-# Class that models a Schema.org Thing, the top-level object in the type
-# hierarchy. It can be created using a Ruby hash represeting a JSON-LD
-# document. Some keys that are difficult to work with such as @id, @type,
-# and @context are converted to symbols. A CouchDB _id is changed to :doc_id.
-# Any keys that require validation like "url" are also made into symbols.
+# Class that models a JSON-LD document as stored in CouchDB. Some keys
+# that are hard to type or remember (e.g., @id, @type) are available as
+# symbols (i.e., :id, :type). The CouchDB _id is changed to :doc_id.
 #
-class Thing < Thrash
+class Schema < Thrash
   include Hashie::Extensions::Coercion
   include ActiveModel::Validations
 
   property :doc_id, from: "_id"
   property :id, from: "@id"
+  property :context, from: "@context"
+  property :type, from: "@type", default: "Document"
+
+  validates_presence_of :type
+end
+
+# Class that models a user Identity
+#
+class Identity < Schema
+  property :username, from: "@id"
+  property :context, from: "@context", default: 'https://w3id.org/identity/v1'
+  property :type, from: "@type", default: "Identity"
+
+  property :password, from: "password"
+
+  property 'created', default: Time.now.utc.iso8601
+
+  validates_presence_of :username, :password
+
+  def new_password=(password)
+    if !password.nil? && !password.empty?
+      self.password = BCrypt::Password.create(password)
+    end
+  end
+end
+
+# Class that models a Schema.org Thing, the top-level object in the type
+# hierarchy.
+#
+class Thing < Schema
   property :context, from: "@context", default: 'http://schema.org'
   property :type, from: "@type", default: "Thing"
 
@@ -22,8 +51,6 @@ class Thing < Thrash
 
   property 'description'
   property 'name'
-
-  validates_presence_of :type
 
   validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 end

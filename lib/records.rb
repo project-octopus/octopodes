@@ -3,7 +3,9 @@ require 'json'
 require 'rss'
 require 'collection-json'
 require 'bcrypt'
+
 require_relative 'couch'
+require_relative 'models'
 
 class Datastore
 
@@ -39,11 +41,19 @@ class Datastore
     @server ||= Couch::Server.new(db.scheme, db.host, db.port, db.user, password)
   end
 
-  private
   def self.trans_form_data(decoded_www_form)
     decoded_www_form.inject({}) do |hash, value|
       hash[value.first] = value.last
       hash
+    end
+  end
+
+  def self.save_model(model)
+    if model.valid?
+      response = server.post(db.path, model.to_json)
+      JSON.parse(response.body)
+    else
+      {"error" => "forbidden", "reason" => model.errors.full_messages.join(", ")}
     end
   end
 
@@ -60,26 +70,14 @@ class Users < Datastore
   end
 
   def self.save(id, username, data)
-    password = data['password']
-    if username.nil? || username.empty?
-      {"error" => "forbidden", "reason" => "User must have a username and password."}
-    elsif password.nil? || password.empty?
-      {"error" => "forbidden", "reason" => "Password cannot be blank."}
-    else
-      created = Time.now.utc.iso8601
-      hash = BCrypt::Password.create(password)
 
-      json = {
-        "_id" => id,
-        "@id" => username,
-        "@context" => "https://w3id.org/identity/v1",
-        "@type" => "Identity",
-        "created" => created,
-        "password" => hash
-      }.to_json
-      response = server.post(db.path, json)
-      JSON.parse(response.body)
+    user = Identity.new.tap do |i|
+      i.doc_id = id
+      i.username = username
+      i.new_password = data['password']
     end
+
+    save_model(user)
   end
 
   def self.create_from_collection(id, collection)
