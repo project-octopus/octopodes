@@ -58,21 +58,18 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="/">
-      Project Octopus
+      <img height="23px" alt="Octopus Project" src="/assets/octopus_white_small.png"/>
       </a>
     </div>
     <ul class="nav navbar-nav">
-    <% for m in @menu %>
-      <li><a href="<%= m[:href] %>"><%= m[:prompt] %></a></li>
-    <% end %>
+      <li><a href="/about">About</a></li>
+      <li><a href="/paper">Read the Paper</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li>
-      <a href="/">
-        <img height="23px" alt="Octopus" src="/assets/octopus_white_small.png"/>
-      </a>
-      </li>
-        </ul>
+      <% for m in @menu %>
+        <li><a href="<%= m[:href] %>"><%= m[:prompt] %></a></li>
+      <% end %>
+    </ul>
   </div>
 </nav>
 <div class="container-fluid">

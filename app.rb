@@ -31,8 +31,8 @@ class OctopusResource < Webmachine::Resource
 
   def menu
     base = @request.base_uri.to_s
-    menu_items = [{:href => "#{base}reviews", :prompt => "Works"},
-                  {:href => "#{base}about", :prompt => "About"}]
+    menu_items = [{:href => "#{base}reviews", :prompt => "Reviews"}]
+
     if @user.nil? || @user.empty?
       menu_items << {:href => "#{base}signups", :prompt => "Sign up"}
       menu_items << {:href => "#{base}login", :prompt => "Login"}
@@ -73,7 +73,7 @@ class CollectionResource < OctopusResource
 
   private
   def title
-    "Showing the use of creative works, one URL at a time"
+    "Reviewing the Use of Creative Works, One URL at a Time"
   end
 
   def collection
@@ -674,6 +674,20 @@ class AboutResource < OctopusResource
   end
 end
 
+class PaperResource < OctopusResource
+  def allowed_methods
+    ["GET"]
+  end
+
+  def content_types_provided
+    [["text/html", :to_html]]
+  end
+
+  def to_html
+    PagesTemplate.new("blank", "Read the Paper - Coming Soon", menu).render
+  end
+end
+
 App = Webmachine::Application.new do |app|
   app.configure do |config|
     config.adapter = :Rack
@@ -699,6 +713,7 @@ App = Webmachine::Application.new do |app|
     add ["u", :id], FeedItemResource
 
     add ["about"], AboutResource
+    add ["paper"], PaperResource
 
     if configatron.webmachine.trace
       add ['trace', '*'], Webmachine::Trace::TraceResource
