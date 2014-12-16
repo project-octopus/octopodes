@@ -63,6 +63,20 @@ resource "Signups" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:content_type) { "application/vnd.collection+json" }
 
+    let(:raw_post) { '{"template":{"data":[{"name": "username", "value": "bad user name"}, {"name": "password", "value": "a password"}]}}' }
+
+    example "Registering a user with a bad name", :document => false do
+      do_request
+
+      expect(status).to eq(422)
+    end
+  end
+
+  post "signups" do
+
+    let(:accept_header) { "application/vnd.collection+json" }
+    let(:content_type) { "application/vnd.collection+json" }
+
     let(:raw_post) { '{"template":{"data":[{"name": "username", "value": "user1"}, {"name": "password", "value": "a password"}]}}' }
 
     example "Registering a user with a reserved name", :document => false do

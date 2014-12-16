@@ -32,7 +32,15 @@ class Identity < Schema
 
   property 'created', default: Time.now.utc.iso8601
 
-  validates_presence_of :username, :password
+  validates_presence_of :password
+
+  validate :username_format
+
+  def username_format
+    has_one_letter = username =~ /[a-zA-Z]/
+    all_valid_characters = username =~ /^[a-zA-Z0-9_]+$/
+    errors.add(:username, "must have at least one letter and contain only letters, digits, or underscores") unless (has_one_letter and all_valid_characters)
+  end
 
   def new_password=(password)
     if !password.nil? && !password.empty?
