@@ -1,8 +1,8 @@
-# Users API
+# Signups API
 
-## Creating a user as Collection+JSON
+## Registering a user as Collection+JSON
 
-### POST users
+### POST signups
 ### Request
 
 #### Headers
@@ -14,7 +14,7 @@ Cookie: </pre>
 
 #### Route
 
-<pre>POST users</pre>
+<pre>POST signups</pre>
 
 #### Body
 
@@ -26,9 +26,9 @@ Cookie: </pre>
 
 <pre>Content-Type: application/vnd.collection+json
 Vary: Accept
-Location: http://example.org/users/32c4118539df961a61fdabd28f8919f2
+Location: http://example.org/signups/bb45944fd45cb16ff860218e574c1e8c
 Content-Length: 0
-Date: Mon, 01 Dec 2014 12:23:36 GMT
+Date: Tue, 16 Dec 2014 10:54:48 GMT
 Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
 
 #### Status

@@ -9,6 +9,7 @@
 
 <pre>Accept: application/vnd.collection+json
 Content-Type: application/vnd.collection+json
+Authorization: Basic dXNlcjE6cGFzczE=
 Host: example.org
 Cookie: </pre>
 
@@ -26,9 +27,9 @@ Cookie: </pre>
 
 <pre>Content-Type: application/vnd.collection+json
 Vary: Accept
-Location: http://example.org/reviews/32c4118539df961a61fdabd28f88bc93
+Location: http://example.org/reviews/bb45944fd45cb16ff860218e574b8b73
 Content-Length: 0
-Date: Mon, 01 Dec 2014 12:23:35 GMT
+Date: Tue, 16 Dec 2014 10:54:47 GMT
 Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
 
 #### Status

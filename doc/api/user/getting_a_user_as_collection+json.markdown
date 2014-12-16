@@ -22,7 +22,7 @@ Cookie: </pre>
 <pre>Content-Type: application/vnd.collection+json
 Vary: Accept
 Content-Length: 184
-Date: Mon, 01 Dec 2014 12:23:36 GMT
+Date: Tue, 16 Dec 2014 10:54:49 GMT
 Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
 
 #### Status

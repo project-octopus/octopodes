@@ -21,8 +21,8 @@ Cookie: </pre>
 
 <pre>Content-Type: application/vnd.collection+json
 Vary: Accept
-Content-Length: 393
-Date: Mon, 01 Dec 2014 12:23:35 GMT
+Content-Length: 291
+Date: Tue, 16 Dec 2014 10:54:49 GMT
 Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
 
 #### Status
@@ -31,4 +31,4 @@ Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
 
 #### Body
 
-<pre>{"collection":{"href":"http://example.org/users/","version":"1.0","items":[{"href":"http://example.org/users/user0","data":[{"name":"username","value":"user0","prompt":"Username"}]},{"href":"http://example.org/users/user1","data":[{"name":"username","value":"user1","prompt":"Username"}]}],"template":{"data":[{"name":"username","prompt":"Username"},{"name":"password","prompt":"Password"}]}}}</pre>
+<pre>{"collection":{"href":"http://example.org/users/","version":"1.0","items":[{"href":"http://example.org/users/user0","data":[{"name":"username","value":"user0","prompt":"Username"}]},{"href":"http://example.org/users/user1","data":[{"name":"username","value":"user1","prompt":"Username"}]}]}}</pre>
