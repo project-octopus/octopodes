@@ -259,17 +259,29 @@ class ReviewResource < CollectionResource
   end
 
   def title
-    "Creative Work Re-used on the Web"
+    "Creative Work on the Web"
   end
 
   def collection
     documents.base_uri = base_uri
     documents.include_template = false
+    documents.links = links
     documents.to_cj
   end
 
   def documents
     @documents ||= WebPages::find(id)
+  end
+
+  def links
+    doc = documents.first
+    url = doc["value"]["url"]
+
+    add_work_uri = URI(@request.base_uri.to_s + "reviews;template")
+    add_work_uri.query = URI.encode_www_form([["url", url]])
+
+    [{:href => add_work_uri.to_s, :rel => "template",
+      :prompt => "Add another Work on this Page"}]
   end
 
 end
