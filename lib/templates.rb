@@ -45,7 +45,8 @@ class CollectionTemplate < ApplicationTemplate
 
   def truncate url
     max_url_length = 60
-    url_too_long = url.length > max_url_length
+    protocol_length = 8 # http:// or https://
+    url_too_long = url.length - protocol_length > max_url_length
 
     if url =~ /\A#{URI::regexp}\z/
       uri = URI(url)
