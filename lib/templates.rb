@@ -43,6 +43,29 @@ class CollectionTemplate < ApplicationTemplate
     @content = File.read(File.expand_path('templates/collection.html.erb'))
   end
 
+  def truncate url
+    max_url_length = 60
+    url_too_long = url.length > max_url_length
+
+    if url =~ /\A#{URI::regexp}\z/
+      uri = URI(url)
+      host = !uri.host.nil? ? uri.host : ""
+      path = !uri.path.nil? ? uri.path : ""
+      query = !uri.query.nil? ? "?#{uri.query}" : ""
+      if url_too_long
+        host + (path + query)[0..max_url_length - host.length] + '...'
+      else
+        host + path + query
+      end
+    else
+      if url_too_long
+        url[0..max_url_length-3] + "..."
+      else
+        url
+      end
+    end
+  end
+
 end
 
 class PagesTemplate < ApplicationTemplate

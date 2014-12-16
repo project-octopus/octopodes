@@ -68,7 +68,7 @@
             <%= link.prompt %>:
             <strong>
               <a href="<%= link.href %>">
-                <%= URI(link.href).host %>
+                <%= truncate link.href %>
               </a>
               </strong>
             </dd>
