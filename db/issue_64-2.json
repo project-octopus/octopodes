@@ -1,0 +1,30 @@
+{"template" : {
+"data" :
+[
+{
+name: "name",
+value: "a"
+},
+{
+name: "creator",
+value: "b"
+},
+{
+name: "license",
+value: "c"
+},
+{
+name: "description",
+value: "d"
+},
+{
+name: "url",
+value: "e"
+},
+{
+name: "isBasedOnUrl",
+value: "f"
+}
+]
+}
+}

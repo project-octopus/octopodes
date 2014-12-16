@@ -6,6 +6,10 @@
       "@type": "WebPage",
       "hasPart": {
         "@type": "CreativeWork",
+        "associatedMedia": {
+          "@type": "MediaObject",
+          "contentUrl": "https://farm4.staticflickr.com/3087/3174263710_5a4e3bee62_b.jpg"
+        },
         "creator": "Christopher Adams",
         "license": "https://creativecommons.org/licenses/by/2.0/",
         "name": "Stanley Wong"

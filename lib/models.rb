@@ -109,3 +109,30 @@ class WebPage < CreativeWork
     errors.add(:work, work_err_messages) unless work_is_valid
   end
 end
+
+# Class that models a Schema.org MediaObject
+#
+class MediaObject < CreativeWork
+  property :type, from: "@type", required: true, default: "MediaObject"
+
+  property :content_url, from: "contentUrl"
+
+  validates :content_url, :format => /\A#{URI::regexp}\z/, :allow_blank => false
+end
+
+class CreativeWork < Thing
+  property :media, from: 'associatedMedia'
+
+  coerce_key :media, MediaObject
+
+  validate :media_valid
+
+  private
+  def media_valid
+    if !self.media.nil?
+      media_is_valid = self.media.valid?
+      media_err_messages = self.media.errors.full_messages.join(", ")
+      errors.add(:media, media_err_messages) unless media_is_valid
+    end
+  end
+end

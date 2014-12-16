@@ -41,7 +41,7 @@ resource "Reviews" do
       expect(response_body).not_to have_json_path("collection/items")
       expect(response_body).to have_json_path("collection/template")
       expect(response_body).to have_json_path("collection/template/data")
-      expect(response_body).to have_json_size(6).at_path("collection/template/data")
+      expect(response_body).to have_json_size(7).at_path("collection/template/data")
 
       expect(status).to eq(200)
     end
@@ -63,6 +63,7 @@ resource "Reviews" do
     '{"template":{"data":[{"name": "n", "val": "v"}]}}',
     '{"template":{"data":[{"name": "url", "value": "http/ not a url"}]}}',
     '{"template":{"data":[{"name": "url", "value": "http://example.com"},{"name": "isBasedOnUrl", "value": "http/ not a url"}]}}',
+    '{"template":{"data":[{"name": "url", "value": "http://example.com"},{"name": "contentUrl", "value": "http/ not a url"}]}}',
     '{"template":{"data":[{"name": "whatever", "value": "wrong"}]}}'
   ]
 

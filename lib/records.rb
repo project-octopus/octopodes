@@ -187,9 +187,11 @@ class WebPages < Datastore
   def self.create(id, data, username)
     webpage_keys = ["description", "url"]
     work_keys = ["creator", "isBasedOnUrl", "name", "license"]
+    media_keys = ["contentUrl"]
 
     webpage_data = extract_data(data, webpage_keys)
     work_data = extract_data(data,work_keys)
+    media_data = extract_data(data,media_keys)
 
     webpage = WebPage.new(webpage_data).tap do |w|
       w.doc_id = id
@@ -201,6 +203,11 @@ class WebPages < Datastore
 
       w.work = CreativeWork.new(work_data).tap do |c|
         c.context = nil
+        if !media_data.empty?
+          c.media = MediaObject.new(media_data) do |a|
+            a.context = nil
+          end
+        end
       end
     end
 
@@ -472,6 +479,7 @@ class WebPageDocuments < Documents
       doc = row["value"]
       item_id = doc["_id"]
       part = doc.key?("hasPart") ? doc["hasPart"] : {}
+      media = part.key?("associatedMedia") ? part["associatedMedia"] : {}
       reviewedBy = doc.key?("reviewedBy") ? doc["reviewedBy"] : {}
 
       data = [cj_item_datum(part, "name", "name", "Title"),
@@ -496,6 +504,13 @@ class WebPageDocuments < Documents
           data << cj_item_datum(part, "isBasedOnUrl", "isBasedOnUrl", "Original")
         end
       end
+      if media.key?("contentUrl")
+        if media["contentUrl"] =~ /\A#{URI::regexp}\z/
+          links << cj_item_link(media, "contentUrl", "contentUrl", "Media File URL")
+        else
+          data << cj_item_datum(media, "contentUrl", "contentUrl", "Media File URL")
+        end
+      end
 
       data.reject!(&:nil?)
 
@@ -507,6 +522,7 @@ class WebPageDocuments < Documents
     data = !@data.nil? ? @data : {}
     [{:name => "url", :prompt => "Web Page URL", :value => data["url"]},
      {:name => "name", :prompt => "Title"},
+     {:name => "contentUrl", :prompt => "Media File URL"},
      {:name => "creator", :prompt => "Creator"},
      {:name => "license", :prompt => "License"},
      {:name => "description", :prompt => "Description"},

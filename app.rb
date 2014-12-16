@@ -219,7 +219,7 @@ class ReviewsTemplateResource < ReviewsResource
 
   private
   def body
-    "Instructions: Fill in the form below with the URL and title of the work. You can optionally include the creator, license, and a description. If the work in question is a re-use of another work, fill in the 'Based on URL' field with a link to the original work."
+    "Instructions: Fill in the form below with the URL and title of the work. You can optionally include a link to a media file on the page (like a JPG), plus the creator, license, and a description. If the work in question is a re-use of another work, fill in the 'Based on URL' field with a link to the original work."
   end
 
   def collection
