@@ -60,7 +60,7 @@ class CollectionResource < OctopusResource
   end
 
   def to_html
-    CollectionTemplate.new(collection, title, menu).render
+    CollectionTemplate.new(collection, title, menu, body).render
   end
 
   def to_cj
@@ -75,6 +75,8 @@ class CollectionResource < OctopusResource
   def title
     "Reviewing the Use of Creative Works, One URL at a Time"
   end
+
+  def body; end
 
   def collection
     CollectionJSON.generate_for(base_uri) do |builder|
@@ -93,6 +95,10 @@ class CollectionResource < OctopusResource
 end
 
 class HomeResource < CollectionResource
+  def to_html
+    PagesTemplate.new("home", title, menu).render
+  end
+
   def collection
     reviews = WebPages::count
     users = Users::count
@@ -211,16 +217,26 @@ class ReviewsTemplateResource < ReviewsResource
     auth
   end
 
+  private
+  def body
+    "Instructions: Fill in the form below with the URL and title of the work. You can optionally include the creator, license, and a description. If the work in question is a re-use of another work, fill in the 'Based on URL' field with a link to the original work."
+  end
+
   def collection
     documents.base_uri = base_uri
     documents.error = @error
     documents.include_items = false
     documents.links = links
+    documents.data = {"url" => url}
     documents.to_cj
   end
 
   def documents
     @documents ||= WebPageDocuments.new
+  end
+
+  def url
+    @request.query["url"]
   end
 end
 
