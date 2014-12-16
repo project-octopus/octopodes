@@ -712,6 +712,7 @@ App = Webmachine::Application.new do |app|
     add [], HomeResource
     add ["favicon.ico"], FaviconResource
     add ["assets", '*'], AssetsResource
+    add ["docs", '*'], AssetsResource
 
     add ["reviews"], ReviewsResource
     add ["reviews;template"], ReviewsTemplateResource

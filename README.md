@@ -87,7 +87,7 @@ The software is currently in beta and does not offer data migrations between upd
 
 ## Documentation
 
-[Read the Documentation](doc/api/index.markdown)
+[Read the Documentation](public/docs/api/index.html?raw=true)
 
 Documentation is generated with the following task:
 

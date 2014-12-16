@@ -17,7 +17,8 @@ require 'rake'
 
 RspecApiDocumentation.configure do |config|
   config.app = Webmachine::Adapters::Rack.new(App.configuration, App.dispatcher)
-  config.format = :markdown
+  config.format = :html
+  config.docs_dir = Pathname.new("public/docs/api")
 end
 
 RSpec.configure do |config|

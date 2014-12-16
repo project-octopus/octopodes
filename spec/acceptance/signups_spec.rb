@@ -5,7 +5,7 @@ resource "Signups" do
   header "Accept", :accept_header
   header "Content-Type", :content_type
 
-  get "signups" do
+  get "http://project-octpus.org/signups" do
     let(:accept_header) { "application/vnd.collection+json" }
 
     example "Getting the signup form as Collection+JSON" do
@@ -21,7 +21,7 @@ resource "Signups" do
     end
   end
 
-  get "signups" do
+  get "http://project-octpus.org/signups" do
     let(:accept_header) { "text/html" }
 
     example "Getting the signup form", :document => false do
@@ -41,7 +41,7 @@ resource "Signups" do
 
   bad_raw_posts.each_with_index do |raw_post, index|
 
-    post "signups" do
+    post "http://project-octpus.org/signups" do
       let(:accept_header) { "application/vnd.collection+json" }
       let(:content_type) { "application/vnd.collection+json" }
 
@@ -58,7 +58,7 @@ resource "Signups" do
     end
   end
 
-  post "signups" do
+  post "http://project-octpus.org/signups" do
 
     let(:accept_header) { "application/vnd.collection+json" }
     let(:content_type) { "application/vnd.collection+json" }
@@ -72,7 +72,7 @@ resource "Signups" do
     end
   end
 
-  post "signups" do
+  post "http://project-octpus.org/signups" do
 
     let(:accept_header) { "application/vnd.collection+json" }
     let(:content_type) { "application/vnd.collection+json" }
@@ -86,7 +86,7 @@ resource "Signups" do
     end
   end
 
-  post "signups" do
+  post "http://project-octpus.org/signups" do
 
     let(:accept_header) { "application/vnd.collection+json" }
     let(:content_type) { "application/vnd.collection+json" }
@@ -102,7 +102,7 @@ resource "Signups" do
     end
   end
 
-  post "signups" do
+  post "http://project-octpus.org/signups" do
 
     let(:accept_header) { "text/html" }
     let(:content_type) { "application/x-www-form-urlencoded" }
@@ -118,7 +118,7 @@ resource "Signups" do
     end
   end
 
-  post "signups" do
+  post "http://project-octpus.org/signups" do
 
     let(:accept_header) { "text/html" }
     let(:content_type) { "application/x-www-form-urlencoded" }
@@ -137,7 +137,7 @@ resource "Signups" do
 
   bad_form_posts.each_with_index do |raw_post, index|
 
-    post "signups" do
+    post "http://project-octpus.org/signups" do
       let(:accept_header) { "text/html" }
       let(:content_type) { "application/x-www-form-urlencoded" }
 

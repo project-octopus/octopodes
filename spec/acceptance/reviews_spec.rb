@@ -14,7 +14,7 @@ resource "Reviews" do
   after (:all) do
   end
 
-  get "reviews" do
+  get "http://project-octpus.org/reviews" do
     let(:accept_header) { "application/vnd.collection+json" }
 
     example "Getting all reviews as Collection+JSON" do
@@ -30,7 +30,7 @@ resource "Reviews" do
     end
   end
 
-  get "reviews;template" do
+  get "http://project-octpus.org/reviews;template" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
@@ -47,7 +47,7 @@ resource "Reviews" do
     end
   end
 
-  get "reviews;template" do
+  get "http://project-octpus.org/reviews;template" do
     let(:accept_header) { "application/vnd.collection+json" }
 
     example "Getting unauthorized reviews template", :document => false do
@@ -69,7 +69,7 @@ resource "Reviews" do
 
   bad_raw_posts.each_with_index do |raw_post, index|
 
-    post "reviews" do
+    post "http://project-octpus.org/reviews" do
       let(:accept_header) { "application/vnd.collection+json" }
       let(:content_type) { "application/vnd.collection+json" }
       let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
@@ -87,7 +87,7 @@ resource "Reviews" do
     end
   end
 
-  post "reviews" do
+  post "http://project-octpus.org/reviews" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:content_type) { "application/vnd.collection+json" }
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
@@ -119,7 +119,7 @@ resource "Reviews" do
     end
   end
 
-  get "reviews" do
+  get "http://project-octpus.org/reviews" do
     let(:accept_header) { "text/html" }
 
     example "Getting all reviews", :document => false do
@@ -129,7 +129,7 @@ resource "Reviews" do
     end
   end
 
-  get "reviews;template?url=http%3A%2F%2Ftestquery.org%2Ftest" do
+  get "http://project-octpus.org/reviews;template?url=http%3A%2F%2Ftestquery.org%2Ftest" do
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
     let(:accept_header) { "text/html" }
 
@@ -141,7 +141,7 @@ resource "Reviews" do
     end
   end
 
-  post "reviews" do
+  post "http://project-octpus.org/reviews" do
     let(:accept_header) { "text/html" }
     let(:content_type) { "application/x-www-form-urlencoded" }
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
@@ -157,7 +157,7 @@ resource "Reviews" do
 
   bad_form_posts.each_with_index do |raw_post, index|
 
-    post "reviews" do
+    post "http://project-octpus.org/reviews" do
       let(:accept_header) { "text/html" }
       let(:content_type) { "application/x-www-form-urlencoded" }
       let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
@@ -179,7 +179,7 @@ resource "Reviews" do
 
   raw_form_posts.each_with_index do |raw_post, index|
 
-    post "reviews" do
+    post "http://project-octpus.org/reviews" do
       parameter :name, "Title"
       parameter :url, "URL"
 
@@ -211,7 +211,7 @@ resource "Review" do
   before (:all) do
   end
 
-  get "/reviews/:id" do
+  get "http://project-octpus.org/reviews/:id" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:id) { "webpage0" }
 
@@ -227,7 +227,7 @@ resource "Review" do
     end
   end
 
-  get "reviews/:id" do
+  get "http://project-octpus.org/reviews/:id" do
     let(:id) { "xxx" }
 
     example "Getting a non-existent item", :document => false do
@@ -238,4 +238,3 @@ resource "Review" do
   end
 
 end
-
