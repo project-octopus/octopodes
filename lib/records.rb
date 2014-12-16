@@ -504,7 +504,8 @@ class WebPageDocuments < Documents
   end
 
   def template_data
-    [{:name => "url", :prompt => "Web Page URL"},
+    data = !@data.nil? ? @data : {}
+    [{:name => "url", :prompt => "Web Page URL", :value => data["url"]},
      {:name => "name", :prompt => "Title"},
      {:name => "creator", :prompt => "Creator"},
      {:name => "license", :prompt => "License"},

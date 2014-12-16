@@ -22,8 +22,9 @@ end
 class CollectionTemplate < ApplicationTemplate
   attr_accessor :href
 
-  def initialize(collection, title, menu)
+  def initialize(collection, title, menu, body = nil)
     @title = title
+    @body = body
     @menu = menu
     @href = collection.href
 

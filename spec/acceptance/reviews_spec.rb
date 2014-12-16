@@ -128,6 +128,18 @@ resource "Reviews" do
     end
   end
 
+  get "reviews;template?url=http%3A%2F%2Ftestquery.org%2Ftest" do
+    let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+    let(:accept_header) { "text/html" }
+
+    example "Getting review template", :document => false do
+      do_request
+
+      expect(response_body).to include("http://testquery.org/test")
+      expect(status).to eq(200)
+    end
+  end
+
   post "reviews" do
     let(:accept_header) { "text/html" }
     let(:content_type) { "application/x-www-form-urlencoded" }
