@@ -193,17 +193,31 @@ class ReviewsResource < CollectionResource
     documents.base_uri = base_uri
     documents.error = @error
     documents.include_template = false
+    documents.include_queries = include_queries?
+    documents.queries = @request.query
     documents.links = links
     documents.to_cj
   end
 
   def documents
-    @documents ||= WebPages::all(10, startkey, prevkey)
+    @documents ||= WebPages::all(limit, startkey, prevkey)
   end
 
   def links
     [{:href => @request.base_uri.to_s + 'reviews;template',
-     :rel => "template", :prompt => "Add a Work"}]
+     :rel => "template", :prompt => "Add a Work"},
+     {:href => @request.base_uri.to_s + 'reviews;queries',
+     :rel => "queries", :prompt => "Search"}]
+  end
+
+  def limit
+    min, max, default = 1, 500, 10
+    req = @request.query["limit"]
+    (req =~ /^\d+$/) ? [min, [req.to_i, max].min].max : default
+  end
+
+  def include_queries?
+    request.path_info[:queries] === true
   end
 end
 
@@ -728,6 +742,7 @@ App = Webmachine::Application.new do |app|
 
     add ["reviews"], ReviewsResource
     add ["reviews;template"], ReviewsTemplateResource
+    add ["reviews;queries"], ReviewsResource, :queries => true
     add ["reviews", :id], ReviewResource
 
     add ["signups"], SignupsResource

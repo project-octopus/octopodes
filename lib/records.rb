@@ -277,7 +277,9 @@ end
 
 class Documents
 
-  attr_accessor :data, :error, :base_uri, :links, :include_template, :include_items, :include_item_link
+  attr_accessor :data, :error, :base_uri, :links, :include_template,
+                :include_queries, :include_items, :include_item_link,
+                :queries
 
   def initialize(json = '{}', limit = nil, startkey = nil, prevkey = nil)
     @limit = limit
@@ -335,6 +337,14 @@ class Documents
             (i[:links] || []).each do |l|
               item.add_link l[:href], l[:rel], prompt: l[:prompt]
             end
+          end
+        end
+      end
+      if @include_queries
+        builder.add_query(@base_url, "search", prompt: "Search") do |query|
+          (query_data || []).each do |datum|
+            query.add_data datum[:name], prompt: datum[:prompt],
+                                         value: datum[:value]
           end
         end
       end
@@ -527,6 +537,11 @@ class WebPageDocuments < Documents
      {:name => "license", :prompt => "License"},
      {:name => "description", :prompt => "Description"},
      {:name => "isBasedOnUrl", :prompt => "Based on URL"}]
+  end
+
+  def query_data
+    queries = !@queries.nil? ? @queries : {}
+    [{:name => "limit", :prompt => "Limit", :value => queries["limit"]}]
   end
 
 end

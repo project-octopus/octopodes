@@ -37,6 +37,7 @@ class CollectionTemplate < ApplicationTemplate
 
     @items = collection.items
     @error = collection.error
+    @queries = collection.queries
     unless collection.template.nil?
       @inputs = collection.template.data
     end
