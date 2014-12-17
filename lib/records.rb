@@ -232,6 +232,7 @@ class WebPages < Datastore
   end
 
   def self.all(limit = nil, startkey = nil, prevkey = nil)
+
     uri = URI("#{db.path}/_design/all/_view/reviews")
     params  = [["descending", "true"]]
 
@@ -248,6 +249,22 @@ class WebPages < Datastore
     response = server.get(uri.to_s)
     JSON.parse(response.body)
     WebPageDocuments.new(response.body, limit, startkey, prevkey)
+  end
+
+  def self.by_url(limit, url)
+
+    uri = URI("#{db.path}/_design/all/_view/urls")
+    params  = []
+
+    params << ["key", '"' + url + '"']
+    params << ["limit", limit]
+
+    uri.query = URI.encode_www_form(params)
+    puts uri.to_s
+
+    response = server.get(uri.to_s)
+    JSON.parse(response.body)
+    WebPageDocuments.new(response.body, limit)
   end
 
   def self.find(id)
@@ -373,14 +390,15 @@ class Documents
   def links
     if @startkey
       start_key = URI(@base_uri)
-      start_key.query = URI.encode_www_form([["startkey", @prevkey]])
+      start_key.query = URI.encode_www_form([["startkey", @prevkey], ["limit", @limit]])
       @links << {:href => start_key, :rel => "previous", :prompt => "Previous"}
     end
 
     if @next_startkey
       next_key = URI(@base_uri)
       next_params = [["startkey", @next_startkey],
-                     ["prevkey", @startkey]]
+                     ["prevkey", @startkey],
+                     ["limit", @limit]]
       next_key.query = URI.encode_www_form(next_params)
       @links << {:href => next_key, :rel => "next", :prompt => "Next"}
     end
@@ -541,7 +559,8 @@ class WebPageDocuments < Documents
 
   def query_data
     queries = !@queries.nil? ? @queries : {}
-    [{:name => "limit", :prompt => "Limit", :value => queries["limit"]}]
+    [{:name => "url", :prompt => "URL", :value => queries["url"]},
+     {:name => "limit", :prompt => "Limit", :value => queries["limit"]}]
   end
 
 end

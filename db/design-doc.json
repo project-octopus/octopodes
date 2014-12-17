@@ -5,7 +5,10 @@
 
   "views": {
     "urls": {
-      "map": "function(doc) { if (doc.url) { emit(doc.url, doc.url); } }"
+      "map": "function(doc) { if (doc.url) { emit(doc.url, doc); } if (doc.hasPart && doc.hasPart.isBasedOnUrl) {emit(doc.hasPart.isBasedOnUrl, doc);} if (doc.hasPart && doc.hasPart.associatedMedia && doc.hasPart.associatedMedia.contentUrl) {emit(doc.hasPart.associatedMedia.contentUrl, doc);} }"
+    },
+    "by_url": {
+      "map": "function(doc) { if (doc.url) { emit([doc.url, doc._id], doc); } }"
     },
     "webpages": {
       "map": "function(doc) { if(doc['@type'] === 'WebPage') { emit(doc._id,doc); } }"

@@ -200,7 +200,7 @@ class ReviewsResource < CollectionResource
   end
 
   def documents
-    @documents ||= WebPages::all(limit, startkey, prevkey)
+    @documents ||= url.nil? ? WebPages::all(limit, startkey, prevkey) : WebPages::by_url(limit, url)
   end
 
   def links
@@ -214,6 +214,10 @@ class ReviewsResource < CollectionResource
     min, max, default = 1, 500, 10
     req = @request.query["limit"]
     (req =~ /^\d+$/) ? [min, [req.to_i, max].min].max : default
+  end
+
+  def url
+    @request.query["url"]
   end
 
   def include_queries?
@@ -247,10 +251,6 @@ class ReviewsTemplateResource < ReviewsResource
 
   def documents
     @documents ||= WebPageDocuments.new
-  end
-
-  def url
-    @request.query["url"]
   end
 end
 
