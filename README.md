@@ -101,4 +101,4 @@ Passwords are stored in the same database as all other documents, using the bcry
 
 ## Credits
 
-Octopus by Jason Grube from The Noun Project
+Logo: "[Octopus](http://thenounproject.com/term/octopus/15331/)" by Jason Grube from The Noun Project used under [CC-BY-3.0-US](http://creativecommons.org/licenses/by/3.0/us/)
