@@ -588,7 +588,11 @@ class FeedResource < Webmachine::Resource
 
   private
   def documents
-    @documents ||= WebPages::all
+    @documents ||= WebPages::all(limit)
+  end
+
+  def limit
+    20
   end
 end
 
