@@ -11,7 +11,7 @@
       "map": "function(doc) { if (doc.url) { emit([doc.url, doc._id], doc); } }"
     },
     "domains": {
-      "map": "function(doc) { if(doc['@type'] === 'WebPage') { if (doc.url) { var domain = doc.url.match(\/https?:\\\/\\\/([^\\\/]+)\/)[0]; if (domain) { emit(domain, 1); } } } }",
+      "map": "function(doc) { if(doc['@type'] === 'WebPage') { if (doc.url) { var domain = doc.url.match(\/^[a-z][a-z0-9+\\-.]*:\\\/\\\/([a-z0-9\\-._~%!$&\'()*+,;=]+@)?([a-z0-9\\-._~%]+|\\[[a-z0-9\\-._~%!$&\'()*+,;=:]+\\])\/)[2]; if (domain) { emit(domain, 1); } } } }",
       "reduce": "_count"
     },
     "webpages": {
