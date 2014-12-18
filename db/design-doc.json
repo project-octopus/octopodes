@@ -10,6 +10,10 @@
     "by_url": {
       "map": "function(doc) { if (doc.url) { emit([doc.url, doc._id], doc); } }"
     },
+    "domains": {
+      "map": "function(doc) { if(doc['@type'] === 'WebPage') { if (doc.url) { var domain = doc.url.match(\/https?:\\\/\\\/([^\\\/]+)\/)[0]; if (domain) { emit(domain, 1); } } } }",
+      "reduce": "_count"
+    },
     "webpages": {
       "map": "function(doc) { if(doc['@type'] === 'WebPage') { emit(doc._id,doc); } }"
     },
