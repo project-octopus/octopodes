@@ -1,2 +1,3 @@
 User-agent: *
-Allow: /
+Disallow: /login
+Disallow: /reviews;template
