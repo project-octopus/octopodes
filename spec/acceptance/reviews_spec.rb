@@ -125,6 +125,7 @@ resource "Reviews" do
     example "Getting all reviews", :document => false do
       do_request
 
+      expect(response_body).not_to include("template")
       expect(status).to eq(200)
     end
   end
@@ -234,6 +235,18 @@ resource "Review" do
       do_request
 
       expect(status).to eq(404)
+    end
+  end
+
+  get "http://project-octopus.org/reviews/:id" do
+    let(:accept_header) { "text/html" }
+    let(:id) { "webpage0" }
+
+    example "Getting a review when not logged in", :document => false do
+      do_request
+
+      expect(response_body).not_to include("template")
+      expect(status).to eq(200)
     end
   end
 

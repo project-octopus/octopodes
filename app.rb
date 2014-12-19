@@ -204,10 +204,15 @@ class ReviewsResource < CollectionResource
   end
 
   def links
-    [{:href => @request.base_uri.to_s + 'reviews;template',
-     :rel => "template", :prompt => "Add a Work"},
-     {:href => @request.base_uri.to_s + 'reviews;queries',
-     :rel => "queries", :prompt => "Search"}]
+    links = []
+
+    unless @user.nil? || @user.empty?
+      links << {:href => @request.base_uri.to_s + 'reviews;template',
+                :rel => "template", :prompt => "Add a Work"}
+    end
+
+     links << {:href => @request.base_uri.to_s + 'reviews;queries',
+               :rel => "queries", :prompt => "Search"}
   end
 
   def limit
@@ -294,8 +299,12 @@ class ReviewResource < CollectionResource
     add_work_uri = URI(@request.base_uri.to_s + "reviews;template")
     add_work_uri.query = URI.encode_www_form([["url", url]])
 
-    [{:href => add_work_uri.to_s, :rel => "template",
-      :prompt => "Add another Work on this Page"}]
+    unless @user.nil? || @user.empty?
+      [{:href => add_work_uri.to_s, :rel => "template",
+        :prompt => "Add another Work on this Page"}]
+    else
+      []
+    end
   end
 
 end
