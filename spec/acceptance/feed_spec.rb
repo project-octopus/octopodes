@@ -4,7 +4,7 @@ require 'rspec_api_documentation/dsl'
 resource "Feed" do
   header "Accept", :accept_header
 
-  get "http://project-octpus.org/feed" do
+  get "http://project-octopus.org/feed" do
     let(:accept_header) { "application/atom+xml" }
 
     example "Getting atom feed", :document => false do
@@ -23,7 +23,7 @@ end
 
 resource "FeedItem" do
 
-  get "http://project-octpus.org/u/:id" do
+  get "http://project-octopus.org/u/:id" do
     let(:id) { "webpage0" }
 
     example "Getting feed item", :document => false do
@@ -32,7 +32,7 @@ resource "FeedItem" do
     end
   end
 
-  get "http://project-octpus.org/u/:id" do
+  get "http://project-octopus.org/u/:id" do
     let(:id) { "xxx" }
 
     example "Getting non-existent feed item", :document => false do
