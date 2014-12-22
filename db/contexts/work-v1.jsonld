@@ -1,0 +1,21 @@
+{
+  "@context":
+    {
+      "@base": "http://project-octopus.org/",
+      "schema": "http://schema.org/",
+      "CreativeWork": "schema:CreativeWork",
+      "MediaObject": "schema:MediaObject",
+      "associatedMedia": {
+        "@id": "schema:MediaObject",
+        "@type": "@id"
+      },
+      "exampleOfWork" : {
+        "@id": "contexts/work/v1",
+        "@type": "@id"
+      },
+      "isBasedOnUrl": "schema:url",
+      "license": "schema:license",
+      "name": "schema:name",
+      "url": "schema:url"
+    }
+}

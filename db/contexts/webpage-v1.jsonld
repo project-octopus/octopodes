@@ -1,0 +1,14 @@
+{
+  "@context":
+    {
+      "@base": "http://project-octopus.org/",
+      "schema": "http://schema.org/",
+      "CreativeWork": "schema:CreativeWork",
+      "hasPart": {
+        "@id": "contexts/work/v1",
+        "@type": "@id"
+      },
+      "name": "schema:name",
+      "url": "schema:url"
+    }
+}
