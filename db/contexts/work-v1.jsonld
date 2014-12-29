@@ -3,7 +3,6 @@
     {
       "@base": "http://project-octopus.org/",
       "schema": "http://schema.org/",
-      "CreativeWork": "schema:CreativeWork",
       "MediaObject": "schema:MediaObject",
       "associatedMedia": {
         "@id": "schema:MediaObject",
