@@ -51,6 +51,127 @@
       "name": "Stanley Wong"
     },
     {
+      "_id": "works_3",
+      "@context": "contexts/work/v1",
+      "@id": "works/3",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "https://farm9.staticflickr.com/8321/7953676892_e1428d10b3_b.jpg"
+      },
+      "creator": "Christopher Adams",
+      "license": "https://creativecommons.org/licenses/by/2.0/",
+      "name": "João Vasco Paiva Hong Kong",
+      "url": "https://www.flickr.com/photos/christopheradams/7953676892/in/photostream"
+    },
+    {
+      "_id": "webpages_2",
+      "@context": "contexts/webpage/v1",
+      "@id": "webpages/2",
+      "@type": "WebPage",
+      "lastReviewed": "2014-12-30T16:31:30+00:00",
+      "name": "João Vasco Paiva",
+      "reviewedBy": "users/cxadams",
+      "url": "http://en.wikipedia.org/wiki/Jo%C3%A3o_Vasco_Paiva"
+    },
+    {
+      "_id": "works_4",
+      "@context": "contexts/work/v1",
+      "@id": "works/4",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Artist_Jo%C3%A3o_Vasco_Paiva_in_Hong_Kong%2C_2012.jpg/220px-Artist_Jo%C3%A3o_Vasco_Paiva_in_Hong_Kong%2C_2012.jpg"
+      },
+      "creator": "Christopher Adams",
+      "exampleOfWork": "works/3",
+      "isPartOf": "webpages/2",
+      "isBasedOnUrl": "http://www.flickr.com/photos/christopheradams/7953676892/in/photostream",
+      "license": "http://creativecommons.org/licenses/by/2.0/deed.en",
+      "name": "Artist João Vasco Paiva in Hong Kong, 2012.",
+      "url": "http://en.wikipedia.org/wiki/File:Artist_Jo%C3%A3o_Vasco_Paiva_in_Hong_Kong,_2012.jpg"
+    },
+    {
+      "_id": "works_5",
+      "@context": "contexts/work/v1",
+      "@id": "works/5",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "https://lh5.ggpht.com/ezN643EEufZnbCG4ywp8iujslHrU6HSJ7hhY4cUn1JVwzXmLSKkOhMx9eCgcWn0r7JdW0b9_w5_KB8V7oN0zPgQzKNx1=s0"
+      },
+      "creator": "Jan Asselijn",
+      "name": "De bedreigde zwaan, Jan Asselijn, ca. 1650 ",
+      "url": "https://www.rijksmuseum.nl/nl/collectie/SK-A-4"
+    },
+    {
+      "_id": "webpages_3",
+      "@context": "contexts/webpage/v1",
+      "@id": "webpages/3",
+      "@type": "WebPage",
+      "lastReviewed": "2014-12-30T16:31:30+00:00",
+      "name": "Jan Asselijn",
+      "reviewedBy": "users/cxadams",
+      "url": "http://en.wikipedia.org/wiki/Jan_Asselijn"
+    },
+    {
+      "_id": "webpages_4",
+      "@context": "contexts/webpage/v1",
+      "@id": "webpages/4",
+      "@type": "WebPage",
+      "lastReviewed": "2014-12-30T16:31:30+00:00",
+      "name": "Rijksmuseum Amsterdam",
+      "reviewedBy": "users/cxadams",
+      "url": "http://nl.wikipedia.org/wiki/Rijksmuseum_Amsterdam"
+    },
+    {
+      "_id": "works_6",
+      "@context": "contexts/work/v1",
+      "@id": "works/6",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Jan_Asselijn_-_The_Threatened_Swan.jpg/711px-Jan_Asselijn_-_The_Threatened_Swan.jpg"
+      },
+      "creator": "Jan Asselijn (circa 1600/1616–1652)",
+      "exampleOfWork": "works/5",
+      "isPartOf": ["webpages/3", "webpages/4"],
+      "isBasedOnUrl": "http://hdl.handle.net/10934/RM0001.COLLECT.5829",
+      "license": "Public Domain",
+      "name": "File:Jan Asselijn - The Threatened Swan.jpg",
+      "url": "http://commons.wikimedia.org/wiki/File:Jan_Asselijn_-_The_Threatened_Swan.jpg"
+    },
+    {
+      "_id": "works_7",
+      "@context": "contexts/work/v1",
+      "@id": "works/7",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "https://lh5.ggpht.com/b8qPwja1cwZLlO1Lz2iJIa0-sCh6hdFii3ceY0FF2eVr1ABMhuypXCDcfkoHhxeXbhWLdYTFC1jQkPY3FdknF8Mb6n8"
+      },
+      "creator": "Jan Asselijn",
+      "name": "Muleteers beside an Italian Ruin, Jan Asselijn, c. 1650",
+      "url": "https://www.rijksmuseum.nl/en/collection/SK-C-89"
+    },
+    {
+      "_id": "works_8",
+      "@context": "contexts/work/v1",
+      "@id": "works/8",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "http://upload.wikimedia.org/wikipedia/commons/6/66/Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg"
+      },
+      "creator": "Jan Asselijn (circa 1600/1616–1652)",
+      "exampleOfWork": "works/7",
+      "isPartOf": "webpages/3",
+      "isBasedOnUrl": "https://www.rijksmuseum.nl/en/collection/SK-C-89",
+      "license": "Public Domain",
+      "name": "File:Italian Landscape with the Ruins of a Roman Bridge and Aqueduct.jpg",
+      "url": "http://en.wikipedia.org/wiki/File:Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg"
+    },
+    {
       "_id": "user_1",
       "@context": "contexts/user/v1",
       "@id": "users/cxadams",
