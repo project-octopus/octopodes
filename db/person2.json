@@ -1,7 +1,0 @@
-{
-  "_id": "person2",
-  "@context": "http://schema.org",
-  "@type": "Person",
-  "name": "Jon Phillips",
-  "url": "http://rejon.org"
-}

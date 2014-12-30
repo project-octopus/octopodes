@@ -1,8 +1,0 @@
-{
-  "_id": "person1",
-  "@id": "user1",
-  "@context": "http://schema.org",
-  "@type": "Person",
-  "name": "Christopher Adams",
-  "url": "https://www.flickr.com/people/christopheradams/"
-}
