@@ -13,8 +13,17 @@
         "@type": "@id"
       },
       "isBasedOnUrl": "schema:url",
+      "lastReviewed": "schema:Date",
       "license": "schema:license",
       "name": "schema:name",
+      "reviewedBy": {
+        "@id": "contexts/user/v1",
+        "@type": "@id"
+      },
+      "isPartOf": {
+        "@id": "contexts/webpage/v1",
+        "@type": "@id"
+      },
       "url": "schema:url"
     }
 }

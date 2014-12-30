@@ -1,0 +1,10 @@
+{
+  "@context":
+    {
+      "schema": "http://schema.org/",
+      "Person": "schema:person",
+      "name": "schema:name",
+      "dateCreated": "schema:dateCreated",
+      "dateModified": "schema:dateModified"
+    }
+}

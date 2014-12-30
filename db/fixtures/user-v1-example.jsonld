@@ -1,0 +1,7 @@
+{
+  "@context": "user/v1",
+  "@id": "users.cxadams",
+  "name": "Christopher Adams",
+  "dateCreated": "2014-10-11T03:21:43+00:00",
+  "dateModified": "2014-10-11T03:21:43+00:00"
+}

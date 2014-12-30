@@ -1,0 +1,6 @@
+{
+  "@context": "identity/v1",
+  "@id": "users.cxadams.identity",
+  "created": "2014-10-11T03:21:43+00:00",
+  "password": "$2y$10$c4/K09uCglG9cUgCCGe28OK/7PpLoY6IlVRGP33Ha11olU8gGz1vu"
+}

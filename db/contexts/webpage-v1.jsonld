@@ -3,11 +3,12 @@
     {
       "@base": "http://project-octopus.org/",
       "schema": "http://schema.org/",
-      "hasPart": {
-        "@id": "contexts/work/v1",
+      "lastReviewed": "schema:Date",
+      "name": "schema:name",
+      "reviewedBy": {
+        "@id": "contexts/user/v1",
         "@type": "@id"
       },
-      "name": "schema:name",
       "url": "schema:url"
     }
 }

@@ -1,9 +1,9 @@
 {
   "docs": [
     {
-      "_id": "works_1_edit_1",
+      "_id": "works_1",
       "@context": "contexts/work/v1",
-      "@id": "works.1",
+      "@id": "works/1",
       "@type": "CreativeWork",
       "associatedMedia": {
         "@type": "MediaObject",
@@ -15,24 +15,47 @@
       "url": "https://www.flickr.com/photos/christopheradams/3174263710/"
     },
     {
-      "_id": "webpages_1_edit_1",
+      "_id": "webpages_1",
       "@context": "contexts/webpage/v1",
-      "@id": "webpages.1",
+      "@id": "webpages/1",
       "@type": "WebPage",
-      "hasPart": {
-        "@type": "CreativeWork",
-        "associatedMedia": {
-          "@type": "MediaObject",
-          "contentUrl": "http://www.thecourier.co.uk/polopoly_fs/1.829.1352144574!/image/image.jpg_gen/derivatives/box_620/image.jpg"
-        },
-        "creator": "Flickr user christopheradams",
-        "exampleOfWork": "works.1",
-        "isBasedOnUrl": "http://www.flickr.com/photos/christopheradams/3174263710/sizes/l/",
-        "license": "Photo used under Creative Commons licence courtesy of Flickr user christopheradams.",
-        "name": "Stanley Wong"
-      },
+      "lastReviewed": "2014-09-01T10:37:27+00:00",
       "name": "St Andrews Museum secures exclusive Stanley Wong exhibition",
+      "reviewedBy": "users/cxadams",
       "url": "http://www.thecourier.co.uk/lifestyle/leisure/books/st-andrews-museum-secures-exclusive-stanley-wong-exhibition-1.27891"
+    },
+    {
+      "_id": "works_2",
+      "@context": "contexts/work/v1",
+      "@id": "works/2",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "http://www.thecourier.co.uk/polopoly_fs/1.829.1352144574!/image/image.jpg_gen/derivatives/box_620/image.jpg"
+      },
+      "creator": "Flickr user christopheradams",
+      "exampleOfWork": "works/1",
+      "isPartOf": "webpages/1",
+      "isBasedOnUrl": "http://www.flickr.com/photos/christopheradams/3174263710/sizes/l/",
+      "license": "Photo used under Creative Commons licence courtesy of Flickr user christopheradams.",
+      "name": "Stanley Wong"
+    },
+    {
+      "_id": "user_1",
+      "@context": "contexts/user/v1",
+      "@id": "users/cxadams",
+      "@type": "Person",
+      "name": "Christopher Adams",
+      "dateCreated": "2014-08-11T03:21:43+00:00",
+      "dateModified": "2014-08-11T03:21:43+00:00"
+    },
+    {
+      "_id": "user_1_identity",
+      "@context": "contexts/identity/v1",
+      "@id": "users/cxadams/identity",
+      "@type": "Identity",
+      "created": "2014-08-11T03:21:43+00:00",
+      "password": "$2y$10$c4/K09uCglG9cUgCCGe28OK/7PpLoY6IlVRGP33Ha11olU8gGz1vu"
     }
   ]
 }
