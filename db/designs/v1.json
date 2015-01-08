@@ -1,0 +1,21 @@
+{
+  "_id": "_design/all",
+  "views": {
+    "webpages": {
+      "map": "function(doc) { if (doc._id.indexOf('::v') == -1 && doc['@type'] === 'WebPage') { emit(doc['@id'],1); } }",
+      "reduce": "_count"
+    },
+    "works": {
+      "map": "function(doc) { if (doc._id.indexOf('::v') == -1 && doc['@type'] === 'CreativeWork') { emit(doc['@id'],1); } }",
+      "reduce": "_count"
+    },
+    "domains": {
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && (doc['@type'] === 'WebPage' || doc['@type'] === 'CreativeWork')) { urls = []; if (doc.url) { urls.push(doc.url) } urls.forEach(function(url) { var domain = url.match(/^[a-z][a-z0-9+\\-.]*:\\/\\/([a-z0-9\\-._~%!$&'()*+,;=]+@)?([a-z0-9\\-._~%]+|\\[[a-z0-9\\-._~%!$&'()*+,;=:]+\\])/)[2]; if (domain) { emit([domain.replace(/^www./g, ''), doc['@id'], doc.name], 1); } } ); } }",
+      "reduce": "_count"
+    },
+    "by_work": {
+      "map": "function(doc) { if (doc._id.indexOf('::v') == -1) { if (doc['@type'] === 'CreativeWork') { emit([doc['@id'], doc['@id'], doc.name],1); } if (doc['@type'] === 'WebPage' && doc.hasPart) { doc.hasPart.forEach(function(part) { emit([part.encodesCreativeWork, part['@id'], part.name],1) }); } } }",
+      "reduce": "_count"
+    }
+  }
+}

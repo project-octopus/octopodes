@@ -1,0 +1,119 @@
+{
+  "docs": [
+    {
+      "_id": "works_1",
+      "@context": "contexts/work/v1",
+      "@id": "works/1",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "https://lh5.ggpht.com/ezN643EEufZnbCG4ywp8iujslHrU6HSJ7hhY4cUn1JVwzXmLSKkOhMx9eCgcWn0r7JdW0b9_w5_KB8V7oN0zPgQzKNx1=s0"
+      },
+      "creator": "Jan Asselijn",
+      "lastReviewed": "2014-12-30T16:31:30+00:00",
+      "name": "De bedreigde zwaan, Jan Asselijn, ca. 1650",
+      "reviewedBy": "users/mzeinstra",
+      "url": "https://www.rijksmuseum.nl/nl/collectie/SK-A-4"
+    },
+    {
+      "_id": "works_1::v1",
+      "@context": "contexts/work/v1",
+      "@id": "works/1",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "https://lh5.ggpht.com/ezN643EEufZnbCG4ywp8iujslHrU6HSJ7hhY4cUn1JVwzXmLSKkOhMx9eCgcWn0r7JdW0b9_w5_KB8V7oN0zPgQzKNx1=s0"
+      },
+      "creator": "Jan Asselijn",
+      "lastReviewed": "2014-11-30T16:31:30+00:00",
+      "name": "The Threatened Swan, Jan Asselijn, c. 1650",
+      "reviewedBy": "users/cxadams",
+      "url": "https://www.rijksmuseum.nl/en/collection/SK-A-4"
+    },
+    {
+      "_id": "works_2",
+      "@context": "contexts/work/v1",
+      "@id": "works/2",
+      "@type": "CreativeWork",
+      "associatedMedia": {
+        "@type": "MediaObject",
+        "contentUrl": "https://lh4.ggpht.com/L_cCfsvT1m7kQE6EsOZEEX9DioDmdF1tA2hyxAk1-DTVfSOjJN0hTH25-wbdMxoxzmaQvwipHMTchsKmVZ3bvbGDdQdp"
+      },
+      "creator": "Jan Asselijn",
+      "lastReviewed": "2014-12-30T16:31:30+00:00",
+      "name": "Muleteers beside an Italian Ruin, Jan Asselijn, c. 1650",
+      "reviewedBy": "users/cxadams",
+      "url": "https://www.rijksmuseum.nl/en/collection/SK-C-89"
+    },
+    {
+      "_id": "webpages_1",
+      "@context": "contexts/webpage/v1",
+      "@id": "webpages/1",
+      "@type": "WebPage",
+      "hasPart" : [
+        {
+          "@id": "webpages/1/mediaobjects/1",
+          "@type": "MediaObject",
+          "basedOnUrl": "http://en.wikipedia.org/wiki/File:Jan_Asselijn_-_The_Threatened_Swan.jpg",
+          "encodesCreativeWork": "works/1",
+          "contentUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Jan_Asselijn_-_The_Threatened_Swan.jpg/200px-Jan_Asselijn_-_The_Threatened_Swan.jpg",
+          "creator": "Jan Asselijn",
+          "name": "The Threatened Swan, one of the topworks in the Rijksmuseum"
+        },
+        {
+          "@id": "webpages/1/mediaobjects/2",
+          "@type": "MediaObject",
+          "basedOnUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg/200px-Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg",
+          "encodesCreativeWork": "works/2",
+          "contentUrl": "http://en.wikipedia.org/wiki/File:Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg",
+          "creator": "Jan Asselijn",
+          "name": "Asselijn, Jan ~ Italian Landscape with the Ruins of a Roman Bridge and Aqueduct, undated, oil on canvas, Rijksmuseum, Amsterdam"
+        }
+      ],
+      "lastReviewed": "2014-09-12T16:31:30+00:00",
+      "name": "Jan Asselijn",
+      "reviewedBy": "users/cxadams",
+      "url": "http://en.wikipedia.org/wiki/Jan_Asselijn"
+    },
+    {
+      "_id": "webpages_2",
+      "@context": "contexts/webpage/v1",
+      "@id": "webpages/2",
+      "@type": "WebPage",
+      "hasPart" : [
+        {
+          "@id": "webpages/2/mediaobjects/1",
+          "@type": "MediaObject",
+          "basedOnUrl": "http://hdl.handle.net/10934/RM0001.COLLECT.5829",
+          "encodesCreativeWork": "works/1",
+          "contentUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Jan_Asselijn_-_The_Threatened_Swan.jpg/711px-Jan_Asselijn_-_The_Threatened_Swan.jpg",
+          "creator": "Jan Asselijn (circa 1600/1616–1652)",
+          "name": "Jan_Asselijn_-_The_Threatened_Swan.jpg"
+        }
+      ],
+      "lastReviewed": "2014-09-12T16:31:30+00:00",
+      "name": "File:Jan Asselijn - The Threatened Swan.jpg",
+      "reviewedBy": "users/cxadams",
+      "url": "http://en.wikipedia.org/wiki/File:Jan_Asselijn_-_The_Threatened_Swan.jpg"
+    },
+    {
+      "_id": "webpages_3",
+      "@context": "contexts/webpage/v1",
+      "@id": "webpages/3",
+      "@type": "WebPage",
+      "hasPart" : [
+        {
+          "@id": "webpages/3/mediaobjects/1",
+          "@type": "MediaObject",
+          "encodesCreativeWork": "works/1",
+          "creator": "Jan Asselijn",
+          "name": "The Threatened Swan"
+        }
+      ],
+      "lastReviewed": "2014-09-12T16:31:30+00:00",
+      "name": "The Threatened Swan - Jan Asselijn - Google Cultural Institute",
+      "reviewedBy": "users/cxadams",
+      "url": "https://www.google.com/culturalinstitute/u/0/asset-viewer/the-threatened-swan/6QGUR58bRgIKEA"
+    }
+  ]
+}
