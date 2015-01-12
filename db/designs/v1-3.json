@@ -1,0 +1,29 @@
+{
+  "_id": "_design/all",
+  "views": {
+    "works": {
+      "map": "function(doc) { if (doc._id.indexOf('::v') == -1 && (doc['@type'] === 'CreativeWork' || doc['@type'] === 'Painting')) { emit(doc['@id'],1); } }",
+      "reduce": "_count"
+    },
+    "publications": {
+      "map": "function(doc) { if (doc._id.indexOf('::v') == -1 && (doc['@type'] === 'ItemPage' || doc['@type'] == 'ImageObject')) { emit(doc['@id'],1); } }",
+      "reduce": "_count"
+    },
+    "edits": {
+      "map": "function(doc) { t = doc['@type']; if (t === 'WebPage' || t === 'CreativeWork' || t === 'Painting' || t === 'ItemPage' || t === 'ImageObject' || t === 'ImageObject') { emit([doc['@id'], doc.lastReviewed, doc.reviewedBy],1); } }",
+      "reduce": "_count"
+    },
+    "domains": {
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1) { if (doc['@type'] === 'WebPage' || doc['@type'] === 'ItemPage' || doc['@type'] === 'ImageObject') { urls = []; if (doc.url) { urls.push(doc.url) } if (doc.contentUrl) { urls.push(doc.contentUrl) } if (doc.partOf) { urls.push(doc.partOf) } urls.forEach(function(url) { var domain = url.match(/^[a-z][a-z0-9+\\-.]*:\\/\\/([a-z0-9\\-._~%!$&'()*+,;=]+@)?([a-z0-9\\-._~%]+|\\[[a-z0-9\\-._~%!$&'()*+,;=:]+\\])/)[2]; if (domain) { emit([domain.replace(/^www./g, ''), doc['@id'], doc.name], 1); } } ); } } }",
+      "reduce": "_count"
+    },
+    "by_work": {
+      "map": "function(doc) { if (doc._id.indexOf('::v') == -1) { if (doc['@type'] === 'CreativeWork' || doc['@type'] === 'Painting') { emit([doc['@id'], doc['@id'], doc.name],1); } if (doc['@type'] === 'ItemPage' || doc['@type'] === 'ImageObject') { emit([doc.encodesCreativeWork, doc['@id'], doc.name],1) } } }",
+      "reduce": "_count"
+    },
+    "by_reviewer": {
+      "map": "function(doc) { if (doc.reviewedBy && doc.lastReviewed) { emit([doc.reviewedBy, doc.lastReviewed, doc['@id']], 1); } }",
+      "reduce": "_count"
+    }
+  }
+}

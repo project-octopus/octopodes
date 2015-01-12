@@ -58,14 +58,14 @@
           "encodesCreativeWork": "works/1",
           "contentUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Jan_Asselijn_-_The_Threatened_Swan.jpg/200px-Jan_Asselijn_-_The_Threatened_Swan.jpg",
           "creator": "Jan Asselijn",
-          "name": "The Threatened Swan, one of the topworks in the Rijksmuseum"
+          "name": "The Threatened Swan, one of the top works in the Rijksmuseum"
         },
         {
           "@id": "webpages/1/mediaobjects/2",
           "@type": "MediaObject",
-          "basedOnUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg/200px-Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg",
+          "basedOnUrl": "http://en.wikipedia.org/wiki/File:Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg",
+          "contentUrl": "http://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg/200px-Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg",
           "encodesCreativeWork": "works/2",
-          "contentUrl": "http://en.wikipedia.org/wiki/File:Italian_Landscape_with_the_Ruins_of_a_Roman_Bridge_and_Aqueduct.jpg",
           "creator": "Jan Asselijn",
           "name": "Asselijn, Jan ~ Italian Landscape with the Ruins of a Roman Bridge and Aqueduct, undated, oil on canvas, Rijksmuseum, Amsterdam"
         }
