@@ -7,6 +7,9 @@ require_relative 'lib/couch.rb'
 
 namespace :octopus do
 
+  @design_docs = [{:name => 'all', :file => 'db/design-doc.json'},
+                 {:name => 'contexts', :file => 'db/designs/contexts.json'}]
+
   namespace :db do
     desc "Create a database"
     task :create, :environment do |t, args|
@@ -23,8 +26,11 @@ namespace :octopus do
 
       case response.code.to_s
       when "201", "202"
-        design_doc = File.read("db/design-doc.json")
-        server.put("#{uri.path}/_design/all", design_doc)
+        @design_docs.each do |doc|
+          doc_path = "#{uri.path}/_design/#{doc[:name]}"
+          new_doc = JSON.parse(File.read(doc[:file]))
+          server.put(doc_path, new_doc.to_json)
+        end
         puts "Created #{database}"
       when "412"
         puts "The database #{database} already exists"
@@ -47,20 +53,25 @@ namespace :octopus do
 
       server = Couch::Server.new(uri.scheme, uri.host, uri.port, uri.user, password)
 
-      current_doc = JSON.parse(server.get("#{uri.path}/_design/all").body)
+      @design_docs.each do |doc|
+        doc_path = "#{uri.path}/_design/#{doc[:name]}"
+        new_doc = JSON.parse(File.read(doc[:file]))
+        current_doc = JSON.parse(server.get(doc_path).body)
 
-      new_doc = JSON.parse(File.read("db/design-doc.json"))
-      new_doc["_rev"] = current_doc["_rev"]
-      response = server.put("#{uri.path}/_design/all", new_doc.to_json)
+        unless current_doc["error"] === "not_found"
+          new_doc["_rev"] = current_doc["_rev"]
+        end
 
-      case response.code.to_s
-      when "201", "202"
-        puts "Updated #{database}"
-      else
-        puts "There was a problem updating #{database}"
-        puts response.body
+        response = server.put(doc_path, new_doc.to_json)
+
+        case response.code.to_s
+        when "201", "202"
+          puts "Updated #{database} with #{doc[:file]}"
+        else
+          puts "There was a problem updating #{database} with #{doc[:file]}"
+          puts response.body
+        end
       end
-
     end
 
     desc "Add test data to a database"
