@@ -31,9 +31,6 @@
       "map": "function(doc) { if(doc['@type'] === 'Identity') { emit(doc['@id'],doc['@id']); } }",
       "reduce": "function(keys, values) { return { '@id' : values[0] }; }"
     },
-    "identities": {
-      "map": "function(doc) { if(doc['@type'] === 'Identity') { emit(doc._id,doc); } }"
-    },
     "reviews": {
       "map": "function(doc) { if(doc['@type'] === 'WebPage') { emit([doc.lastReviewed, doc._id],doc); } }"
     },

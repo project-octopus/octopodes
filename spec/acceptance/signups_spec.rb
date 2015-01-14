@@ -152,3 +152,19 @@ resource "Signups" do
   end
 
 end
+
+resource "Signup" do
+  header "Accept", :accept_header
+  header "Content-Type", :content_type
+
+  get "http://project-octopus.org/signups/:identity" do
+    let(:accept_header) { "text/html" }
+    let(:identity) { "identity2" }
+
+    example "Getting the signup message", :document => false do
+      do_request
+
+      expect(status).to eq(200)
+    end
+  end
+end

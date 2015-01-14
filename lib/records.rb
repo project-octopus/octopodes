@@ -106,12 +106,6 @@ class Users < Datastore
     save(id, username, data)
   end
 
-  def self.all
-    response = server.get("#{db.path}/_design/all/_view/identities")
-    JSON.parse(response.body)
-    UserDocuments.new(response.body)
-  end
-
   def self.find(username)
     uri = URI("#{db.path}/_design/all/_view/users")
     params = [["endkey", "[\"#{username}\"]"],
@@ -151,9 +145,9 @@ class Users < Datastore
   end
 
   def self.identify(identity)
-    uri = URI("#{db.path}/_design/all/_view/identities")
-    params = [["startkey", "\"#{identity}\""],
-              ["endkey", "\"#{identity}\""]]
+    uri = URI("#{db.path}/_all_docs")
+    params = [["key", "\"#{identity}\""],
+              ["include_docs", "true"]]
     uri.query = URI.encode_www_form(params)
 
     response = server.get(uri.to_s)
@@ -472,7 +466,7 @@ class SignupDocuments < Documents
   private
   def items
     @items ||= (@documents["rows"] || []).map do |row|
-      doc = row["value"]
+      doc = row["doc"]
       item_id = doc["_id"]
 
       data = [cj_item_datum(doc, "@id", "username", "Username"),
