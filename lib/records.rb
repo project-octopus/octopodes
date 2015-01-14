@@ -145,7 +145,7 @@ class Users < Datastore
   end
 
   def self.identify(identity)
-    uri = URI("#{db.path}/_all_docs")
+    uri = URI("#{db.path}/_design/all/_view/identities")
     params = [["key", "\"#{identity}\""],
               ["include_docs", "true"]]
     uri.query = URI.encode_www_form(params)
