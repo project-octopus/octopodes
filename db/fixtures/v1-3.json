@@ -35,7 +35,7 @@
       "_id": "webpages_1",
       "@id": "webpages/1",
       "@type": "ItemPage",
-      "encodesCreativeWork": "works/1",
+      "about": "works/1",
       "license": "Public Domain",
       "name": "The Threatened Swan, Jan Asselijn, c. 1650",
       "publisher": "Rijksmuseum",
@@ -47,7 +47,7 @@
       "_id": "webpages_2",
       "@id": "webpages/2",
       "@type": "ItemPage",
-      "encodesCreativeWork": "works/2",
+      "about": "works/2",
       "license": "Public Domain",
       "name": "Muleteers beside an Italian Ruin, Jan Asselijn, c. 1650",
       "publisher": "Rijksmuseum",
@@ -93,13 +93,29 @@
       "_id": "webpages_4",
       "@id": "webpages/4",
       "@type": "ItemPage",
-      "encodesCreativeWork": "works/1",
+      "about": "works/1",
       "isBasedOnUrl": "http://hdl.handle.net/10934/RM0001.COLLECT.5829",
       "name": "File:Jan Asselijn - The Threatened Swan.jpg",
       "publisher": "Wikipedia",
       "reviewedBy": "users/cxadams",
       "lastReviewed": "2014-10-10T14:21:30+00:00",
       "url": "http://en.wikipedia.org/wiki/File:Jan_Asselijn...Swan.jpg"
+    },
+    {
+      "_id": "identity0",
+      "@id": "users/cxadams",
+      "@context": "contexts/identity/v1",
+      "@type": "Identity",
+      "created": "2014-08-11T03:21:43+00:00",
+      "password": "$2a$10$2qfh/REeNJCboHcqlJAewOZ0LfM6rmgYCXJqwszp7n66tCOjFLHBW"
+    },
+    {
+      "_id": "identity1",
+      "@id": "users/mzeinstra",
+      "@context": "contexts/identity/v1",
+      "@type": "Identity",
+      "created": "2014-08-11T03:21:43+00:00",
+      "password": "$2a$10$2qfh/REeNJCboHcqlJAewOZ0LfM6rmgYCXJqwszp7n66tCOjFLHBW"
     }
   ]
 }

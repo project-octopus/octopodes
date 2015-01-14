@@ -17,6 +17,16 @@ echo '==========='
 curl -sX GET "http://localhost:5984/project-octopus-v1/_design/all/_view/edits"
 
 echo ''
+echo 'Total users'
+echo '==========='
+curl -sX GET "http://localhost:5984/project-octopus-v1/_design/all/_view/users"
+
+echo ''
+echo 'All users'
+echo '==========='
+curl -sX GET "http://localhost:5984/project-octopus-v1/_design/all/_view/users?reduce=false"
+
+echo ''
 echo 'All Domains'
 echo '=================================='
 curl -sX GET "http://localhost:5984/project-octopus-v1/_design/all/_view/domains?group_level=1"
