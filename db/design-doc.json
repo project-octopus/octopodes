@@ -32,7 +32,7 @@
       "reduce": "function(keys, values) { return { '@id' : values[0] }; }"
     },
     "identities": {
-      "map": "function(doc) { if(doc['@type'] === 'Identity') { emit(doc['@id'],1); } }",
+      "map": "function(doc) { if(doc['@type'] === 'Identity') { emit(doc._id,1); } }",
       "reduce": "_count"
     },
     "reviews": {
