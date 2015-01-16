@@ -4,6 +4,7 @@
       "_id": "webpage0",
       "@context": "http://schema.org",
       "@type": "WebPage",
+      "description": "Original published photo of Stanley Wong",
       "hasPart": {
         "@type": "CreativeWork",
         "associatedMedia": {
@@ -26,6 +27,7 @@
       "_id": "webpage1",
       "@context": "http://schema.org",
       "@type": "WebPage",
+      "description": "Article about Stanley Wong, re-uses a Flickr photo",
       "hasPart": {
         "@type": "CreativeWork",
         "associatedMedia": {
@@ -49,6 +51,7 @@
       "_id": "baddata_webpage",
       "@context": "http://schema.org",
       "@type": "WebPage",
+      "description": "Example with a malformed URL",
       "hasPart": {
         "@type": "CreativeWork",
         "creator": "The Creator",
