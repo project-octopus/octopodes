@@ -60,57 +60,87 @@ class Datastore
       {"error" => "forbidden", "reason" => model.errors.full_messages.join(", ")}
     end
   end
-
 end
 
 class Users < Datastore
-  def self.create(id, data)
+  def self.token
+    uuid
+  end
+
+  def self.create(token, data)
     username = data["username"]
-    if (find(username).count >= 1)
+    if (exists(username))
       {"error" => "conflict", "reason" => "Username `#{username}` is taken."}
     else
-      save(id, username, data)
+        user = Identity.new.tap do |i|
+          i.username = username
+          i.new_password = data['password']
+          i.token = token
+        end
+
+        save_model(user)
     end
   end
 
-  def self.save(id, username, data)
+  def self.update(token, username, data)
+    first_user_doc = find(username).first
 
-    user = Identity.new.tap do |i|
-      i.doc_id = id
-      i.username = username
-      i.new_password = data['password']
+    if !first_user_doc.empty?
+      current = Identity.new(first_user_doc["doc"])
+      current.version!
+      save_model(current)
+
+      new = Identity.new(first_user_doc["doc"])
+      new.new_password = data["password"]
+      new.update!
+      save_model(new)
     end
-
-    save_model(user)
   end
 
-  def self.create_from_collection(id, collection)
+  def self.create_from_collection(token, collection)
     data = collection.template.data.inject({}) do |hash, cj_data|
       nv = cj_data.to_hash
       hash[nv[:name]] = nv[:value]
       hash
     end
 
-    create(id, data)
+    create(token, data)
   end
 
-  def self.create_from_form(id, decoded_www_form)
+  def self.create_from_form(token, decoded_www_form)
     data = trans_form_data(decoded_www_form)
 
-    create(id, data)
+    create(token, data)
   end
 
-  def self.save_from_form(id, username, decoded_www_form)
+  def self.update_from_form(token, username, decoded_www_form)
     data = trans_form_data(decoded_www_form)
 
-    save(id, username, data)
+    update(token, username, data)
+  end
+
+  def self.exists(username)
+    uri = URI("#{db.path}/_design/all/_view/usernames")
+    params = [["key", "\"#{username}\""], ["reduce", "false"]]
+
+    uri.query = URI.encode_www_form(params)
+    response = server.get(uri.to_s)
+
+    docs = JSON.parse(response.body)
+    docs["rows"].size >= 1
   end
 
   def self.find(username)
     uri = URI("#{db.path}/_design/all/_view/users")
-    params = [["endkey", "[\"#{username}\"]"],
-              ["startkey", "[\"#{username}\", {}]"],
-              ["limit", "1"], ["descending", "true"]]
+
+    user = Identity.new.tap do |i|
+      i.username = username
+    end
+
+    params = [["endkey", "[\"#{user.id}\"]"],
+              ["startkey", "[\"#{user.id}\", {}]"],
+              ["reduce", "false"], ["descending", "true"],
+              ["include_docs", "true"]]
     uri.query = URI.encode_www_form(params)
 
     response = server.get(uri.to_s)
@@ -120,7 +150,7 @@ class Users < Datastore
 
   def self.usernames(limit = nil, startkey = nil, prevkey = nil)
     uri = URI("#{db.path}/_design/all/_view/usernames")
-    params  = [["group", "true"]]
+    params  = [["reduce", "false"], ["include_docs", "true"]]
 
     if startkey
       params << ["startkey", startkey]
@@ -137,17 +167,16 @@ class Users < Datastore
   end
 
   def self.count
-    uri = URI("#{db.path}/_design/all/_view/usernames?group=true")
+    uri = URI("#{db.path}/_design/all/_view/usernames")
     response = server.get(uri.to_s)
 
     docs = JSON.parse(response.body)
-    docs["rows"].size
+    docs["rows"][0]["value"]
   end
 
-  def self.identify(identity)
-    uri = URI("#{db.path}/_design/all/_view/identities")
-    params = [["key", "\"#{identity}\""],
-              ["reduce", "false"],
+  def self.identify(token)
+    uri = URI("#{db.path}/_design/all/_view/user_tokens")
+    params = [["key", "\"#{token}\""], ["reduce", "false"], ["limit", "1"],
               ["include_docs", "true"]]
     uri.query = URI.encode_www_form(params)
 
@@ -157,19 +186,18 @@ class Users < Datastore
   end
 
   def self.check_auth(username, password)
-    identity = find(username).first
     user = {}
 
-    if !identity.empty?
-      user_id = identity["value"]["@id"]
-      user_secret = identity["value"]["password"]
-      is_authorized = BCrypt::Password.new(user_secret) == password
-      if is_authorized
-        user = {:username => user_id}
+    if (!username.nil? && !password.nil?)
+      first_user_doc = find(username).first
+
+      if !first_user_doc.empty?
+        identity = Identity.new(first_user_doc["doc"])
+        is_authorized = identity.password_match?(password)
+        if is_authorized
+          user = {:username => identity.username}
+        end
       end
-    else
-      # Spend time checking even if the user does not exist
-      BCrypt::Password.create((0...16).map { (65 + rand(26)).chr }.join) == password
     end
 
     user
@@ -448,13 +476,16 @@ class UserDocuments < Documents
   private
   def items
     @items ||= (@documents["rows"] || []).map do |row|
-      doc = row["value"]
-      item_id = doc["@id"]
+      doc = row["doc"]
+      identity = Identity.new(doc)
+      username = identity.username
+      created = identity[:created]
 
-      data = [cj_item_datum(doc, "@id", "username", "Username")]
+      data = [{:name => "username", :prompt => "Username", :value => username},
+              {:name => "dateCreated", :prompt => "Member since", :value => created}]
       links = []
 
-      {:id => item_id, :data => data, :links => links}
+      {:id => identity.username, :data => data, :links => links}
     end
   end
 
@@ -470,9 +501,7 @@ class SignupDocuments < Documents
       doc = row["doc"]
       item_id = doc["_id"]
 
-      data = [cj_item_datum(doc, "@id", "username", "Username"),
-              cj_item_datum(doc, "created", "created", "Registered"),
-              {:name => "message", :prompt => "Message", :value => "Your registration was successful. You may now login."}]
+      data = [{:name => "message", :prompt => "Message", :value => "Your registration was successful. You may now login."}]
       links = []
 
       {:id => item_id, :data => data, :links => links}

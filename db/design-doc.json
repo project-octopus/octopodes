@@ -21,18 +21,20 @@
       "map": "function(doc) { if(doc['@type'] === 'WebPage') { emit(doc.url,1); } }",
       "reduce": "_count"
     },
-    "persons": {
-      "map": "function(doc) { if(doc['@type'] === 'Person') { emit(doc.url,doc); } }"
-    },
     "users": {
-      "map": "function(doc) { if(doc['@type'] === 'Identity') { emit([doc['@id'], doc.created],doc); } }"
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['@type'] === 'Identity') { emit([doc['@id'], doc.created],1); } }",
+      "reduce": "_count"
     },
     "usernames": {
-      "map": "function(doc) { if(doc['@type'] === 'Identity') { emit(doc['@id'],doc['@id']); } }",
-      "reduce": "function(keys, values) { return { '@id' : values[0] }; }"
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['@type'] === 'Identity') { id = doc['@id']; username = id.replace('users/', ''); emit(username,1); } }",
+      "reduce": "_count"
     },
     "identities": {
-      "map": "function(doc) { if(doc['@type'] === 'Identity') { emit(doc._id,1); } }",
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['@type'] === 'Identity') { emit(doc._id,1); } }",
+      "reduce": "_count"
+    },
+    "user_tokens": {
+      "map": "function(doc) { if(doc['@type'] === 'Identity') { emit(doc['token'],1); } }",
       "reduce": "_count"
     },
     "reviews": {

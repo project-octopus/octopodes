@@ -1,6 +1,7 @@
 require 'hashie'
 require 'active_model'
 require 'bcrypt'
+require 'securerandom'
 
 require_relative 'thrash'
 
@@ -24,17 +25,45 @@ end
 # Class that models a user Identity
 #
 class Identity < Schema
-  property :username, from: "@id"
-  property :context, from: "@context", default: 'https://w3id.org/identity/v1'
+
+  property :id, from: "@id", default: ''
+  property :context, from: "@context", default: 'contexts/identity/v1'
   property :type, from: "@type", default: "Identity"
 
   property :password, from: "password"
 
-  property 'created', default: Time.now.utc.iso8601
+  property :created, from: "created", default: Time.now.utc.iso8601
+  property :updated, from: "updated", default: Time.now.utc.iso8601
+
+  property :token, from: "token"
 
   validates_presence_of :password
 
   validate :username_format
+
+  def version!
+    updated = self[:updated]
+    v_t = Time.iso8601(updated).to_i
+    v_r = SecureRandom.hex(2)
+    v_s = "::v" + v_t.to_s + '-' + v_r.to_s
+    self[:doc_rev] = nil
+    self[:doc_id] = self.doc_id + v_s
+  end
+
+  def update!
+    self[:updated] = Time.now.utc.iso8601
+  end
+
+  def username
+    self.id.sub(id_prefix, '')
+  end
+
+  def username=(name)
+    unless name.nil?
+      self.doc_id = doc_prefix + name
+      self.id = id_prefix + name
+    end
+  end
 
   def username_format
     has_one_letter = username =~ /[a-zA-Z]/
@@ -43,9 +72,23 @@ class Identity < Schema
   end
 
   def new_password=(password)
+    self.password = nil
     if !password.nil? && !password.empty?
       self.password = BCrypt::Password.create(password)
     end
+  end
+
+  def password_match?(password)
+    BCrypt::Password.new(self[:password]) == password
+  end
+
+  private
+  def doc_prefix
+    'identity' + ':'
+  end
+
+  def id_prefix
+    'users' + '/'
   end
 end
 

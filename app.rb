@@ -376,7 +376,7 @@ class SignupsResource < CollectionResource
   end
 
   def create_path
-    @create_path ||= Users::uuid
+    @create_path ||= Users::token
   end
 
   def from_cj
@@ -452,8 +452,8 @@ class SignupResource < CollectionResource
   end
 
   private
-  def identity
-    request.path_info[:identity]
+  def token
+    request.path_info[:token]
   end
 
   def title
@@ -468,7 +468,7 @@ class SignupResource < CollectionResource
   end
 
   def documents
-    @documents ||= Users::identify(identity)
+    @documents ||= Users::identify(token)
   end
 
 end
@@ -557,7 +557,7 @@ class IdentitiesResource < UserResource
   end
 
   def create_path
-    @create_path ||= Users::uuid
+    @create_path ||= Users::token
   end
 
   def is_authorized?(authorization_header)
@@ -579,7 +579,7 @@ class IdentitiesResource < UserResource
   def from_urlencoded
     begin
       data = URI::decode_www_form(request.body.to_s)
-      rev = Users::save_from_form(create_path, username, data)
+      rev = Users::update_from_form(create_path, username, data)
 
       if rev["ok"] === true
         @response.do_redirect
@@ -816,7 +816,7 @@ App = Webmachine::Application.new do |app|
     add ["domains", :domain, :id], FeedItemResource
 
     add ["signups"], SignupsResource
-    add ["signups", :identity], SignupResource
+    add ["signups", :token], SignupResource
     add ["users"], UsersResource
     add ["users", :username], UserResource
     add ["users", :username, "settings"], IdentitiesResource

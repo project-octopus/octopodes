@@ -157,9 +157,9 @@ resource "Signup" do
   header "Accept", :accept_header
   header "Content-Type", :content_type
 
-  get "http://project-octopus.org/signups/:identity" do
+  get "http://project-octopus.org/signups/:token" do
     let(:accept_header) { "text/html" }
-    let(:identity) { "identity2" }
+    let(:token) { "token1" }
 
     example "Getting the signup message", :document => false do
       do_request

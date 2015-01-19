@@ -67,28 +67,34 @@
       "url": "http://www.europeana.eu/portal/recordhttp://mint-projects /KIK-IRPA, Brussels"
     },
     {
-      "_id": "identity2",
-      "@id": "user1",
-      "@context": "https://w3id.org/identity/v1",
-      "@type": "Identity",
-      "created": "2014-08-12T14:18:55+00:00",
-      "password": "$2a$10$dgRnX6Zdyx9Nof9cNmdXeu9dK75eeRdIhDoyxpZYADYplrxeFeVU2"
-    },
-    {
-      "_id": "identity1",
-      "@id": "user1",
-      "@context": "https://w3id.org/identity/v1",
+      "_id": "identity:user1",
+      "@id": "users/user1",
+      "@context": "contexts/identity/v1",
       "@type": "Identity",
       "created": "2014-06-01T14:13:22+00:00",
-      "password": "$2a$10$hhOpbP513xRCHlj7pUxnmOGRrcLDev0CEYqSnX6PRNpJd.J9uzl8q"
+      "updated": "2014-08-12T14:18:55+00:00",
+      "token": "token2",
+      "password": "$2a$10$5eUYlsTTv21lUSxE1Yz/EeLMoGl0CY1iDkIQn75l3QlrDULDRAg0K"
     },
     {
-      "_id": "identity0",
-      "@id": "user0",
-      "@context": "https://w3id.org/identity/v1",
+      "_id": "identity:user0",
+      "@id": "users/user0",
+      "@context": "contexts/identity/v1",
       "@type": "Identity",
       "created": "2014-10-11T03:21:43+00:00",
+      "updated": "2014-10-11T03:21:43+00:00",
+      "token": "token0",
       "password": "$2a$10$2qfh/REeNJCboHcqlJAewOZ0LfM6rmgYCXJqwszp7n66tCOjFLHBW"
+    },
+    {
+      "_id": "identity:user1::v1401632002-ba13",
+      "@id": "users/user1",
+      "@context": "contexts/identity/v1",
+      "@type": "Identity",
+      "created": "2014-06-01T14:13:22+00:00",
+      "updated": "2014-06-01T14:13:22+00:00",
+      "token": "token1",
+      "password": "$2a$10$hhOpbP513xRCHlj7pUxnmOGRrcLDev0CEYqSnX6PRNpJd.J9uzl8q"
     }
   ]
 }
