@@ -53,7 +53,6 @@ namespace :octopus do
       password = !uri.password.nil? ? URI::decode(uri.password) : nil
 
       server = Couch::Server.new(uri.scheme, uri.host, uri.port, uri.user, password)
-      CouchMigrations::run_on(server, uri.path)
 
       @design_docs.each do |doc|
         doc_path = "#{uri.path}/_design/#{doc[:name]}"
@@ -74,6 +73,8 @@ namespace :octopus do
           puts response.body
         end
       end
+
+      CouchMigrations::run_on(server, uri.path)
     end
 
     desc "Add test data to a database"
