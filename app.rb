@@ -10,6 +10,7 @@ require_relative 'lib/templates'
 
 I18n.config.enforce_available_locales = true
 
+CreativeWorks::connect(configatron.octopus.database)
 WebPages::connect(configatron.octopus.database)
 Users::connect(configatron.octopus.database)
 
@@ -31,7 +32,8 @@ class OctopusResource < Webmachine::Resource
 
   def menu
     base = @request.base_uri.to_s
-    menu_items = [{:href => "#{base}reviews", :prompt => "Reviews"}]
+    menu_items = [{:href => "#{base}works", :prompt => "Works"},
+                  {:href => "#{base}reviews", :prompt => "Reviews"}]
 
     if @user.nil? || @user.empty?
       menu_items << {:href => "#{base}signups", :prompt => "Sign up"}
@@ -116,6 +118,31 @@ class HomeResource < CollectionResource
       end
     end
   end
+end
+
+class WorksResource < CollectionResource
+  def allowed_methods
+    ["GET", "POST"]
+  end
+
+  def base_uri
+    @request.base_uri.to_s
+  end
+
+  private
+  def title
+    "Creative Works on the Web"
+  end
+
+  def collection
+    options = {base_uri: base_uri, include_item_link: false}
+    RecordCollection.new(records, options).to_cj
+  end
+
+  def records
+    @records ||= CreativeWorks::all
+  end
+
 end
 
 class ReviewsResource < CollectionResource
@@ -214,7 +241,7 @@ class ReviewsResource < CollectionResource
 
     unless @user.nil? || @user.empty?
       links << {:href => @request.base_uri.to_s + 'reviews;template',
-                :rel => "template", :prompt => "Add a Work"}
+                :rel => "template", :prompt => "Add a Review"}
     end
 
      links << {:href => @request.base_uri.to_s + 'domains',
@@ -805,6 +832,8 @@ App = Webmachine::Application.new do |app|
     add ["favicon.ico"], FaviconResource
     add ["assets", '*'], AssetsResource
     add ["docs", '*'], AssetsResource
+
+    add ["works"], WorksResource
 
     add ["reviews"], ReviewsResource
     add ["reviews;template"], ReviewsTemplateResource

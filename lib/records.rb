@@ -60,6 +60,20 @@ class Datastore
       {"error" => "forbidden", "reason" => model.errors.full_messages.join(", ")}
     end
   end
+
+  def self.design_uri(paths, params)
+    design = paths[:design]
+    view = paths[:view]
+    uri = URI("#{db.path}/_design/#{design}/_view/#{view}")
+    uri.query = URI.encode_www_form(params)
+    uri
+  end
+
+    def self.fetch_and_parse(uri)
+      response = server.get(uri.to_s)
+      JSON.parse(response.body)
+    end
+
 end
 
 class Users < Datastore
@@ -203,6 +217,43 @@ class Users < Datastore
     user
   end
 
+end
+
+class RecordSet
+  def initialize(documents)
+    @items = process(documents)
+  end
+
+  def count
+    @items.size
+  end
+
+  def items
+    @items
+  end
+
+  private
+  def process(documents)
+    (documents["rows"] || []).map do |row|
+      coerce_doc(row["doc"])
+    end
+  end
+
+  def coerce_doc(doc)
+    case doc["@type"]
+    when "CreativeWork" then CreativeWork.new(doc)
+    else Schema.new(doc)
+    end
+  end
+end
+
+class CreativeWorks < Datastore
+  def self.all
+    params  = [[:reduce, "false"], [:include_docs, "true"]]
+    uri = design_uri({:design => "all", :view => "works"}, params)
+    documents = fetch_and_parse(uri)
+    RecordSet.new(documents)
+  end
 end
 
 class WebPages < Datastore
@@ -631,4 +682,42 @@ class DomainDocuments < Documents
     end
   end
 
+end
+
+class RecordCollection
+  attr_accessor :base_uri, :include_item_link
+
+  def initialize(recordset, options = {})
+    @recordset = recordset
+    @base_uri = options[:base_uri]
+    @include_item_link = options[:include_item_link]
+  end
+
+  def to_json
+    to_cj.to_json
+  end
+
+  def to_cj
+    CollectionJSON.generate_for(@base_uri) do |builder|
+      builder.set_version("1.0")
+      add_items_to builder
+    end
+  end
+
+  private
+  def add_items_to(builder)
+    @recordset.items.each do |record|
+      builder.add_item(build_item_href(record)) do |item|
+        add_data_to item, record
+      end
+    end
+  end
+
+  def build_item_href(record)
+    href = @include_item_link ? @base_uri + record[:id] : ''
+  end
+
+  def add_data_to(item, record)
+    item.add_data "name", prompt: "Title", value: record['name']
+  end
 end

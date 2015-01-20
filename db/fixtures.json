@@ -1,6 +1,21 @@
 {
   "docs": [
     {
+      "_id": "creative_works:works_1",
+      "@id": "works/1",
+      "@context": "contexts/work/v1",
+      "@type": "CreativeWork",
+      "creator": "Jan Asselijn",
+      "dateCreated": "1650",
+      "description": "",
+      "license": "Public Domain",
+      "name": "The Threatened Swan",
+      "firstReviewed": "2014-12-30T16:31:30+00:00",
+      "lastReviewed": "2014-12-30T16:31:30+00:00",
+      "reviewedBy": "users/user1",
+      "sameAs": "https://www.rijksmuseum.nl/en/collection/SK-A-4"
+    },
+    {
       "_id": "webpage0",
       "@context": "http://schema.org",
       "@type": "WebPage",

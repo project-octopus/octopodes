@@ -12,6 +12,7 @@ require_relative 'thrash'
 class Schema < Thrash
   include Hashie::Extensions::Coercion
   include ActiveModel::Validations
+  include Hashie::Extensions::MergeInitializer
 
   property :doc_id, from: "_id"
   property :doc_rev, from: "_rev"
@@ -104,6 +105,8 @@ class Thing < Schema
   property 'description'
   property 'name'
 
+  property :same_as, from: 'sameAs'
+
   # URL validation can exclude Thing subclasses that do it themselves
   validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => true,
                   :unless => Proc.new {|thing| thing.type == "WebPage" }
@@ -118,10 +121,16 @@ end
 # Class that models a Schema.org CreativeWork
 #
 class CreativeWork < Thing
+  property :context, from: "@context", default: 'contexts/work/v1'
   property :type, from: "@type", required: true, default: "CreativeWork"
 
   property 'creator'
   property 'license'
+  property 'dateCreated'
+
+  property 'firstReviewed', default: Time.now.utc.iso8601
+  property 'lastReviewed', default: Time.now.utc.iso8601
+  property 'reviewedBy'
 
   property :based_on_url, from: 'isBasedOnUrl'
 
