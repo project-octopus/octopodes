@@ -172,7 +172,7 @@ class WorksResource < CollectionResource
 
   private
   def title
-    "Creative Works on the Web"
+    "Creative Works"
   end
 
   def collection
