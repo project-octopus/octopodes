@@ -69,10 +69,14 @@ class Datastore
     uri
   end
 
-    def self.fetch_and_parse(uri)
-      response = server.get(uri.to_s)
-      JSON.parse(response.body)
-    end
+  def self.fetch_and_parse(uri)
+    response = server.get(uri.to_s)
+    JSON.parse(response.body)
+  end
+
+  def self.fetch_recordset(uri)
+    RecordSet.new(fetch_and_parse(uri))
+  end
 
 end
 
@@ -220,7 +224,9 @@ class Users < Datastore
 end
 
 class RecordSet
-  def initialize(documents)
+  attr_accessor :error
+
+  def initialize(documents = {})
     @items = process(documents)
   end
 
@@ -230,6 +236,10 @@ class RecordSet
 
   def items
     @items
+  end
+
+  def add(item)
+    @items << item
   end
 
   private
@@ -248,11 +258,43 @@ class RecordSet
 end
 
 class CreativeWorks < Datastore
+  def self.new
+    recordset = RecordSet.new
+    recordset.add(CreativeWork.new)
+    recordset
+  end
+
+  def self.create(id = nil, data = {}, username)
+    work = CreativeWork.new(data).tap do |c|
+      c.slug = id
+      c['reviewedBy'] = "users/" + username
+    end
+    recordset = RecordSet.new
+
+    if work.valid?
+      response = server.post(db.path, work.to_json)
+      JSON.parse(response.body)
+    else
+      recordset.error = {"title" => "Invalid Input", "message" => work.errors.full_messages.join(", ")}
+    end
+
+    recordset.add(work)
+
+    recordset
+  end
+
   def self.all
     params  = [[:reduce, "false"], [:include_docs, "true"]]
     uri = design_uri({:design => "all", :view => "works"}, params)
-    documents = fetch_and_parse(uri)
-    RecordSet.new(documents)
+    fetch_recordset(uri)
+  end
+
+  def self.find(id)
+    key = "works/" + id
+    params  = [[:reduce, "false"], [:include_docs, "true"],
+               ["startkey", "[\"#{key}\"]"],["endkey", "[\"#{key}\", {}]"]]
+    uri = design_uri({:design => "all", :view => "works"}, params)
+    fetch_recordset(uri)
   end
 end
 
@@ -269,6 +311,7 @@ class WebPages < Datastore
 
     webpage = WebPage.new(webpage_data).tap do |w|
       w.doc_id = id
+      w.name = "Untitled"
 
       w.reviewedBy = Person.new.tap do |p|
         p.id = username
@@ -277,6 +320,7 @@ class WebPages < Datastore
 
       w.work = CreativeWork.new(work_data).tap do |c|
         c.context = nil
+        c.name = "Untitled" if work_data["name"].nil?
         if !media_data.empty?
           c.media = MediaObject.new(media_data) do |a|
             a.context = nil
@@ -685,12 +729,22 @@ class DomainDocuments < Documents
 end
 
 class RecordCollection
-  attr_accessor :base_uri, :include_item_link
 
   def initialize(recordset, options = {})
     @recordset = recordset
-    @base_uri = options[:base_uri]
-    @include_item_link = options[:include_item_link]
+
+    params = {
+      :base_uri => '',
+      :error => @recordset.error,
+      :include_items => true,
+      :include_item_link => true,
+      :include_template => false,
+      :links => []
+    }.merge(options)
+
+    params.each do |key,value|
+      self.instance_variable_set("@#{key}".to_sym, value)
+    end
   end
 
   def to_json
@@ -700,24 +754,42 @@ class RecordCollection
   def to_cj
     CollectionJSON.generate_for(@base_uri) do |builder|
       builder.set_version("1.0")
-      add_items_to builder
+      add_links_to builder, @links
+      add_items_to builder if @include_items
+      add_template_to builder if @include_template
+      builder.set_error @error unless @error.nil?
     end
   end
 
   private
+  def add_links_to(item, links)
+    (links || []).each do |l|
+      item.add_link l[:href], l[:rel], prompt: l[:prompt]
+    end
+  end
+
   def add_items_to(builder)
     @recordset.items.each do |record|
       builder.add_item(build_item_href(record)) do |item|
-        add_data_to item, record
+        add_data_to item, record.items
+        add_links_to item, record.links
       end
     end
   end
 
-  def build_item_href(record)
-    href = @include_item_link ? @base_uri + record[:id] : ''
+  def add_template_to(builder)
+    builder.set_template do |template|
+      add_data_to template, @recordset.items.first.template
+    end
   end
 
-  def add_data_to(item, record)
-    item.add_data "name", prompt: "Title", value: record['name']
+  def build_item_href(record)
+    href = @include_item_link ? @base_uri + record.slug : ''
+  end
+
+  def add_data_to(item, data)
+    data.each do |datum|
+      item.add_data datum.first, datum.last
+    end
   end
 end

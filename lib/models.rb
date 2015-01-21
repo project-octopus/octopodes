@@ -100,16 +100,36 @@ class Thing < Schema
   property :context, from: "@context", default: 'http://schema.org'
   property :type, from: "@type", default: "Thing"
 
-  property :url, from: 'url'
+  property :url, from: "url"
 
   property 'description'
   property 'name'
 
-  property :same_as, from: 'sameAs'
+  property :same_as, from: "sameAs"
 
   # URL validation can exclude Thing subclasses that do it themselves
   validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => true,
                   :unless => Proc.new {|thing| thing.type == "WebPage" }
+
+  def slug
+    self.id.sub(id_prefix, '')
+  end
+
+  def slug=(id)
+    unless id.nil? || id.empty?
+      self.doc_id = doc_prefix + id
+      self.id = id_prefix + id
+    end
+  end
+
+  private
+  def doc_prefix
+    'thing' + ':'
+  end
+
+  def id_prefix
+    'things' + '/'
+  end
 end
 
 # Class that models a Schema.org Person
@@ -124,6 +144,7 @@ class CreativeWork < Thing
   property :context, from: "@context", default: 'contexts/work/v1'
   property :type, from: "@type", required: true, default: "CreativeWork"
 
+  property :name, from: "name"
   property 'creator'
   property 'license'
   property 'dateCreated'
@@ -134,7 +155,39 @@ class CreativeWork < Thing
 
   property :based_on_url, from: 'isBasedOnUrl'
 
+  validates_presence_of :name
   validates :based_on_url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
+
+  def name
+    self[:name]
+  end
+
+  def template
+    [["name", {prompt: "Title", value: self[:name]}],
+     ["creator", {prompt: "Creator", value: self['creator']}],
+     ["license", {prompt: "License", value: self['license']}],
+     ["dateCreated", {prompt: "Date Created", value: self['dateCreated']}]]
+  end
+
+  def links
+    [{href: '/' + self["reviewedBy"], rel: "reviewedBy", prompt: "Reviewed By"}]
+  end
+
+  def items
+    template.reject do |d|
+      value = d.last[:value]
+      value.nil? || value.empty?
+    end
+  end
+
+  private
+  def doc_prefix
+    'creative_work' + ':'
+  end
+
+  def id_prefix
+    'works' + '/'
+  end
 end
 
 # Class that models a Schema.org WebPage

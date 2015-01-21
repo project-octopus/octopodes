@@ -100,6 +100,14 @@ class CollectionResource < OctopusResource
     (req =~ /^\d+$/) ? [min, [req.to_i, max].min].max : default
   end
 
+  def form_data
+    form = URI::decode_www_form(request.body.to_s)
+    form.inject({}) do |hash, value|
+      hash[value.first] = value.last
+      hash
+    end
+  end
+
 end
 
 class HomeResource < CollectionResource
@@ -125,8 +133,41 @@ class WorksResource < CollectionResource
     ["GET", "POST"]
   end
 
+  def is_authorized?(authorization_header)
+    auth = user_auth(authorization_header)
+    return true unless request.post?
+    if auth != true
+      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
+    end
+    auth
+  end
+
   def base_uri
-    @request.base_uri.to_s
+    @request.base_uri.to_s + 'works/'
+  end
+
+  def post_is_create?
+    true
+  end
+
+  def create_path
+    @create_path ||= CreativeWorks::uuid
+  end
+
+  def from_urlencoded
+    begin
+      @records = CreativeWorks.create(create_path, form_data, @user[:username])
+      @error = records.error
+    rescue ArgumentError
+      @error = {"title" => "Bad Input", "message" => "Malformed WWW Form"}
+    end
+
+    if @error.nil? || @error.empty?
+      @response.do_redirect
+    else
+      @response.body = to_html
+      @response.code = 422 # Unprocessable Entity
+    end
   end
 
   private
@@ -135,7 +176,7 @@ class WorksResource < CollectionResource
   end
 
   def collection
-    options = {base_uri: base_uri, include_item_link: false}
+    options = {base_uri: base_uri, links: links, error: @error}
     RecordCollection.new(records, options).to_cj
   end
 
@@ -143,6 +184,58 @@ class WorksResource < CollectionResource
     @records ||= CreativeWorks::all
   end
 
+  def links
+    links = []
+
+    unless @user.nil? || @user.empty?
+      links << {:href => @request.base_uri.to_s + 'works;template',
+                :rel => "template", :prompt => "Add a Work"}
+    end
+
+    links
+  end
+
+end
+
+class WorksTemplateResource < WorksResource
+
+  def is_authorized?(authorization_header)
+    auth = user_auth(authorization_header)
+    if auth != true
+      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
+    end
+    auth
+  end
+
+  private
+  def body
+    "Instructions: Add Original Creative Works using the form below"
+  end
+
+  def collection
+    options = {base_uri: base_uri, links: links, include_items: false,
+               include_template: true, error: @error}
+    RecordCollection.new(records, options).to_cj
+  end
+
+  def records
+    @records ||= CreativeWorks::new
+  end
+end
+
+class WorkResource < WorksResource
+  def allowed_methods
+    ["GET", "POST"]
+  end
+
+  private
+  def id
+    request.path_info[:id]
+  end
+
+  def records
+    @records ||= CreativeWorks::find(id)
+  end
 end
 
 class ReviewsResource < CollectionResource
@@ -834,6 +927,8 @@ App = Webmachine::Application.new do |app|
     add ["docs", '*'], AssetsResource
 
     add ["works"], WorksResource
+    add ["works;template"], WorksTemplateResource
+    add ["works", :id], WorkResource
 
     add ["reviews"], ReviewsResource
     add ["reviews;template"], ReviewsTemplateResource
