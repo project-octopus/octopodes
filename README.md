@@ -59,7 +59,7 @@ You can configure your database locations for testing or development.
 If you prefer to not install CouchDB locally, you can use a [gratis instance](https://cloudant.com/blog/build-more-with-50-free-each-month/) from Cloudant. In this case,
 your database configuration will look like:
 
-    configatron.octopus.database = 'https://USERNAME:PASSOWRD@USERNAME.cloudant.com/podev'
+    configatron.octopus.database = 'https://USERNAME:PASSOWRD@USERNAME.cloudant.com/DBNAME'
 
 ### Development
 
