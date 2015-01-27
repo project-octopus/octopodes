@@ -158,6 +158,19 @@ class CreativeWork < Thing
   validates_presence_of :name
   validates :based_on_url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 
+  def update!
+    self["lastReviewed"] = Time.now.utc.iso8601
+  end
+
+  def version!
+    updated = self["lastReviewed"]
+    v_t = Time.iso8601(updated).to_i
+    v_r = SecureRandom.hex(2)
+    v_s = "::v" + v_t.to_s + '-' + v_r.to_s
+    self[:doc_rev] = nil
+    self[:doc_id] = self.doc_id + v_s
+  end
+
   def name
     self[:name]
   end
@@ -174,10 +187,11 @@ class CreativeWork < Thing
   end
 
   def items
-    template.reject do |d|
+    data = template.reject do |d|
       value = d.last[:value]
       value.nil? || value.empty?
     end
+    data << ["lastReviewed", {prompt: "Date Reviewed", value: self['lastReviewed']}]
   end
 
   private

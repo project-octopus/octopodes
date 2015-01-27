@@ -225,7 +225,11 @@ end
 
 class WorkResource < WorksResource
   def allowed_methods
-    ["GET", "POST"]
+    ["GET"]
+  end
+
+  def base_uri
+    @request.base_uri.to_s + "works/"
   end
 
   private
@@ -236,6 +240,78 @@ class WorkResource < WorksResource
   def records
     @records ||= CreativeWorks::find(id)
   end
+
+  def links
+    works_base_uri = @request.base_uri.to_s + "works/"
+    links = []
+
+    links << {:href => works_base_uri + id + '/',
+              :rel => "view", :prompt => "View"}
+
+    unless @user.nil? || @user.empty?
+      links << {:href => works_base_uri + id + '/template',
+                :rel => "template", :prompt => "Edit"}
+    end
+
+    links << {:href => works_base_uri + id + '/history',
+              :rel => "history", :prompt => "History"}
+
+    links
+  end
+end
+
+class WorkHistoryResource < WorkResource
+  private
+  def collection
+    options = {base_uri: base_uri, links: links, include_item_link: false}
+    RecordCollection.new(records, options).to_cj
+  end
+
+  def records
+    @records ||= CreativeWorks::history(id)
+  end
+end
+
+class WorkTemplateResource < WorkResource
+  def allowed_methods
+    ["GET", "POST"]
+  end
+
+  def is_authorized?(authorization_header)
+    auth = user_auth(authorization_header)
+    if auth != true
+      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
+    end
+    auth
+  end
+
+  def base_uri
+    @request.base_uri.to_s + "works/" + id + "/template/"
+  end
+
+  def from_urlencoded
+    begin
+      @records = CreativeWorks.update(id, create_path, form_data, @user[:username])
+      @error = records.error
+    rescue ArgumentError
+      @error = {"title" => "Bad Input", "message" => "Malformed WWW Form"}
+    end
+
+    if @error.nil? || @error.empty?
+      @response.do_redirect
+    else
+      @response.body = to_html
+      @response.code = 422 # Unprocessable Entity
+    end
+  end
+
+  private
+  def collection
+    options = {base_uri: base_uri, links: links, include_items: false,
+               include_template: true, error: @error}
+    RecordCollection.new(records, options).to_cj
+  end
+
 end
 
 class ReviewsResource < CollectionResource
@@ -929,6 +1005,9 @@ App = Webmachine::Application.new do |app|
     add ["works"], WorksResource
     add ["works;template"], WorksTemplateResource
     add ["works", :id], WorkResource
+    add ["works", :id, "history"], WorkHistoryResource
+    add ["works", :id, "template"], WorkTemplateResource
+    add ["works", :id, "template", :edit], WorkResource
 
     add ["reviews"], ReviewsResource
     add ["reviews;template"], ReviewsTemplateResource

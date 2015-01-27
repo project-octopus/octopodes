@@ -25,6 +25,10 @@
       "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['@type'] === 'CreativeWork') { emit([doc['@id'], doc.firstReviewed],1); } }",
       "reduce": "_count"
     },
+    "work_history": {
+      "map": "function(doc) { if(doc['@type'] === 'CreativeWork') { emit([doc['@id'], doc.lastReviewed],1); } }",
+      "reduce": "_count"
+    },
     "users": {
       "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['@type'] === 'Identity') { emit([doc['@id'], doc.created],1); } }",
       "reduce": "_count"

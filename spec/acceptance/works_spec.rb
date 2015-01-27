@@ -22,6 +22,44 @@ resource "Works" do
       expect(status).to eq(200)
     end
   end
+
+  post "http://project-octopus.org/works" do
+    let(:accept_header) { "text/html" }
+    let(:content_type) { "application/x-www-form-urlencoded" }
+    let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+
+    example "Posting a work as www-form with no data", :document => false do
+      do_request
+
+      expect(status).to eq(422)
+    end
+  end
+
+  raw_form_posts = [
+    "name=Title&creator=creator&license=&dateCreated=2015"
+  ]
+
+  raw_form_posts.each_with_index do |raw_post, index|
+
+    post "http://project-octopus.org/works" do
+      parameter :name, "Title"
+      parameter :url, "URL"
+
+      let(:accept_header) { "text/html" }
+      let(:content_type) { "application/x-www-form-urlencoded" }
+      let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+
+      let(:raw_post) { raw_post }
+
+      example "Posting a work as www-form #{index}", :document => false do
+        do_request
+
+        expect(response_headers).to include("Location")
+
+        expect(status).to eq(303)
+      end
+    end
+  end
 end
 
 resource "Work" do
@@ -44,15 +82,33 @@ resource "Work" do
     end
   end
 
-  post "http://project-octopus.org/works" do
-    let(:accept_header) { "text/html" }
-    let(:content_type) { "application/x-www-form-urlencoded" }
-    let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+  get "http://project-octopus.org/works/1/history" do
+    let(:accept_header) { "application/vnd.collection+json" }
 
-    example "Posting a work as www-form with no data", :document => false do
+    example "Getting a creative work's history" do
       do_request
 
-      expect(status).to eq(422)
+      expect(response_body).to have_json_path("collection")
+      expect(response_body).to have_json_path("collection/items")
+      expect(response_body).to have_json_size(2).at_path("collection/items")
+      expect(response_body).not_to have_json_path("collection/template")
+
+      expect(status).to eq(200)
+    end
+  end
+
+  get "http://project-octopus.org/works/1/template" do
+    let(:accept_header) { "application/vnd.collection+json" }
+    let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+
+    example "Getting a creative work's template" do
+      do_request
+
+      expect(response_body).to have_json_path("collection")
+      expect(response_body).not_to have_json_path("collection/items")
+      expect(response_body).to have_json_path("collection/template")
+
+      expect(status).to eq(200)
     end
   end
 
@@ -62,7 +118,7 @@ resource "Work" do
 
   raw_form_posts.each_with_index do |raw_post, index|
 
-    post "http://project-octopus.org/works" do
+    post "http://project-octopus.org/works/1/template" do
       parameter :name, "Title"
       parameter :url, "URL"
 

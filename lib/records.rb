@@ -264,7 +264,7 @@ class CreativeWorks < Datastore
     recordset
   end
 
-  def self.create(id = nil, data = {}, username)
+  def self.create(id, data = {}, username)
     work = CreativeWork.new(data).tap do |c|
       c.slug = id
       c['reviewedBy'] = "users/" + username
@@ -283,6 +283,30 @@ class CreativeWorks < Datastore
     recordset
   end
 
+  def self.update(id, edit, data = {}, username)
+    data["reviewedBy"] = "users/" + username
+    old_work = find(id).items.first
+    new_work = old_work.merge(data)
+    new_work.update!
+
+    recordset = RecordSet.new
+
+    if new_work.valid?
+      response = server.post(db.path, new_work.to_json)
+
+      old_work.version!
+      server.post(db.path, old_work.to_json)
+
+      JSON.parse(response.body)
+    else
+      recordset.error = {"title" => "Invalid Input", "message" => new_work.errors.full_messages.join(", ")}
+    end
+
+    recordset.add(new_work)
+
+    recordset
+  end
+
   def self.all
     params  = [[:reduce, "false"], [:include_docs, "true"]]
     uri = design_uri({:design => "all", :view => "works"}, params)
@@ -294,6 +318,15 @@ class CreativeWorks < Datastore
     params  = [[:reduce, "false"], [:include_docs, "true"],
                ["startkey", "[\"#{key}\"]"],["endkey", "[\"#{key}\", {}]"]]
     uri = design_uri({:design => "all", :view => "works"}, params)
+    fetch_recordset(uri)
+  end
+
+  def self.history(id)
+    key = "works/" + id
+    params  = [[:reduce, "false"], [:include_docs, "true"],
+               ["endkey", "[\"#{key}\"]"],["startkey", "[\"#{key}\", {}]"],
+               ["descending", "true"]]
+    uri = design_uri({:design => "all", :view => "work_history"}, params)
     fetch_recordset(uri)
   end
 end
