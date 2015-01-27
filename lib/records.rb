@@ -227,6 +227,7 @@ class RecordSet
   attr_accessor :error
 
   def initialize(documents = {})
+    @documents = documents
     @items = process(documents)
   end
 
@@ -238,8 +239,18 @@ class RecordSet
     @items
   end
 
+  def pop
+    @items.pop
+  end
+
   def add(item)
     @items << item
+  end
+
+  def last_key
+    if(count >= 1)
+      @documents["rows"].last["key"]
+    end
   end
 
   private
@@ -307,8 +318,17 @@ class CreativeWorks < Datastore
     recordset
   end
 
-  def self.all
+  def self.all(options = {})
     params  = [[:reduce, "false"], [:include_docs, "true"]]
+
+    if options[:startkey]
+      params << ["startkey", options[:startkey]]
+    end
+
+    if options[:limit]
+      params << ["limit", options[:limit] + 1]
+    end
+
     uri = design_uri({:design => "all", :view => "works"}, params)
     fetch_recordset(uri)
   end
@@ -773,11 +793,41 @@ class RecordCollection
       :include_items => true,
       :include_item_link => true,
       :include_template => false,
-      :links => []
+      :links => [],
+      :limit => nil,
+      :startkey => nil,
+      :prevkey => nil
     }.merge(options)
 
     params.each do |key,value|
       self.instance_variable_set("@#{key}".to_sym, value)
+    end
+
+    if @limit && @recordset.count > @limit
+      last_key = @recordset.last_key
+
+      if last_key.kind_of?(Array)
+        @next_startkey = last_key.to_s
+      else
+        @next_startkey = '"' + last_key + '"'
+      end
+
+      @recordset.pop
+    end
+
+    if @startkey
+      start_key = URI(@base_uri)
+      start_key.query = URI.encode_www_form([["startkey", @prevkey], ["limit", @limit]])
+      @links << {:href => start_key, :rel => "previous", :prompt => "Previous"}
+    end
+
+    if @next_startkey
+      next_key = URI(@base_uri)
+      next_params = [["startkey", @next_startkey],
+                     ["prevkey", @startkey],
+                     ["limit", @limit]]
+      next_key.query = URI.encode_www_form(next_params)
+      @links << {:href => next_key, :rel => "next", :prompt => "Next"}
     end
   end
 

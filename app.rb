@@ -176,12 +176,12 @@ class WorksResource < CollectionResource
   end
 
   def collection
-    options = {base_uri: base_uri, links: links, error: @error}
+    options = {base_uri: base_uri, links: links, error: @error, limit: limit, startkey: startkey, prevkey: prevkey}
     RecordCollection.new(records, options).to_cj
   end
 
   def records
-    @records ||= CreativeWorks::all
+    @records ||= CreativeWorks::all(limit: limit, startkey: startkey)
   end
 
   def links
