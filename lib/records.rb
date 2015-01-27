@@ -323,6 +323,7 @@ class WebPages < Datastore
         c.name = "Untitled" if work_data["name"].nil?
         if !media_data.empty?
           c.media = MediaObject.new(media_data) do |a|
+            a.name = "Untitled"
             a.context = nil
           end
         end

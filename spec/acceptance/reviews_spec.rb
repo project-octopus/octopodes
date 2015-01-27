@@ -92,7 +92,7 @@ resource "Reviews" do
     let(:content_type) { "application/vnd.collection+json" }
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
-    let(:raw_post) { '{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}]}}' }
+    let(:raw_post) { '{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}, {"name": "contentUrl", "value": "http://example.org/image.jpg"}]}}' }
 
     example "Posting a review as Collection+JSON" do
       do_request
