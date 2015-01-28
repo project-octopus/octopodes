@@ -243,16 +243,19 @@ class WorkResource < WorksResource
     works_base_uri = @request.base_uri.to_s + "works/"
     links = []
 
+    links << {:href => works_base_uri,
+              :rel => "view", :prompt => "All Works"}
+
     links << {:href => works_base_uri + id + '/',
               :rel => "view", :prompt => "View"}
+
+    links << {:href => works_base_uri + id + '/history',
+              :rel => "history", :prompt => "History"}
 
     unless @user.nil? || @user.empty?
       links << {:href => works_base_uri + id + '/template',
                 :rel => "template", :prompt => "Edit"}
     end
-
-    links << {:href => works_base_uri + id + '/history',
-              :rel => "history", :prompt => "History"}
 
     links
   end
