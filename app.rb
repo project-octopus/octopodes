@@ -10,9 +10,7 @@ require_relative 'lib/templates'
 
 I18n.config.enforce_available_locales = true
 
-CreativeWorks::connect(configatron.octopus.database)
-WebPages::connect(configatron.octopus.database)
-Users::connect(configatron.octopus.database)
+Datastore::connect(configatron.octopus.database)
 
 class OctopusResource < Webmachine::Resource
   include Webmachine::Resource::Authentication

@@ -9,14 +9,14 @@ require_relative 'models'
 
 class Datastore
 
-  @database = nil
-  @server = nil
-  @uri = nil
+  @@database = nil
+  @@server = nil
+  @@uri = nil
 
   def self.connect(database)
-    @uri = nil
-    @server = nil
-    @database = database
+    @@uri = nil
+    @@server = nil
+    @@database = database
   end
 
   def self.uuid
@@ -30,7 +30,7 @@ class Datastore
 
   private
   def self.db
-    @uri ||= URI(@database)
+    @@uri ||= URI(@@database)
   end
 
   def self.password
@@ -38,7 +38,7 @@ class Datastore
   end
 
   def self.server
-    @server ||= Couch::Server.new(db.scheme, db.host, db.port, db.user, password)
+    @@server ||= Couch::Server.new(db.scheme, db.host, db.port, db.user, password)
   end
 
   def self.trans_form_data(decoded_www_form)
