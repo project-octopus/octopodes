@@ -253,6 +253,12 @@ class RecordSet
     end
   end
 
+  def status=(response)
+    if(response.key?("error"))
+      @error = {"title" => response["error"], "message" => response["reason"]}
+    end
+  end
+
   private
   def process(documents)
     (documents["rows"] || []).map do |row|
@@ -270,55 +276,15 @@ end
 
 class CreativeWorks < Datastore
   def self.new
-    recordset = RecordSet.new
-    recordset.add(CreativeWork.new)
-    recordset
+    RecordSet.new.tap { |r| r.add(CreativeWork.new) }
   end
 
   def self.create(id, data = {}, username)
-    safe_data = CreativeWork::whitelist(data)
-    work = CreativeWork.new(safe_data).tap do |c|
-      c.slug = id
-      c['reviewedBy'] = "users/" + username
-    end
-    recordset = RecordSet.new
-
-    if work.valid?
-      response = server.post(db.path, work.to_json)
-      JSON.parse(response.body)
-    else
-      recordset.error = {"title" => "Invalid Input", "message" => work.errors.full_messages.join(", ")}
-    end
-
-    recordset.add(work)
-
-    recordset
+    save_and_make_recordset(id, data, username)
   end
 
   def self.update(id, edit, data = {}, username)
-    safe_data = CreativeWork::whitelist(data)
-    old_work = find(id).items.first
-    new_work = old_work.merge(safe_data).tap do |c|
-      c['reviewedBy'] = "users/" + username
-    end
-    new_work.update!
-
-    recordset = RecordSet.new
-
-    if new_work.valid?
-      response = server.post(db.path, new_work.to_json)
-
-      old_work.version!
-      server.post(db.path, old_work.to_json)
-
-      JSON.parse(response.body)
-    else
-      recordset.error = {"title" => "Invalid Input", "message" => new_work.errors.full_messages.join(", ")}
-    end
-
-    recordset.add(new_work)
-
-    recordset
+    save_and_make_recordset(id, data, username)
   end
 
   def self.all(options = {})
@@ -352,6 +318,64 @@ class CreativeWorks < Datastore
     uri = design_uri({:design => "all", :view => "work_history"}, params)
     fetch_recordset(uri)
   end
+
+  private
+  def self.save_and_make_recordset(id, data = {}, username)
+    work = make_work(id, data, username)
+    status = validate_and_save(work)
+    RecordSet.new.tap do |r|
+      r.add(work)
+      r.status = status
+    end
+  end
+
+  def self.make_work(id, data = {}, username)
+    safe_data = CreativeWork::whitelist(data)
+    existing_work = find(id).items.first
+
+    unless existing_work.nil?
+      work = existing_work.merge(safe_data)
+      work.update!
+    else
+      work = CreativeWork.new(safe_data)
+      work.slug = id
+    end
+
+    work.tap { |w| w['reviewedBy'] = "users/" + username }
+  end
+
+  def self.save(creative_work)
+    response = server.post(db.path, creative_work.to_json)
+    JSON.parse(response.body)
+  end
+
+  def self.validate_and_save(creative_work)
+    if creative_work.valid?
+      try_to_version(creative_work)
+      save(creative_work)
+    else
+      formulate_validation_error(creative_work)
+    end
+  end
+
+  def self.try_to_version(creative_work)
+    existing_work = find(creative_work.slug).items.first
+
+    unless existing_work.nil?
+      version_and_save(existing_work)
+    end
+  end
+
+  def self.version_and_save(creative_work)
+    creative_work.version!
+    save(creative_work)
+  end
+
+  def self.formulate_validation_error(creative_work)
+    {"error" => "Invalid Input",
+     "reason" => creative_work.errors.full_messages.join(", ")}
+  end
+
 end
 
 class WebPages < Datastore
