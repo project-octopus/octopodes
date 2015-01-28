@@ -176,14 +176,13 @@ class CreativeWork < Thing
   end
 
   def template
-    [["name", {prompt: "Title", value: self[:name]}],
-     ["creator", {prompt: "Creator", value: self['creator']}],
-     ["license", {prompt: "License", value: self['license']}],
-     ["dateCreated", {prompt: "Date Created", value: self['dateCreated']}]]
+    self.class.template(self)
   end
 
   def links
-    [{href: '/' + self["reviewedBy"], rel: "reviewedBy", prompt: "Reviewed By"}]
+    if self["reviewedBy"].is_a? String
+      [{href: '/' + self["reviewedBy"], rel: "reviewedBy", prompt: "Reviewed By"}]
+    end
   end
 
   def items
@@ -201,6 +200,18 @@ class CreativeWork < Thing
 
   def id_prefix
     'works' + '/'
+  end
+
+  def self.template(entity = {})
+    [["name", {prompt: "Title", value: entity[:name]}],
+     ["creator", {prompt: "Creator", value: entity['creator']}],
+     ["license", {prompt: "License", value: entity['license']}],
+     ["dateCreated", {prompt: "Date Created", value: entity['dateCreated']}]]
+  end
+
+  def self.whitelist(data)
+    keys = template.map { |t| t.first }
+    data.select {|k,v| keys.include?(k) }
   end
 end
 

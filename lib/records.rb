@@ -276,7 +276,8 @@ class CreativeWorks < Datastore
   end
 
   def self.create(id, data = {}, username)
-    work = CreativeWork.new(data).tap do |c|
+    safe_data = CreativeWork::whitelist(data)
+    work = CreativeWork.new(safe_data).tap do |c|
       c.slug = id
       c['reviewedBy'] = "users/" + username
     end
@@ -295,9 +296,11 @@ class CreativeWorks < Datastore
   end
 
   def self.update(id, edit, data = {}, username)
-    data["reviewedBy"] = "users/" + username
+    safe_data = CreativeWork::whitelist(data)
     old_work = find(id).items.first
-    new_work = old_work.merge(data)
+    new_work = old_work.merge(safe_data).tap do |c|
+      c['reviewedBy'] = "users/" + username
+    end
     new_work.update!
 
     recordset = RecordSet.new
