@@ -1000,8 +1000,8 @@ App = Webmachine::Application.new do |app|
   app.routes do
     add [], HomeResource
     add ["favicon.ico"], FaviconResource
-    add ["assets", '*'], AssetsResource
-    add ["docs", '*'], AssetsResource
+    add ["assets", :*], AssetsResource
+    add ["docs", :*], AssetsResource
 
     add ["works"], WorksResource
     add ["works;template"], WorksTemplateResource

@@ -16,7 +16,7 @@ require 'json'
 require 'rake'
 
 RspecApiDocumentation.configure do |config|
-  config.app = Webmachine::Adapters::Rack.new(App.configuration, App.dispatcher)
+  config.app = Webmachine::Adapters::Rack.new(App)
   config.format = :html
   config.docs_dir = Pathname.new("public/docs/api")
 end
