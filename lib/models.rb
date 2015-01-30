@@ -56,13 +56,13 @@ class Identity < Schema
   end
 
   def username
-    self.id.sub(id_prefix, '')
+    self.id.sub(self.class.id_prefix, '')
   end
 
   def username=(name)
     unless name.nil?
-      self.doc_id = doc_prefix + name
-      self.id = id_prefix + name
+      self.doc_id = self.class.doc_prefix + name
+      self.id = self.class.id_prefix + name
     end
   end
 
@@ -84,11 +84,11 @@ class Identity < Schema
   end
 
   private
-  def doc_prefix
+  def self.doc_prefix
     'identity' + ':'
   end
 
-  def id_prefix
+  def self.id_prefix
     'users' + '/'
   end
 end
@@ -109,25 +109,28 @@ class Thing < Schema
 
   # URL validation can exclude Thing subclasses that do it themselves
   validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => true,
-                  :unless => Proc.new {|thing| thing.type == "WebPage" }
+                  :unless => (Proc.new do |t|
+                       t.type == "WebPage" ||
+                       t.type == "ItemPage"
+                  end)
 
   def slug
-    self.id.sub(id_prefix, '')
+    self.id.sub(self.class.id_prefix, '')
   end
 
   def slug=(id)
     unless id.nil? || id.empty?
-      self.doc_id = doc_prefix + id
-      self.id = id_prefix + id
+      self.doc_id = self.class.doc_prefix + id
+      self.id = self.class.id_prefix + id
     end
   end
 
   private
-  def doc_prefix
+  def self.doc_prefix
     'thing' + ':'
   end
 
-  def id_prefix
+  def self.id_prefix
     'things' + '/'
   end
 end
@@ -148,6 +151,7 @@ class CreativeWork < Thing
   property 'creator'
   property 'license'
   property 'dateCreated'
+  property 'about'
 
   property 'firstReviewed', default: Time.now.utc.iso8601
   property 'lastReviewed', default: Time.now.utc.iso8601
@@ -155,7 +159,7 @@ class CreativeWork < Thing
 
   property :based_on_url, from: 'isBasedOnUrl'
 
-  validates_presence_of :name
+  validates_presence_of :name, :unless => Proc.new {|c| c.type == "ItemPage"}
   validates :based_on_url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 
   def update!
@@ -182,31 +186,47 @@ class CreativeWork < Thing
   def links
     if self["reviewedBy"].is_a? String
       [{href: '/' + self["reviewedBy"], rel: "reviewedBy", prompt: "Reviewed By"}]
+    else
+      []
     end
   end
 
   def items
-    data = template.reject do |d|
+    data = self.class.items_template(self).reject do |d|
       value = d.last[:value]
       value.nil? || value.empty?
     end
     data << ["lastReviewed", {prompt: "Date Reviewed", value: self['lastReviewed']}]
   end
 
+  def href
+    if self.id.is_a? String
+      '/' + self.id
+    end
+  end
+
   private
-  def doc_prefix
+  def self.doc_prefix
     'creative_work' + ':'
   end
 
-  def id_prefix
+  def self.id_prefix
     'works' + '/'
   end
 
   def self.template(entity = {})
+    self.items_template(entity) + self.links_template(entity)
+  end
+
+  def self.items_template(entity = {})
     [["name", {prompt: "Title", value: entity[:name]}],
      ["creator", {prompt: "Creator", value: entity['creator']}],
      ["license", {prompt: "License", value: entity['license']}],
      ["dateCreated", {prompt: "Date Created", value: entity['dateCreated']}]]
+  end
+
+  def self.links_template(entity = {})
+    []
   end
 
   def self.whitelist(data)
@@ -238,6 +258,44 @@ class WebPage < CreativeWork
     work_err_messages = self.work.errors.full_messages.join(", ")
     errors.add(:work, work_err_messages) unless work_is_valid
   end
+end
+
+# Class that models a Schema.org ItemPage
+# It does not inherit from WebPage as to not conflict with the current use of
+# that model.
+#
+class ItemPage < CreativeWork
+  property :context, from: "@context", default: 'contexts/webpage/v1'
+  property :type, from: "@type", required: true, default: "ItemPage"
+
+  property 'publisher'
+
+  validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => false
+
+  def links
+    lks = super
+    lks << {href: self[:url], rel: "external", prompt: "URL"}
+    if self["about"].is_a? String
+      lks << {href: '/' + self["about"], rel: "about", prompt: "About"}
+    end
+    lks
+  end
+
+  private
+  def self.id_prefix
+    'webpages' + '/'
+  end
+
+  def self.items_template(entity = {})
+    [["name", {prompt: "Title", value: entity[:name]}],
+     ["license", {prompt: "License", value: entity['license']}],
+     ["publisher", {prompt: "Publisher", value: entity['publisher']}]]
+  end
+
+  def self.links_template(entity = [])
+    super << ["url", {prompt: "URL", value: entity[:url]}]
+  end
+
 end
 
 # Class that models a Schema.org MediaObject

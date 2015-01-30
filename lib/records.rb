@@ -269,14 +269,16 @@ class RecordSet
   def coerce_doc(doc)
     case doc["@type"]
     when "CreativeWork" then CreativeWork.new(doc)
+    when "ItemPage" then ItemPage.new(doc)
     else Schema.new(doc)
     end
   end
 end
 
 class CreativeWorks < Datastore
+
   def self.new
-    RecordSet.new.tap { |r| r.add(CreativeWork.new) }
+    RecordSet.new.tap { |r| r.add(self.model.new) }
   end
 
   def self.create(id, data = {}, username)
@@ -298,28 +300,40 @@ class CreativeWorks < Datastore
       params << ["limit", options[:limit] + 1]
     end
 
-    uri = design_uri({:design => "all", :view => "works"}, params)
+    uri = design_uri({:design => "all", :view => self.design_doc(:all)}, params)
     fetch_recordset(uri)
   end
 
   def self.find(id)
-    key = "works/" + id
+    key = self.model::id_prefix + id
     params  = [[:reduce, "false"], [:include_docs, "true"],
                ["startkey", "[\"#{key}\"]"],["endkey", "[\"#{key}\", {}]"]]
-    uri = design_uri({:design => "all", :view => "works"}, params)
+    uri = design_uri({:design => "all", :view => self.design_doc(:find)}, params)
     fetch_recordset(uri)
   end
 
   def self.history(id)
-    key = "works/" + id
+    key = self.model::id_prefix + id
     params  = [[:reduce, "false"], [:include_docs, "true"],
                ["endkey", "[\"#{key}\"]"],["startkey", "[\"#{key}\", {}]"],
                ["descending", "true"]]
-    uri = design_uri({:design => "all", :view => "work_history"}, params)
+    uri = design_uri({:design => "all", :view => self.design_doc(:history)}, params)
     fetch_recordset(uri)
   end
 
   private
+  def self.model
+    CreativeWork
+  end
+
+  def self.design_doc(doc)
+    case doc
+    when :all then 'works'
+    when :find then 'works_with_publications'
+    when :history then 'work_history'
+    end
+  end
+
   def self.save_and_make_recordset(id, data = {}, username)
     work = make_work(id, data, username)
     status = validate_and_save(work)
@@ -330,14 +344,14 @@ class CreativeWorks < Datastore
   end
 
   def self.make_work(id, data = {}, username)
-    safe_data = CreativeWork::whitelist(data)
+    safe_data = self.model::whitelist(data)
     existing_work = find(id).items.first
 
     unless existing_work.nil?
       work = existing_work.merge(safe_data)
       work.update!
     else
-      work = CreativeWork.new(safe_data)
+      work = self.model.new(safe_data)
       work.slug = id
     end
 
@@ -375,7 +389,20 @@ class CreativeWorks < Datastore
     {"error" => "Invalid Input",
      "reason" => creative_work.errors.full_messages.join(", ")}
   end
+end
 
+class ItemPages < CreativeWorks
+  private
+  def self.model
+    ItemPage
+  end
+
+  def self.design_doc(doc)
+    case doc
+    when :find then 'itempages'
+    when :history then 'itempages_history'
+    end
+  end
 end
 
 class WebPages < Datastore
@@ -895,7 +922,7 @@ class RecordCollection
   end
 
   def build_item_href(record)
-    href = @include_item_link ? @base_uri + record.slug : ''
+    href = @include_item_link ? record.href : ''
   end
 
   def add_data_to(item, data)

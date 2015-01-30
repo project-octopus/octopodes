@@ -29,6 +29,22 @@
       "map": "function(doc) { if(doc['@type'] === 'CreativeWork') { emit([doc['@id'], doc.lastReviewed],1); } }",
       "reduce": "_count"
     },
+    "work_publications": {
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['about']) { emit([doc.about, doc.lastReviewed], 1); }}",
+      "reduce": "_count"
+    },
+    "works_with_publications": {
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1) { if(doc['@type'] === 'CreativeWork') { emit([doc['@id'], 0, doc.lastReviewed],1); } if (doc['about']) { emit([doc.about, 1, doc.lastReviewed], 1); } } }",
+      "reduce": "_count"
+    },
+    "itempages": {
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['@type'] === 'ItemPage') { emit([doc['@id'], doc.firstReviewed],1); } }",
+      "reduce": "_count"
+    },
+    "itempages_history": {
+      "map": "function(doc) { if(doc['@type'] === 'ItemPage') { emit([doc['@id'], doc.lastReviewed],1); } }",
+      "reduce": "_count"
+    },
     "users": {
       "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['@type'] === 'Identity') { emit([doc['@id'], doc.created],1); } }",
       "reduce": "_count"

@@ -75,7 +75,7 @@ resource "Work" do
 
       expect(response_body).to have_json_path("collection")
       expect(response_body).to have_json_path("collection/items")
-      expect(response_body).to have_json_size(1).at_path("collection/items")
+      expect(response_body).to have_json_size(2).at_path("collection/items")
       expect(response_body).not_to have_json_path("collection/template")
 
       expect(status).to eq(200)

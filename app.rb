@@ -315,6 +315,126 @@ class WorkTemplateResource < WorkResource
 
 end
 
+class WebPageResource < CollectionResource
+  def allowed_methods
+    ["GET"]
+  end
+
+  def base_uri
+    @request.base_uri.to_s + "webpages/"
+  end
+
+  def resource_exists?
+    records.count >= 1
+  end
+
+  private
+  def id
+    request.path_info[:id]
+  end
+
+  def title
+    "Web Pages"
+  end
+
+  def collection
+    options = {base_uri: base_uri, links: links}
+    RecordCollection.new(records, options).to_cj
+  end
+
+  def records
+    @records ||= ItemPages::find(id)
+  end
+
+  def links
+    webpages_base_uri = @request.base_uri.to_s + "webpages/"
+    links = []
+
+    links << {:href => webpages_base_uri + id + '/',
+              :rel => "view", :prompt => "View"}
+
+    links << {:href => webpages_base_uri + id + '/history',
+              :rel => "history", :prompt => "History"}
+
+    unless @user.nil? || @user.empty?
+      links << {:href => webpages_base_uri + id + '/template',
+                :rel => "template", :prompt => "Edit"}
+    end
+
+    links
+  end
+
+end
+
+class WebPageHistoryResource < WebPageResource
+  private
+  def title
+    "Web Page Editing History"
+  end
+
+  def collection
+    options = {base_uri: base_uri, links: links, include_item_link: false}
+    RecordCollection.new(records, options).to_cj
+  end
+
+  def records
+    @records ||= ItemPages::history(id)
+  end
+end
+
+class WebPageTemplateResource < WebPageResource
+  def allowed_methods
+    ["GET", "POST"]
+  end
+
+  def is_authorized?(authorization_header)
+    auth = user_auth(authorization_header)
+    if auth != true
+      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
+    end
+    auth
+  end
+
+  def base_uri
+    @request.base_uri.to_s + "webpages/" + id + "/template/"
+  end
+
+  def post_is_create?
+    true
+  end
+
+  def create_path
+    @create_path ||= ItemPages::uuid
+  end
+
+  def from_urlencoded
+    begin
+      @records = ItemPages.update(id, create_path, form_data, @user[:username])
+      @error = records.error
+    rescue ArgumentError
+      @error = {"title" => "Bad Input", "message" => "Malformed WWW Form"}
+    end
+
+    if @error.nil? || @error.empty?
+      @response.do_redirect
+    else
+      @response.body = to_html
+      @response.code = 422 # Unprocessable Entity
+    end
+  end
+
+  private
+  def title
+    "Edit Web Page"
+  end
+
+  def collection
+    options = {base_uri: base_uri, links: links, include_items: false,
+               include_template: true, error: @error}
+    RecordCollection.new(records, options).to_cj
+  end
+end
+
 class ReviewsResource < CollectionResource
   def allowed_methods
     ["GET", "POST"]
@@ -1009,6 +1129,11 @@ App = Webmachine::Application.new do |app|
     add ["works", :id, "history"], WorkHistoryResource
     add ["works", :id, "template"], WorkTemplateResource
     add ["works", :id, "template", :edit], WorkResource
+
+    add ["webpages", :id], WebPageResource
+    add ["webpages", :id, "history"], WebPageHistoryResource
+    add ["webpages", :id, "template"], WebPageTemplateResource
+    add ["webpages", :id, "template", :edit], WebPageResource
 
     add ["reviews"], ReviewsResource
     add ["reviews;template"], ReviewsTemplateResource
