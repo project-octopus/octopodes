@@ -392,6 +392,13 @@ class CreativeWorks < Datastore
 end
 
 class ItemPages < CreativeWorks
+
+  def self.create(id, data = {}, username, work_id)
+    about = CreativeWork::id_prefix + work_id
+    data["about"] = about
+    save_and_make_recordset(id, data, username)
+  end
+
   private
   def self.model
     ItemPage

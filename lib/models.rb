@@ -296,6 +296,12 @@ class ItemPage < CreativeWork
     super << ["url", {prompt: "URL", value: entity[:url]}]
   end
 
+  def self.whitelist(data)
+    keys = template.map { |t| t.first }
+    keys << "about"
+    data.select {|k,v| keys.include?(k) }
+  end
+
 end
 
 # Class that models a Schema.org MediaObject

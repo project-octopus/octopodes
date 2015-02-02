@@ -230,6 +230,10 @@ class WorkResource < WorksResource
     @request.base_uri.to_s + "works/"
   end
 
+  def resource_exists?
+    records.count >= 1
+  end
+
   private
   def id
     request.path_info[:id]
@@ -255,6 +259,8 @@ class WorkResource < WorksResource
     unless @user.nil? || @user.empty?
       links << {:href => works_base_uri + id + '/template',
                 :rel => "template", :prompt => "Edit"}
+      links << {:href => works_base_uri + id + '/publications',
+                :rel => "template", :prompt => "Add a Publication"}
     end
 
     links
@@ -312,7 +318,54 @@ class WorkTemplateResource < WorkResource
                include_template: true, error: @error}
     RecordCollection.new(records, options).to_cj
   end
+end
 
+class WorkPublicationsResource < WorkTemplateResource
+
+  def base_uri
+    @request.base_uri.to_s + 'works/' + id + '/publications/'
+  end
+
+  def resource_exists?
+    CreativeWorks::find(id).count >= 1
+  end
+
+  def post_is_create?
+    true
+  end
+
+  def create_path
+    @create_path ||= ItemPages::uuid
+  end
+
+  def from_urlencoded
+    begin
+      @records = ItemPages.create(create_path, form_data, @user[:username], id)
+      @error = records.error
+    rescue ArgumentError
+      @error = {"title" => "Bad Input", "message" => "Malformed WWW Form"}
+    end
+
+    if @error.nil? || @error.empty?
+      @response.do_redirect
+    else
+      @response.body = to_html
+      @response.code = 422 # Unprocessable Entity
+    end
+  end
+
+  private
+  def title
+    "Add a Publication to the Work"
+  end
+
+  def body
+    "Instructions: Add information about where the original work has been published on the web"
+  end
+
+  def records
+    @records ||= ItemPages::new
+  end
 end
 
 class WebPageResource < CollectionResource
@@ -1127,6 +1180,8 @@ App = Webmachine::Application.new do |app|
     add ["works;template"], WorksTemplateResource
     add ["works", :id], WorkResource
     add ["works", :id, "history"], WorkHistoryResource
+    add ["works", :id, "publications"], WorkPublicationsResource
+    add ["works", :id, "publications", :add], WorkResource
     add ["works", :id, "template"], WorkTemplateResource
     add ["works", :id, "template", :edit], WorkResource
 

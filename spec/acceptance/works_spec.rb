@@ -137,4 +137,43 @@ resource "Work" do
       end
     end
   end
+
+  get "http://project-octopus.org/works/1/publications" do
+    let(:accept_header) { "application/vnd.collection+json" }
+    let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+
+    example "Getting a creative work's publication form" do
+      do_request
+
+      expect(response_body).to have_json_path("collection")
+      expect(response_body).not_to have_json_path("collection/items")
+      expect(response_body).to have_json_path("collection/template")
+
+      expect(status).to eq(200)
+    end
+  end
+
+  raw_form_posts = [
+    "name=Title&publisher=publisher&license=&url=http%3A%2F%2Fexample.com%2Fpub"
+  ]
+
+  raw_form_posts.each_with_index do |raw_post, index|
+
+    post "http://project-octopus.org/works/1/publications" do
+
+      let(:accept_header) { "text/html" }
+      let(:content_type) { "application/x-www-form-urlencoded" }
+      let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
+
+      let(:raw_post) { raw_post }
+
+      example "Posting a work publication as www-form #{index}", :document => false do
+        do_request
+
+        expect(response_headers).to include("Location")
+
+        expect(status).to eq(303)
+      end
+    end
+  end
 end
