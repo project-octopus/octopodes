@@ -1214,7 +1214,7 @@ App = Webmachine::Application.new do |app|
     add ["paper"], PaperResource
 
     if configatron.webmachine.trace
-      add ['trace', '*'], Webmachine::Trace::TraceResource
+      add ['trace', :*], Webmachine::Trace::TraceResource
     end
   end
 end
