@@ -51,14 +51,18 @@ class CollectionTemplate < ApplicationTemplate
     url_too_long = url.length - protocol_length > max_url_length
 
     if url =~ /\A#{URI::regexp}\z/
-      uri = URI(url)
-      host = !uri.host.nil? ? uri.host : ""
-      path = !uri.path.nil? ? uri.path : ""
-      query = !uri.query.nil? ? "?#{uri.query}" : ""
-      if url_too_long
-        host + (path + query)[0..max_url_length - host.length] + '...'
-      else
-        host + path + query
+      begin
+        uri = URI(url)
+        host = !uri.host.nil? ? uri.host : ""
+        path = !uri.path.nil? ? uri.path : ""
+        query = !uri.query.nil? ? "?#{uri.query}" : ""
+        if url_too_long
+          host + (path + query)[0..max_url_length - host.length] + '...'
+        else
+          host + path + query
+        end
+      rescue URI::InvalidURIError
+        url
       end
     else
       if url_too_long
