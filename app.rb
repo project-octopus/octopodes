@@ -1138,34 +1138,6 @@ class LoginResource < CollectionResource
 
 end
 
-class AboutResource < OctopusResource
-  def allowed_methods
-    ["GET"]
-  end
-
-  def content_types_provided
-    [["text/html", :to_html]]
-  end
-
-  def to_html
-    PagesTemplate.new("about", "About", menu).render
-  end
-end
-
-class PaperResource < OctopusResource
-  def allowed_methods
-    ["GET"]
-  end
-
-  def content_types_provided
-    [["text/html", :to_html]]
-  end
-
-  def to_html
-    PagesTemplate.new("blank", "Read the Paper - Coming Soon", menu).render
-  end
-end
-
 App = Webmachine::Application.new do |app|
   app.configure do |config|
     config.adapter = :Rack
@@ -1209,9 +1181,6 @@ App = Webmachine::Application.new do |app|
 
     add ["feed"], FeedResource
     add ["u", :id], FeedItemResource
-
-    add ["about"], AboutResource
-    add ["paper"], PaperResource
 
     if configatron.webmachine.trace
       add ['trace', :*], Webmachine::Trace::TraceResource
