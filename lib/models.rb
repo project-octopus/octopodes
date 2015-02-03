@@ -301,7 +301,6 @@ class ItemPage < CreativeWork
 
   def self.items_template(entity = {})
     [["name", {prompt: "Title", value: entity[:name]}],
-     ["creator", {prompt: "Creator", value: entity['creator']}],
      ["license", {prompt: "License", value: entity['license']}],
      ["description", {prompt: "Description", value: entity['description']}],
      ["datePublished", {prompt: "Date Published", value: entity['datePublished']}],
