@@ -12,8 +12,7 @@
       "name": "The Threatened Swan",
       "firstReviewed": "2014-12-30T16:31:30+00:00",
       "lastReviewed": "2015-01-26T14:05:57+00:00",
-      "reviewedBy": "users/user0",
-      "sameAs": "https://www.rijksmuseum.nl/en/collection/SK-A-4"
+      "reviewedBy": "users/user0"
     },
     {
       "_id": "creative_works:works_1::v1422367557-ae36",
@@ -27,8 +26,7 @@
       "name": "The Threatened Swan",
       "firstReviewed": "2014-12-30T16:31:30+00:00",
       "lastReviewed": "2014-12-30T16:31:30+00:00",
-      "reviewedBy": "users/user1",
-      "sameAs": "https://www.rijksmuseum.nl/en/collection/SK-A-4"
+      "reviewedBy": "users/user1"
     },
     {
       "_id": "creative_works:works_2",
@@ -42,8 +40,7 @@
       "name": "Muleteers beside an Italian Ruin",
       "firstReviewed": "2015-01-10T13:27:14+00:00",
       "lastReviewed": "2015-01-10T13:27:14+00:00",
-      "reviewedBy": "users/user1",
-      "sameAs": "https://www.rijksmuseum.nl/en/collection/SK-C-89"
+      "reviewedBy": "users/user1"
     },
     {
       "_id": "creative_works:works_3",
@@ -87,7 +84,6 @@
         "name": "Stanley Wong"
       },
       "lastReviewed": "2014-09-01T10:37:27+00:00",
-      "name": "Stanley Wong | Flickr - Photo Sharing!",
       "reviewedBy": {
         "@type": "Person",
         "@id": "user1"
@@ -111,7 +107,6 @@
         "name": "Stanley Wong"
       },
       "lastReviewed": "2014-09-01T10:37:27+00:00",
-      "name": "St Andrews Museum secures exclusive Stanley Wong exhibition",
       "reviewedBy": {
         "@type": "Person",
         "@id": "user1"
@@ -130,7 +125,6 @@
         "isBasedOnUrl": "http://mint-projects /KIK-IRPA, Brussels"
       },
       "lastReviewed": "2014-12-01T10:37:27+00:00",
-      "name": "Brussels (Belgium)",
       "reviewedBy": {
         "@type": "Person",
         "@id": "user0"
