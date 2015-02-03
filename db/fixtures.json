@@ -48,6 +48,7 @@
       "@context": "contexts/webpage/v1",
       "@type": "ItemPage",
       "about": "works/1",
+      "associatedMedia": "https://lh3.ggpht.com/b8bwHdNeBwbyCBJxfMvVO44ywz2M2Gfdc_G_eVhr8M50t0g06lA4Em2S5y2x1zgOUanfObRTlqOZXwAvhbZaGQi-j9c=s0",
       "creator": "Jan Asselijn",
       "datePublished": "",
       "description": "Museum page for the painting",

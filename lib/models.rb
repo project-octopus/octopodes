@@ -270,12 +270,17 @@ class ItemPage < CreativeWork
 
   property 'publisher'
   property 'datePublished'
+  property :associatedMedia, from: 'associatedMedia'
 
   validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => false
+  validates :associatedMedia, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 
   def links
     lks = super
     lks << {href: self[:url], rel: "external", prompt: "URL"}
+    unless self[:associatedMedia].nil? || self[:associatedMedia].empty?
+      lks << {href: self[:associatedMedia], rel: "external", prompt: "Media File URL"}
+    end
     if self["about"].is_a? String
       lks << {href: '/' + self["about"], rel: "about", prompt: "About"}
     end
@@ -283,6 +288,13 @@ class ItemPage < CreativeWork
   end
 
   private
+  # Override from CreativeWork, since associatedMedia has its own validation
+  # as a URL. This can be removed when the method no longer exists in the
+  # superclass.
+  def media_valid
+    true
+  end
+
   def self.id_prefix
     'webpages' + '/'
   end
@@ -297,7 +309,9 @@ class ItemPage < CreativeWork
   end
 
   def self.links_template(entity = [])
-    super << ["url", {prompt: "URL", value: entity[:url]}]
+    lks = super
+    lks << ["url", {prompt: "URL", value: entity[:url]}]
+    lks << ["associatedMedia", {prompt: "Media File URL", value: entity[:associatedMedia]}]
   end
 
   def self.whitelist(data)
