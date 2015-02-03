@@ -185,6 +185,9 @@ class WorksResource < CollectionResource
   def links
     links = []
 
+    links << {:href => base_uri,
+              :rel => "view", :prompt => "All Works"}
+
     unless @user.nil? || @user.empty?
       links << {:href => @request.base_uri.to_s + 'works;template',
                 :rel => "template", :prompt => "Add a Work"}
