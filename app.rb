@@ -238,6 +238,10 @@ class WorkResource < WorksResource
   end
 
   private
+  def title
+    @records.items.first[:name]
+  end
+
   def id
     request.path_info[:id]
   end
@@ -262,8 +266,8 @@ class WorkResource < WorksResource
     unless @user.nil? || @user.empty?
       links << {:href => works_base_uri + id + '/template',
                 :rel => "template", :prompt => "Edit"}
-      links << {:href => works_base_uri + id + '/publications',
-                :rel => "template", :prompt => "Add a Publication"}
+      links << {:href => works_base_uri + id + '/itempages',
+                :rel => "template", :prompt => "Add a Web Page"}
     end
 
     links
@@ -323,10 +327,10 @@ class WorkTemplateResource < WorkResource
   end
 end
 
-class WorkPublicationsResource < WorkTemplateResource
+class WorkItemPagesResource < WorkTemplateResource
 
   def base_uri
-    @request.base_uri.to_s + 'works/' + id + '/publications/'
+    @request.base_uri.to_s + 'works/' + id + '/itempages/'
   end
 
   def resource_exists?
@@ -359,11 +363,11 @@ class WorkPublicationsResource < WorkTemplateResource
 
   private
   def title
-    "Add a Publication to the Work"
+    "Add a Web Page"
   end
 
   def body
-    "Instructions: Add information about where the original work has been published on the web"
+    "Instructions: Add a Web Page where the Work has been published. For example, a museum webpage, Wikipedia article on the work, a Wikimedia Commons page, a Flickr page, etc."
   end
 
   def records
@@ -390,7 +394,7 @@ class WebPageResource < CollectionResource
   end
 
   def title
-    "Web Pages"
+    @records.items.first[:name]
   end
 
   def collection
@@ -1155,8 +1159,8 @@ App = Webmachine::Application.new do |app|
     add ["works;template"], WorksTemplateResource
     add ["works", :id], WorkResource
     add ["works", :id, "history"], WorkHistoryResource
-    add ["works", :id, "publications"], WorkPublicationsResource
-    add ["works", :id, "publications", :add], WorkResource
+    add ["works", :id, "itempages"], WorkItemPagesResource
+    add ["works", :id, "itempages", :add], WorkResource
     add ["works", :id, "template"], WorkTemplateResource
     add ["works", :id, "template", :edit], WorkResource
 

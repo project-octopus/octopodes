@@ -138,11 +138,11 @@ resource "Work" do
     end
   end
 
-  get "http://project-octopus.org/works/1/publications" do
+  get "http://project-octopus.org/works/1/itempages" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
-    example "Getting a creative work's publication form" do
+    example "Getting a creative work's itempages form" do
       do_request
 
       expect(response_body).to have_json_path("collection")
@@ -159,7 +159,7 @@ resource "Work" do
 
   raw_form_posts.each_with_index do |raw_post, index|
 
-    post "http://project-octopus.org/works/1/publications" do
+    post "http://project-octopus.org/works/1/itempages" do
 
       let(:accept_header) { "text/html" }
       let(:content_type) { "application/x-www-form-urlencoded" }
@@ -167,7 +167,7 @@ resource "Work" do
 
       let(:raw_post) { raw_post }
 
-      example "Posting a work publication as www-form #{index}", :document => false do
+      example "Posting a work itempage as www-form #{index}", :document => false do
         do_request
 
         expect(response_headers).to include("Location")

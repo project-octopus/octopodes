@@ -269,6 +269,7 @@ class ItemPage < CreativeWork
   property :type, from: "@type", required: true, default: "ItemPage"
 
   property 'publisher'
+  property 'datePublished'
 
   validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => false
 
@@ -288,7 +289,10 @@ class ItemPage < CreativeWork
 
   def self.items_template(entity = {})
     [["name", {prompt: "Title", value: entity[:name]}],
+     ["creator", {prompt: "Creator", value: entity['creator']}],
      ["license", {prompt: "License", value: entity['license']}],
+     ["description", {prompt: "Description", value: entity['description']}],
+     ["datePublished", {prompt: "Date Published", value: entity['datePublished']}],
      ["publisher", {prompt: "Publisher", value: entity['publisher']}]]
   end
 
