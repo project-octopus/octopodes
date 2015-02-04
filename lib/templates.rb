@@ -45,8 +45,11 @@ class CollectionTemplate < ApplicationTemplate
     @content = File.read(File.expand_path('templates/collection.html.erb'))
   end
 
-  def truncate url
-    max_url_length = 60
+  def truncate url, max
+    self.class.truncate url, max
+  end
+
+  def self.truncate(url, max_url_length = 60)
     protocol_length = 8 # http:// or https://
     url_too_long = url.length - protocol_length > max_url_length
 
@@ -57,7 +60,10 @@ class CollectionTemplate < ApplicationTemplate
         path = !uri.path.nil? ? uri.path : ""
         query = !uri.query.nil? ? "?#{uri.query}" : ""
         if url_too_long
-          host + (path + query)[0..max_url_length - host.length] + '...'
+          max = max_url_length
+          h_len = host.length
+          path_limit = max > h_len ? max - h_len : 0
+          host + (path + query)[0..path_limit] + '...'
         else
           host + path + query
         end
