@@ -49,6 +49,7 @@
       "@type": "ItemPage",
       "about": "works/1",
       "associatedMedia": "https://lh3.ggpht.com/b8bwHdNeBwbyCBJxfMvVO44ywz2M2Gfdc_G_eVhr8M50t0g06lA4Em2S5y2x1zgOUanfObRTlqOZXwAvhbZaGQi-j9c=s0",
+      "creator": "Jan Asselijn",
       "datePublished": "",
       "description": "Museum page for the painting",
       "license": "Public Domain",
@@ -58,6 +59,25 @@
       "lastReviewed": "2015-01-31T13:45:27+00:00",
       "reviewedBy": "users/user0",
       "url": "https://www.rijksmuseum.nl/en/collection/SK-A-4"
+    },
+    {
+      "_id": "creative_works:works_4",
+      "@id": "webpages/2",
+      "@context": "contexts/webpage/v1",
+      "@type": "ItemPage",
+      "about": "works/1",
+      "associatedMedia": "http://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Jan_Asselijn_-_The_Threatened_Swan.jpg/711px-Jan_Asselijn_-_The_Threatened_Swan.jpg",
+      "creator": "Jan Asselijn",
+      "datePublished": "2006",
+      "description": "Wikimedia Commons page for the painting",
+      "isBasedOnUrl": "http://hdl.handle.net/10934/RM0001.COLLECT.5829",
+      "license": "Public Domain",
+      "name": "File:Jan Asselijn - The Threatened Swan.jpg",
+      "publisher": "Wikimedia Commons",
+      "firstReviewed": "2015-02-03T15:18:05+00:00",
+      "lastReviewed": "2015-02-03T15:18:05+00:00",
+      "reviewedBy": "users/user1",
+      "url": "http://commons.wikimedia.org/wiki/File:Jan_Asselijn_-_The_Threatened_Swan.jpg"
     },
     {
       "_id": "creative_works:works_3::v1420208834-b433",
