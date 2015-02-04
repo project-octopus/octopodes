@@ -99,7 +99,7 @@
       </table>
       <div class="items-links">
       <% for link in @item.links %>
-        <a class="btn btn-primary btn-xs" href="<%= link.href %>">
+        <a class="btn btn-primary btn-xs" href="<%= link.href %>" rel="<%= link.rel %>">
           <%= link.prompt %>: <%= abridge link.href %>
         </a>
       <% end %>
