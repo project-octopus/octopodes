@@ -45,8 +45,31 @@ class CollectionTemplate < ApplicationTemplate
     @content = File.read(File.expand_path('templates/collection.html.erb'))
   end
 
+  def abridge url, max = 10
+    self.class.abridge url, max
+  end
+
   def truncate url, max
     self.class.truncate url, max
+  end
+
+  def self.abridge url, max = 10
+    abridged = nil
+    if url =~ /\A#{URI::regexp}\z/
+      begin
+        uri = URI(url)
+        if !uri.host.nil?
+          abridged = uri.host
+        end
+      rescue URI::InvalidURIError
+      end
+    end
+
+    if abridged.nil?
+      self.truncate(url, max)
+    else
+      abridged
+    end
   end
 
   def self.truncate(url, max_url_length = 60)
@@ -68,7 +91,7 @@ class CollectionTemplate < ApplicationTemplate
           host + path + query
         end
       rescue URI::InvalidURIError
-        url
+        url[0..max_url_length]
       end
     else
       if url_too_long
