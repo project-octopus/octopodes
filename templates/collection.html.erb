@@ -66,7 +66,7 @@
     <% end %>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-8">
-        <input class="btn btn-default" type="submit" value="Submit"/>
+        <input class="btn btn-primary" type="submit" value="Submit"/>
       </div>
     </div
     </form>
@@ -76,7 +76,7 @@
 <div class="row">
   <div class="col-sm-offset-2 col-sm-8">
     <% for @item in @items %>
-      <dl>
+      <dl class="items-list">
         <% if @item.href %>
         <dt>
         <a href="<%= @item.href %>">
@@ -92,17 +92,14 @@
             </dd>
           <% end %>
         <% end %>
-        <% for link in @item.links %>
-          <dd>
-            <%= link.prompt %>:
-            <strong>
-              <a href="<%= link.href %>">
-                <%= truncate link.href %>
-              </a>
-              </strong>
-            </dd>
-        <% end %>
       </dl>
+      <div class="items-links">
+      <% for link in @item.links %>
+        <a class="btn btn-primary btn-xs" href="<%= link.href %>">
+          <%= link.prompt %>: <%= abridge link.href %>
+        </a>
+      <% end %>
+      </div>
       <hr/>
     <% end %>
   </div>

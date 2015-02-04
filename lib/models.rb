@@ -185,7 +185,7 @@ class CreativeWork < Thing
 
   def links
     if self["reviewedBy"].is_a? String
-      [{href: '/' + self["reviewedBy"], rel: "reviewedBy", prompt: "Reviewed By"}]
+      [{href: '/' + self["reviewedBy"], rel: "reviewedBy", prompt: "Reviewer"}]
     else
       []
     end
@@ -277,10 +277,10 @@ class ItemPage < CreativeWork
   validates :associated_media, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 
   def links
-    lks = super
+    lks = []
     lks << {href: self[:url], rel: "external", prompt: "URL"}
     unless self[:associated_media].nil? || self[:associated_media].empty?
-      lks << {href: self[:associated_media], rel: "external", prompt: "Media File URL"}
+      lks << {href: self[:associated_media], rel: "external", prompt: "Media"}
     end
     unless self[:is_based_on_url].nil? || self[:is_based_on_url].empty?
       lks << {href: self[:is_based_on_url], rel: "external", prompt: "Based on"}
@@ -288,7 +288,7 @@ class ItemPage < CreativeWork
     if self["about"].is_a? String
       lks << {href: '/' + self["about"], rel: "about", prompt: "Creative Work"}
     end
-    lks
+    lks.push(*super)
   end
 
   private
