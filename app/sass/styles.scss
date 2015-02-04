@@ -1,4 +1,58 @@
 @import "bootstrap-compass";
 @import "bootstrap-variables";
 @import "bootstrap";
-@import "bootswatch"
+@import "bootswatch";
+
+html, body {
+  height: 100%;
+}
+.navbar .navbar-brand {
+  font-size: 1em;
+  font-weight: bold;
+}
+.nav > li {
+  float: left;
+}
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -51px;
+}
+.footer, .push {
+  height: 51px;
+}
+.footer .navbar {
+  box-shadow: none;
+  margin-bottom: 0;
+}
+label {
+  display: block;
+}
+.error {
+  display: block;
+  color: #F8F8F8;
+  background-color: #AB4642;
+  padding: 1em;
+}
+.jumbotron {
+  text-align: center;
+}
+.home-input {
+  text-align: center
+}
+.items-list {
+  margin-bottom: 0;
+}
+.items-list .item-datum-prompt {
+  width: 33%;
+}
+.items-links .btn {
+  text-transform: initial;
+}
+
+@media screen and (min-width: 768px) {
+  .jumbotron h1 {
+    font-size: 2em;
+  }
+}
