@@ -76,23 +76,27 @@
 <div class="row">
   <div class="col-sm-offset-2 col-sm-8">
     <% for @item in @items %>
-      <dl class="items-list">
+      <table class="table items-list">
         <% if @item.href %>
-        <dt>
-        <a href="<%= @item.href %>">
-          <%= URI(@item.href).path %>
-        </a>
-        </dt>
+          <caption>
+            <a href="<%= @item.href %>">
+              <%= URI(@item.href).path %>
+            </a>
+          </caption>
         <% end %>
         <% for datum in @item.data %>
           <% unless datum.value.nil? %>
-            <dd>
-              <%= datum.prompt %>:
-              <strong><%= h(datum.value) %></strong>
-            </dd>
+            <tr>
+              <td class="item-datum-prompt">
+                <%= datum.prompt %>
+              </td>
+              <td class="item-datum-value">
+                <strong><%= h(datum.value) %></strong>
+              </td>
+            </tr>
           <% end %>
         <% end %>
-      </dl>
+      </table>
       <div class="items-links">
       <% for link in @item.links %>
         <a class="btn btn-primary btn-xs" href="<%= link.href %>">
