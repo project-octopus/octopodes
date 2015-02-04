@@ -159,7 +159,7 @@ class CreativeWork < Thing
 
   property :is_based_on_url, from: 'isBasedOnUrl'
 
-  validates_presence_of :name, :unless => Proc.new {|c| c.type == "ItemPage"}
+  validates_presence_of :name, :unless => Proc.new {|c| c.type != "CreativeWork"}
   validates :is_based_on_url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 
   def update!
@@ -268,6 +268,7 @@ class ItemPage < CreativeWork
   property :context, from: "@context", default: 'contexts/webpage/v1'
   property :type, from: "@type", required: true, default: "ItemPage"
 
+  property 'author'
   property 'publisher'
   property 'datePublished'
   property :associated_media, from: 'associatedMedia'
@@ -303,9 +304,9 @@ class ItemPage < CreativeWork
   end
 
   def self.items_template(entity = {})
-    [["name", {prompt: "Title", value: entity[:name]}],
-     ["creator", {prompt: "Credit (creator)", value: entity['creator']}],
-     ["license", {prompt: "License (stated)", value: entity['license']}],
+    [["name", {prompt: "Web Page Title", value: entity[:name]}],
+     ["creator", {prompt: "Credit (creator of the work)", value: entity['creator']}],
+     ["license", {prompt: "License (as stated)", value: entity['license']}],
      ["description", {prompt: "Description", value: entity['description']}],
      ["datePublished", {prompt: "Date Published", value: entity['datePublished']}],
      ["publisher", {prompt: "Publisher", value: entity['publisher']}]]
@@ -313,9 +314,9 @@ class ItemPage < CreativeWork
 
   def self.links_template(entity = [])
     lks = super
-    lks << ["url", {prompt: "Web Page URL", value: entity[:url]}]
+    lks << ["url", {prompt: "Web Page URL (required)", value: entity[:url]}]
     lks << ["associatedMedia", {prompt: "Media File URL", value: entity[:associated_media]}]
-    lks << ["isBasedOnUrl", {prompt: "Based on URL (link to original source)", value: entity[:associated_media]}]
+    lks << ["isBasedOnUrl", {prompt: "Based on URL (link to original source)", value: entity[:is_based_on_url]}]
   end
 
   def self.whitelist(data)
@@ -323,7 +324,25 @@ class ItemPage < CreativeWork
     keys << "about"
     data.select {|k,v| keys.include?(k) }
   end
+end
 
+# Class that models a Schema.org WebPageElement
+#
+class WebPageElement < ItemPage
+  property :type, from: "@type", required: true, default: "WebPageElement"
+
+  property 'caption'
+
+  def self.items_template(entity = {})
+    tpl = [["caption", {prompt: "Caption", value: entity['caption']}],
+           ["author", {prompt: "Web Page Author", value: entity['author']}]]
+    tpl.push(*super)
+  end
+
+  private
+  def self.id_prefix
+    'elements' + '/'
+  end
 end
 
 # Class that models a Schema.org MediaObject

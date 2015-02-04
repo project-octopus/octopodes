@@ -80,6 +80,26 @@
       "url": "http://commons.wikimedia.org/wiki/File:Jan_Asselijn_-_The_Threatened_Swan.jpg"
     },
     {
+      "_id": "creative_works:works_5",
+      "@id": "elements/3",
+      "@context": "contexts/webpage/v1",
+      "@type": "WebPageElement",
+      "about": "works/1",
+      "associatedMedia": "http://en.wikipedia.org/wiki/File:Jan_Asselijn_-_De_bedreigde_zwaan;_later_opgevat_als_allegorie_op_Johan_de_Witt_-_Google_Art_Project.jpg",
+      "caption": "The Threatened Swan, one of the topworks in the Rijksmuseum",
+      "creator": "Jan Asselijn",
+      "datePublished": "",
+      "description": "Example of painting on the artist's wikipedia page",
+      "isBasedOnUrl": "http://en.wikipedia.org/wiki/File:Jan_Asselijn_-_De_bedreigde_zwaan;_later_opgevat_als_allegorie_op_Johan_de_Witt_-_Google_Art_Project.jpg",
+      "license": "",
+      "name": "Jan Asselijn",
+      "publisher": "Wikimedia Commons",
+      "firstReviewed": "2015-02-03T15:18:05+00:00",
+      "lastReviewed": "2015-02-03T15:18:05+00:00",
+      "reviewedBy": "users/user1",
+      "url": "http://en.wikipedia.org/wiki/Jan_Asselijn"
+    },
+    {
       "_id": "creative_works:works_3::v1420208834-b433",
       "@id": "webpages/1",
       "@context": "contexts/webpage/v1",

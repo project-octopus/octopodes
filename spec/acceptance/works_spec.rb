@@ -75,7 +75,7 @@ resource "Work" do
 
       expect(response_body).to have_json_path("collection")
       expect(response_body).to have_json_path("collection/items")
-      expect(response_body).to have_json_size(3).at_path("collection/items")
+      expect(response_body).to have_json_size(4).at_path("collection/items")
       expect(response_body).not_to have_json_path("collection/template")
 
       expect(status).to eq(200)
@@ -138,7 +138,7 @@ resource "Work" do
     end
   end
 
-  get "http://project-octopus.org/works/1/itempages" do
+  get "http://project-octopus.org/works/1/pages" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
@@ -159,7 +159,7 @@ resource "Work" do
 
   raw_form_posts.each_with_index do |raw_post, index|
 
-    post "http://project-octopus.org/works/1/itempages" do
+    post "http://project-octopus.org/works/1/pages" do
 
       let(:accept_header) { "text/html" }
       let(:content_type) { "application/x-www-form-urlencoded" }

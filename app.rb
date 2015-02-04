@@ -266,8 +266,10 @@ class WorkResource < WorksResource
     unless @user.nil? || @user.empty?
       links << {:href => works_base_uri + id + '/template',
                 :rel => "template", :prompt => "Edit"}
-      links << {:href => works_base_uri + id + '/itempages',
-                :rel => "template", :prompt => "Add a Web Page"}
+      links << {:href => works_base_uri + id + '/webpages',
+                :rel => "template", :prompt => "Add a Web Page for the Work"}
+      links << {:href => works_base_uri + id + '/elements',
+                :rel => "template", :prompt => "Add a Re-use of the Work"}
     end
 
     links
@@ -327,10 +329,10 @@ class WorkTemplateResource < WorkResource
   end
 end
 
-class WorkItemPagesResource < WorkTemplateResource
+class WorkWebPagesResource < WorkTemplateResource
 
   def base_uri
-    @request.base_uri.to_s + 'works/' + id + '/itempages/'
+    @request.base_uri.to_s + 'works/' + id + '/webpages/'
   end
 
   def resource_exists?
@@ -342,12 +344,12 @@ class WorkItemPagesResource < WorkTemplateResource
   end
 
   def create_path
-    @create_path ||= ItemPages::uuid
+    @create_path ||= datastore::uuid
   end
 
   def from_urlencoded
     begin
-      @records = ItemPages.create(create_path, form_data, @user[:username], id)
+      @records = datastore.create(create_path, form_data, @user[:username], id)
       @error = records.error
     rescue ArgumentError
       @error = {"title" => "Bad Input", "message" => "Malformed WWW Form"}
@@ -363,15 +365,32 @@ class WorkItemPagesResource < WorkTemplateResource
 
   private
   def title
-    "Add a Web Page about the Work"
+    case source
+    when :elements then "Add a Web Page that uses the Work"
+    else "Add a Web Page about the Work"
+    end
   end
 
   def body
-    "Instructions: Add a Web Page where the Work has been featured and published. For example, a museum webpage, Wikipedia article on the work, a Wikimedia Commons page, a Flickr page, an artist's portfolio page, etc."
+    case source
+    when :elements then "Instructions: Add a Web Page where the Work has been used or remixed. For example, an article, blog post, or other independent work."
+    else "Instructions: Add a Web Page where the Work is represented. For example, a museum webpage, Wikipedia article on the work, a Wikimedia Commons page, a Flickr page, an artist's portfolio page, etc."
+    end
   end
 
   def records
-    @records ||= ItemPages::new
+    @records ||= datastore::new
+  end
+
+  def datastore
+    case source
+    when :elements then WebPageElements
+    else ItemPages
+    end
+  end
+
+  def source
+    request.path_info[:source]
   end
 end
 
@@ -381,7 +400,7 @@ class WebPageResource < CollectionResource
   end
 
   def base_uri
-    @request.base_uri.to_s + "webpages/"
+    @request.base_uri.to_s + source.to_s + "/"
   end
 
   def resource_exists?
@@ -403,11 +422,11 @@ class WebPageResource < CollectionResource
   end
 
   def records
-    @records ||= ItemPages::find(id)
+    @records ||= datastore::find(id)
   end
 
   def links
-    webpages_base_uri = @request.base_uri.to_s + "webpages/"
+    webpages_base_uri = @request.base_uri.to_s + source.to_s + "/"
     links = []
 
     links << {:href => webpages_base_uri + id + '/',
@@ -424,6 +443,17 @@ class WebPageResource < CollectionResource
     links
   end
 
+  def datastore
+    case source
+    when :elements then WebPageElements
+    else ItemPages
+    end
+  end
+
+  def source
+    request.path_info[:source]
+  end
+
 end
 
 class WebPageHistoryResource < WebPageResource
@@ -438,7 +468,7 @@ class WebPageHistoryResource < WebPageResource
   end
 
   def records
-    @records ||= ItemPages::history(id)
+    @records ||= datastore::history(id)
   end
 end
 
@@ -456,7 +486,7 @@ class WebPageTemplateResource < WebPageResource
   end
 
   def base_uri
-    @request.base_uri.to_s + "webpages/" + id + "/template/"
+    @request.base_uri.to_s + source.to_s + "/" + id + "/template/"
   end
 
   def post_is_create?
@@ -464,12 +494,12 @@ class WebPageTemplateResource < WebPageResource
   end
 
   def create_path
-    @create_path ||= ItemPages::uuid
+    @create_path ||= datastore::uuid
   end
 
   def from_urlencoded
     begin
-      @records = ItemPages.update(id, create_path, form_data, @user[:username])
+      @records = datastore.update(id, create_path, form_data, @user[:username])
       @error = records.error
     rescue ArgumentError
       @error = {"title" => "Bad Input", "message" => "Malformed WWW Form"}
@@ -1159,15 +1189,21 @@ App = Webmachine::Application.new do |app|
     add ["works;template"], WorksTemplateResource
     add ["works", :id], WorkResource
     add ["works", :id, "history"], WorkHistoryResource
-    add ["works", :id, "itempages"], WorkItemPagesResource
-    add ["works", :id, "itempages", :add], WorkResource
+    add ["works", :id, "webpages"], WorkWebPagesResource, :source => :webpages
+    add ["works", :id, "webpages", :add], WorkResource
+    add ["works", :id, "elements"], WorkWebPagesResource, :source => :elements
     add ["works", :id, "template"], WorkTemplateResource
     add ["works", :id, "template", :edit], WorkResource
 
-    add ["webpages", :id], WebPageResource
-    add ["webpages", :id, "history"], WebPageHistoryResource
-    add ["webpages", :id, "template"], WebPageTemplateResource
-    add ["webpages", :id, "template", :edit], WebPageResource
+    add ["webpages", :id], WebPageResource, :source => :webpages
+    add ["webpages", :id, "history"], WebPageHistoryResource, :source => :webpages
+    add ["webpages", :id, "template"], WebPageTemplateResource, :source => :webpages
+    add ["webpages", :id, "template", :edit], WebPageResource, :source => :webpages
+
+    add ["elements", :id], WebPageResource, :source => :elements
+    add ["elements", :id, "history"], WebPageHistoryResource, :source => :elements
+    add ["elements", :id, "template"], WebPageTemplateResource, :source => :elements
+    add ["elements", :id, "template", :edit], WebPageResource, :source => :elements
 
     add ["reviews"], ReviewsResource
     add ["reviews;template"], ReviewsTemplateResource

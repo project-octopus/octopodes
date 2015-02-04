@@ -270,6 +270,7 @@ class RecordSet
     case doc["@type"]
     when "CreativeWork" then CreativeWork.new(doc)
     when "ItemPage" then ItemPage.new(doc)
+    when "WebPageElement" then WebPageElement.new(doc)
     else Schema.new(doc)
     end
   end
@@ -406,9 +407,16 @@ class ItemPages < CreativeWorks
 
   def self.design_doc(doc)
     case doc
-    when :find then 'itempages'
-    when :history then 'itempages_history'
+    when :find then 'web_pages'
+    when :history then 'web_pages_history'
     end
+  end
+end
+
+class WebPageElements < ItemPages
+  private
+  def self.model
+    WebPageElement
   end
 end
 

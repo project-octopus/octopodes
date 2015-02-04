@@ -37,12 +37,12 @@
       "map": "function(doc) { if(doc._id.indexOf('::v') == -1) { if(doc['@type'] === 'CreativeWork') { emit([doc['@id'], 0, doc.lastReviewed],1); } if (doc['about']) { emit([doc.about, 1, doc.lastReviewed], 1); } } }",
       "reduce": "_count"
     },
-    "itempages": {
-      "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && doc['@type'] === 'ItemPage') { emit([doc['@id'], doc.firstReviewed],1); } }",
+    "web_pages": {
+      "map": "function(doc) { if(doc._id.indexOf('::v') == -1 && (doc['@type'] === 'ItemPage' || doc['@type'] === 'WebPageElement')) { emit([doc['@id'], doc.firstReviewed],1); } }",
       "reduce": "_count"
     },
-    "itempages_history": {
-      "map": "function(doc) { if(doc['@type'] === 'ItemPage') { emit([doc['@id'], doc.lastReviewed],1); } }",
+    "web_pages_history": {
+      "map": "function(doc) { if(doc['@type'] === 'ItemPage' || doc['@type'] === 'WebPageElement') { emit([doc['@id'], doc.lastReviewed],1); } }",
       "reduce": "_count"
     },
     "users": {
