@@ -363,11 +363,11 @@ class WorkItemPagesResource < WorkTemplateResource
 
   private
   def title
-    "Add a Web Page"
+    "Add a Web Page about the Work"
   end
 
   def body
-    "Instructions: Add a Web Page where the Work has been published. For example, a museum webpage, Wikipedia article on the work, a Wikimedia Commons page, a Flickr page, etc."
+    "Instructions: Add a Web Page where the Work has been featured and published. For example, a museum webpage, Wikipedia article on the work, a Wikimedia Commons page, a Flickr page, an artist's portfolio page, etc."
   end
 
   def records

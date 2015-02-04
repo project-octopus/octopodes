@@ -157,10 +157,10 @@ class CreativeWork < Thing
   property 'lastReviewed', default: Time.now.utc.iso8601
   property 'reviewedBy'
 
-  property :based_on_url, from: 'isBasedOnUrl'
+  property :is_based_on_url, from: 'isBasedOnUrl'
 
   validates_presence_of :name, :unless => Proc.new {|c| c.type == "ItemPage"}
-  validates :based_on_url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
+  validates :is_based_on_url, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 
   def update!
     self["lastReviewed"] = Time.now.utc.iso8601
@@ -270,19 +270,22 @@ class ItemPage < CreativeWork
 
   property 'publisher'
   property 'datePublished'
-  property :associatedMedia, from: 'associatedMedia'
+  property :associated_media, from: 'associatedMedia'
 
   validates :url, :format => /\A#{URI::regexp}\z/, :allow_blank => false
-  validates :associatedMedia, :format => /\A#{URI::regexp}\z/, :allow_blank => true
+  validates :associated_media, :format => /\A#{URI::regexp}\z/, :allow_blank => true
 
   def links
     lks = super
     lks << {href: self[:url], rel: "external", prompt: "URL"}
-    unless self[:associatedMedia].nil? || self[:associatedMedia].empty?
-      lks << {href: self[:associatedMedia], rel: "external", prompt: "Media File URL"}
+    unless self[:associated_media].nil? || self[:associated_media].empty?
+      lks << {href: self[:associated_media], rel: "external", prompt: "Media File URL"}
+    end
+    unless self[:is_based_on_url].nil? || self[:is_based_on_url].empty?
+      lks << {href: self[:is_based_on_url], rel: "external", prompt: "Based on"}
     end
     if self["about"].is_a? String
-      lks << {href: '/' + self["about"], rel: "about", prompt: "About"}
+      lks << {href: '/' + self["about"], rel: "about", prompt: "Creative Work"}
     end
     lks
   end
@@ -301,7 +304,8 @@ class ItemPage < CreativeWork
 
   def self.items_template(entity = {})
     [["name", {prompt: "Title", value: entity[:name]}],
-     ["license", {prompt: "License", value: entity['license']}],
+     ["creator", {prompt: "Credit (creator)", value: entity['creator']}],
+     ["license", {prompt: "License (stated)", value: entity['license']}],
      ["description", {prompt: "Description", value: entity['description']}],
      ["datePublished", {prompt: "Date Published", value: entity['datePublished']}],
      ["publisher", {prompt: "Publisher", value: entity['publisher']}]]
@@ -309,8 +313,9 @@ class ItemPage < CreativeWork
 
   def self.links_template(entity = [])
     lks = super
-    lks << ["url", {prompt: "URL", value: entity[:url]}]
-    lks << ["associatedMedia", {prompt: "Media File URL", value: entity[:associatedMedia]}]
+    lks << ["url", {prompt: "Web Page URL", value: entity[:url]}]
+    lks << ["associatedMedia", {prompt: "Media File URL", value: entity[:associated_media]}]
+    lks << ["isBasedOnUrl", {prompt: "Based on URL (link to original source)", value: entity[:associated_media]}]
   end
 
   def self.whitelist(data)
