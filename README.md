@@ -8,6 +8,7 @@ A prototype hypermedia API for recording the use of creative works and media obj
 
 * Ruby
 * Bundler
+* Compass
 * CouchDB
 * rake
 * libmagic
@@ -28,11 +29,19 @@ Run rake to set up the database
 
 Your database will be created at `http://localhost:5984/project-octopus`
 
+Compile the stylesheets:
+
+    compass compile
+
 ## Updating
 
 If you already have a database, update it with the latest design documents:
 
     rake octopus:db:update
+
+Re-compile the stylesheets:
+
+    compass compile
 
 ## Usage
 
