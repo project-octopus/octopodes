@@ -25,13 +25,13 @@ Next, install the needed Ruby gems using Bundler:
 
 Run rake to set up the database
 
-    rake octopus:db:create
+    bundle exec rake octopus:db:create
 
 Your database will be created at `http://localhost:5984/project-octopus`
 
 Compile the stylesheets:
 
-    compass compile
+    bundle exec compass compile
 
 ## Updating
 
@@ -41,7 +41,7 @@ If you already have a database, update it with the latest design documents:
 
 Re-compile the stylesheets:
 
-    compass compile
+    bundle exec compass compile
 
 ## Usage
 
@@ -78,7 +78,7 @@ To customize the database used by the running app:
 
 Edit `development.rb` and change your database details. Then set up the database and run the app:
 
-    rake octopus:db:create[development]
+    bundle exec rake octopus:db:create[development]
     bundle exec ruby boot.rb
 
 Updating the database is just as easy:
@@ -94,6 +94,18 @@ To customize the database used by the tests:
 Edit `test.rb` and change your database details. then run the tests:
 
     bundle exec rspec
+
+## Deploying
+
+Put production settings in `config/environments/production.rb` and create your database:
+
+    bundle exec rake octopus:db:create[development]
+
+The project has a `config.ru` file that works with Phusion Passenger.
+
+In addition, compile the stylesheets for a production environment:
+
+  bundle exec compass compile --output-style compressed --force
 
 ## Migrations
 
