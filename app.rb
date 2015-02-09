@@ -12,12 +12,48 @@ I18n.config.enforce_available_locales = true
 
 Datastore::connect(configatron.octopus.database)
 
-class OctopusResource < Webmachine::Resource
+module Octopodes
+  module Resource
+
+    module Public
+
+      def must_authorize?
+        false
+      end
+
+    end
+
+    module Collection
+
+      def must_authorize?
+        return true if @request.post?
+      end
+
+    end
+
+    module Template
+
+      def must_authorize?
+        true
+      end
+
+    end
+
+  end
+end
+
+class GenericResource < Webmachine::Resource
   include Webmachine::Resource::Authentication
+  include Octopodes::Resource::Public
 
   def is_authorized?(authorization_header)
-    user_auth(authorization_header)
-    true
+    authorization = user_auth(authorization_header)
+    if must_authorize? && authorization != true
+      @response.body = unauthorized_response
+      authorization
+    else
+      true
+    end
   end
 
   private
@@ -26,6 +62,10 @@ class OctopusResource < Webmachine::Resource
       @user = Users::check_auth(user, pass)
       !@user.empty?
     end
+  end
+
+  def unauthorized_response
+    PagesTemplate.new("blank", "Please sign in", menu).render
   end
 
   def menu
@@ -44,7 +84,7 @@ class OctopusResource < Webmachine::Resource
   end
 end
 
-class CollectionResource < OctopusResource
+class CollectionResource < GenericResource
   def content_types_provided
     [["text/html", :to_html],
      ["application/vnd.collection+json", :to_cj]]
@@ -127,17 +167,10 @@ class HomeResource < CollectionResource
 end
 
 class WorksResource < CollectionResource
+  include Octopodes::Resource::Collection
+
   def allowed_methods
     ["GET", "POST"]
-  end
-
-  def is_authorized?(authorization_header)
-    auth = user_auth(authorization_header)
-    return true unless request.post?
-    if auth != true
-      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
-    end
-    auth
   end
 
   def base_uri
@@ -199,14 +232,7 @@ class WorksResource < CollectionResource
 end
 
 class WorksTemplateResource < WorksResource
-
-  def is_authorized?(authorization_header)
-    auth = user_auth(authorization_header)
-    if auth != true
-      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
-    end
-    auth
-  end
+  include Octopodes::Resource::Template
 
   private
   def body
@@ -289,16 +315,10 @@ class WorkHistoryResource < WorkResource
 end
 
 class WorkTemplateResource < WorkResource
+  include Octopodes::Resource::Template
+
   def allowed_methods
     ["GET", "POST"]
-  end
-
-  def is_authorized?(authorization_header)
-    auth = user_auth(authorization_header)
-    if auth != true
-      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
-    end
-    auth
   end
 
   def base_uri
@@ -473,16 +493,10 @@ class WebPageHistoryResource < WebPageResource
 end
 
 class WebPageTemplateResource < WebPageResource
+  include Octopodes::Resource::Template
+
   def allowed_methods
     ["GET", "POST"]
-  end
-
-  def is_authorized?(authorization_header)
-    auth = user_auth(authorization_header)
-    if auth != true
-      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
-    end
-    auth
   end
 
   def base_uri
@@ -526,17 +540,10 @@ class WebPageTemplateResource < WebPageResource
 end
 
 class ReviewsResource < CollectionResource
+  include Octopodes::Resource::Collection
+
   def allowed_methods
     ["GET", "POST"]
-  end
-
-  def is_authorized?(authorization_header)
-    auth = user_auth(authorization_header)
-    return true unless request.post?
-    if auth != true
-      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
-    end
-    auth
   end
 
   def base_uri
@@ -640,13 +647,14 @@ class ReviewsResource < CollectionResource
   end
 end
 
-class DomainsResource < ReviewsResource
+class DomainsResource < CollectionResource
 
   def base_uri
     @request.base_uri.to_s + 'domains/'
   end
 
   private
+
   def title
     "Domains of all Works"
   end
@@ -660,6 +668,21 @@ class DomainsResource < ReviewsResource
 
   def documents
     @documents ||= WebPages::domains
+  end
+
+  def links
+    links = []
+
+    unless @user.nil? || @user.empty?
+      links << {:href => @request.base_uri.to_s + 'reviews;template',
+                :rel => "template", :prompt => "Add a Review"}
+    end
+
+     links << {:href => @request.base_uri.to_s + 'domains',
+               :rel => "domains", :prompt => "Domains"}
+
+     links << {:href => @request.base_uri.to_s + 'reviews;queries',
+               :rel => "queries", :prompt => "Search"}
   end
 end
 
@@ -691,14 +714,7 @@ class DomainResource < DomainsResource
 end
 
 class ReviewsTemplateResource < ReviewsResource
-
-  def is_authorized?(authorization_header)
-    auth = user_auth(authorization_header)
-    if auth != true
-      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
-    end
-    auth
-  end
+  include Octopodes::Resource::Template
 
   private
   def body
@@ -942,6 +958,7 @@ class UserResource < CollectionResource
 end
 
 class IdentitiesResource < UserResource
+  include Octopodes::Resource::Template
 
   def allowed_methods
     ["GET", "POST"]
@@ -965,14 +982,6 @@ class IdentitiesResource < UserResource
 
   def create_path
     @create_path ||= Users::token
-  end
-
-  def is_authorized?(authorization_header)
-    auth = user_auth(authorization_header)
-    if auth != true
-      @response.body = PagesTemplate.new("blank", "Please sign in", menu).render
-    end
-    auth
   end
 
   def forbidden?
@@ -1024,10 +1033,6 @@ class IdentityResource < CollectionResource
 
   def content_types_provided
     [["text/html", :to_html]]
-  end
-
-  def is_authorized?(authorization_header)
-    true
   end
 
   def resource_exists?
@@ -1159,18 +1164,19 @@ class FaviconResource < AssetsResource
 end
 
 class LoginResource < CollectionResource
+  include Octopodes::Resource::Template
+
   def content_types_provided
     [["text/html", :to_html]]
-  end
-
-  def is_authorized?(authorization_header)
-    @response.body = CollectionTemplate.new(collection, "Please try again or sign up for an account", menu).render
-    user_auth(authorization_header)
   end
 
   private
   def title
     "Thank you for logging in"
+  end
+
+  def unauthorized_response
+    CollectionTemplate.new(collection, "Please try again or sign up for an account", menu).render
   end
 
 end
