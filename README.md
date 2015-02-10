@@ -47,7 +47,7 @@ Re-compile the stylesheets:
 
 To run locally:
 
-    bundle exec rackup -p 8080
+    bundle exec rackup -p 8080 -o 0.0.0.0
 
 The site will be available at `http://localhost:8080`
 

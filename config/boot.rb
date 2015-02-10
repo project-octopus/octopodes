@@ -1,9 +1,16 @@
 RACK_ENV = ENV['RACK_ENV'] || 'development' unless defined? RACK_ENV
 
-if File.file?("config/environments/#{RACK_ENV}.rb")
-  require File.join(File.dirname(__FILE__), "environments/#{RACK_ENV}.rb")
-else
-  require File.join(File.dirname(__FILE__), 'environments/default.rb')
+require File.join(File.dirname(__FILE__), 'environment')
+
+# Set up gems listed in the Gemfile.
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+if File.exist?(ENV['BUNDLE_GEMFILE'])
+  require 'bundler/setup'
+  Bundler.require
 end
 
-require File.join(File.dirname(__FILE__), '../app.rb')
+if defined?(I18n)
+  I18n.enforce_available_locales = false
+end
+
+require 'octopodes'

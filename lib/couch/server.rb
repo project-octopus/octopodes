@@ -1,7 +1,7 @@
 require 'net/http'
 
 module Couch
-
+  # Basic library for a raw CouchDB API
   class Server
     def initialize(scheme, host, port, user = nil, password = nil)
       @scheme = scheme
@@ -21,31 +21,23 @@ module Couch
 
     def put(uri, json)
       req = Net::HTTP::Put.new(uri)
-      req["content-type"] = "application/json"
+      req['content-type'] = 'application/json'
       req.body = json
       request(req)
     end
 
     def post(uri, json)
       req = Net::HTTP::Post.new(uri)
-      req["content-type"] = "application/json"
+      req['content-type'] = 'application/json'
       req.body = json
       request(req)
     end
 
     def request(req)
-      unless @user.nil? or @password.nil?
-        req.basic_auth(@user, @password)
+      req.basic_auth(@user, @password) unless @user.nil? || @password.nil?
+      Net::HTTP.start(@host, @port, use_ssl: @scheme == 'https') do |http|
+        http.request(req)
       end
-      Net::HTTP.start(@host, @port, :use_ssl => @scheme == 'https') { |http|http.request(req) }
-    end
-
-    private
-
-    def handle_error(req, res)
-      e = RuntimeError.new("#{res.code}:#{res.message}\nMETHOD:#{req.method}\nURI:#{req.path}\n#{res.body}")
-      raise e
     end
   end
-
 end
