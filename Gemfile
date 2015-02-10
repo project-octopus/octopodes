@@ -5,7 +5,6 @@ gem 'rack', '~> 1.6.0'
 gem 'collection-json', :git => 'https://github.com/SebastianEdwards/collection-json.git', :ref => '424ebae9c272158dba0062150b6799b2b05c0f00'
 
 gem 'configatron', '~> 4.5.0'
-gem 'ruby-filemagic', '~> 0.6.1'
 gem 'bcrypt', '~> 3.1.10'
 
 gem 'hashie', '~> 3.3.0'

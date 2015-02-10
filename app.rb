@@ -3,7 +3,6 @@ require 'webmachine/adapters/rack'
 require 'json'
 require 'collection-json'
 require 'configatron'
-require 'filemagic'
 
 require_relative 'lib/records'
 require_relative 'lib/templates'
@@ -1101,68 +1100,6 @@ class FeedItemResource < Webmachine::Resource
   end
 end
 
-class AssetsResource < Webmachine::Resource
-  def allowed_methods
-    ["HEAD", "GET"]
-  end
-
-  def content_types_provided
-    [["*/*", :to_file]]
-  end
-
-  def resource_exists?
-    File.expand_path(file_path).start_with?(base_path) and File.file?(file_path)
-  end
-
-  def last_modified
-    File.mtime(file_path)
-  end
-
-  def to_file
-    response.headers["Content-Type"] = mime_type
-    File.open(file_path, "r")
-  end
-
-  private
-  def base_path
-    File.expand_path("public")
-  end
-
-  def file_path
-    File.join(base_path, filename)
-  end
-
-  def filename
-    request.disp_path
-  end
-
-  def mime_type
-    case File.extname(file_path)
-    when '.css'
-      'text/css'
-    when '.js'
-      'application/javascript'
-    else
-      FileMagic.new(FileMagic::MAGIC_MIME).file(file_path)
-    end
-  end
-end
-
-class FaviconResource < AssetsResource
-  def content_types_provided
-    [["image/x-icon", :to_file]]
-  end
-
-  private
-  def base_path
-    File.expand_path("public")
-  end
-
-  def filename
-    "favicon.ico"
-  end
-end
-
 class LoginResource < CollectionResource
   include Octopodes::Resource::Template
 
@@ -1187,9 +1124,6 @@ App = Webmachine::Application.new do |app|
   end
   app.routes do
     add [], HomeResource
-    add ["favicon.ico"], FaviconResource
-    add ["assets", :*], AssetsResource
-    add ["docs", :*], AssetsResource
 
     add ["works"], WorksResource
     add ["works;template"], WorksTemplateResource
