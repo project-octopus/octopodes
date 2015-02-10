@@ -8,7 +8,7 @@ resource "Signups" do
   get "http://project-octopus.org/signups" do
     let(:accept_header) { "application/vnd.collection+json" }
 
-    example "Getting the signup form as Collection+JSON" do
+    example "Getting the signup form" do
       do_request
 
       expect(response_body).to have_json_path("collection")
@@ -47,7 +47,7 @@ resource "Signups" do
 
       let(:raw_post) { raw_post }
 
-      example "Registering a user as Collection+JSON with bad input #{index}", :document => false  do
+      example "Registering a user with bad input #{index}", :document => false  do
         do_request
 
         expect(response_body).to have_json_path("collection")
@@ -93,7 +93,7 @@ resource "Signups" do
 
     let(:raw_post) { '{"template":{"data":[{"name": "username", "value": "newuser"}, {"name": "password", "value": "new password"}]}}' }
 
-    example "Registering a user as Collection+JSON" do
+    example "Registering a user" do
       do_request
 
       expect(response_headers).to include("Location")

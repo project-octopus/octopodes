@@ -8,7 +8,7 @@ resource "Domains" do
   get "http://project-octopus.org/domains" do
     let(:accept_header) { "application/vnd.collection+json" }
 
-    example "Getting all domains as Collection+JSON" do
+    example "Getting all domains" do
       do_request
 
       expect(response_body).to have_json_path("collection")
@@ -43,7 +43,7 @@ resource "Domain" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:domain) { "flickr.com" }
 
-    example "Getting a domain as Collection+JSON" do
+    example "Getting a domain" do
       do_request
 
       expect(response_body).to have_json_path("collection")

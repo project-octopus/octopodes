@@ -17,7 +17,7 @@ resource "Reviews" do
   get "http://project-octopus.org/reviews" do
     let(:accept_header) { "application/vnd.collection+json" }
 
-    example "Getting all reviews as Collection+JSON" do
+    example "Getting all reviews" do
       do_request
 
       expect(response_body).to have_json_path("collection")
@@ -34,7 +34,7 @@ resource "Reviews" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:authorization) { "Basic " + Base64.encode64("user1:pass1").strip }
 
-    example "Getting reviews template as Collection+JSON" do
+    example "Getting reviews template" do
       do_request
 
       expect(response_body).to have_json_path("collection")
@@ -76,7 +76,7 @@ resource "Reviews" do
 
       let(:raw_post) { raw_post }
 
-      example "Posting a review as Collection+JSON with bad input #{index}", :document => false  do
+      example "Posting a review with bad input #{index}", :document => false  do
         do_request
 
         expect(response_body).to have_json_path("collection")
@@ -94,7 +94,7 @@ resource "Reviews" do
 
     let(:raw_post) { '{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}, {"name": "contentUrl", "value": "http://example.org/image.jpg"}]}}' }
 
-    example "Posting a review as Collection+JSON" do
+    example "Posting a review" do
       do_request
 
       expect(response_headers).to include("Location")
@@ -216,7 +216,7 @@ resource "Review" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:id) { "webpage0" }
 
-    example "Getting a review as Collection+JSON" do
+    example "Getting a review" do
       do_request
 
       expect(response_body).to have_json_path("collection")

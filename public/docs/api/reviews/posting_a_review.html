@@ -113,8 +113,8 @@ table th, table td {
       <h1>Reviews API</h1>
 
       <div class="article">
-        <h2>Posting a review as Collection+JSON</h2>
-        <h3>POST http://project-octpus.org/reviews</h3>
+        <h2>Posting a review</h2>
+        <h3>POST http://project-octopus.org/reviews</h3>
 
 
 
@@ -124,25 +124,25 @@ table th, table td {
           <pre class="request headers">Accept: application/vnd.collection+json
 Content-Type: application/vnd.collection+json
 Authorization: Basic dXNlcjE6cGFzczE=
-Host: project-octpus.org
+Host: project-octopus.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST http://project-octpus.org/reviews</pre>
+          <pre class="request route highlight">POST http://project-octopus.org/reviews</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}]}}</pre>
+            <pre class="request body">{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}, {"name": "contentUrl", "value": "http://example.org/image.jpg"}]}}</pre>
 
 
             <h3>Response</h3>
             <h4>Headers</h4>
             <pre class="response headers">Content-Type: application/vnd.collection+json
 Vary: Accept
-Location: http://project-octpus.org/reviews/bb45944fd45cb16ff860218e5757462f
+Location: http://project-octopus.org/reviews/7621b4f8781d6905c2474476d355565d
 Content-Length: 0
-Date: Tue, 16 Dec 2014 11:35:14 GMT
-Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
+Date: Tue, 10 Feb 2015 11:13:32 GMT
+Server: Webmachine-Ruby/1.3.1 Rack/1.3</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
       </div>

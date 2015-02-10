@@ -8,7 +8,7 @@ resource "Users" do
   get "http://project-octopus.org/users" do
     let(:accept_header) { "application/vnd.collection+json" }
 
-    example "Getting all users as Collection+JSON" do
+    example "Getting all users" do
       do_request
 
       expect(response_body).to have_json_path("collection")
@@ -41,7 +41,7 @@ resource "User" do
     let(:accept_header) { "application/vnd.collection+json" }
     let(:username) { "user1" }
 
-    example "Getting a user as Collection+JSON" do
+    example "Getting a user" do
       do_request
 
       expect(response_body).to have_json_path("collection")

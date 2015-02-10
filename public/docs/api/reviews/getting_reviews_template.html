@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Signups API</title>
+    <title>Reviews API</title>
     <meta charset="utf-8">
     <style>
       
@@ -110,11 +110,11 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Signups API</h1>
+      <h1>Reviews API</h1>
 
       <div class="article">
-        <h2>Registering a user as Collection+JSON</h2>
-        <h3>POST http://project-octpus.org/signups</h3>
+        <h2>Getting reviews template</h2>
+        <h3>GET http://project-octopus.org/reviews;template</h3>
 
 
 
@@ -122,28 +122,27 @@ table th, table td {
 
           <h4>Headers</h4>
           <pre class="request headers">Accept: application/vnd.collection+json
-Content-Type: application/vnd.collection+json
-Host: project-octpus.org
+Authorization: Basic dXNlcjE6cGFzczE=
+Host: project-octopus.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST http://project-octpus.org/signups</pre>
+          <pre class="request route highlight">GET http://project-octopus.org/reviews;template</pre>
 
 
-            <h4>Body</h4>
-            <pre class="request body">{"template":{"data":[{"name": "username", "value": "newuser"}, {"name": "password", "value": "new password"}]}}</pre>
 
 
             <h3>Response</h3>
             <h4>Headers</h4>
             <pre class="response headers">Content-Type: application/vnd.collection+json
 Vary: Accept
-Location: http://project-octpus.org/signups/bb45944fd45cb16ff860218e5757ea8a
-Content-Length: 0
-Date: Tue, 16 Dec 2014 11:35:17 GMT
-Server: Webmachine-Ruby/1.2.2 Rack/1.2</pre>
+Content-Length: 664
+Date: Tue, 10 Feb 2015 11:13:31 GMT
+Server: Webmachine-Ruby/1.3.1 Rack/1.3</pre>
             <h4>Status</h4>
-            <pre class="response status">201 Created</pre>
+            <pre class="response status">200 OK</pre>
+              <h4>Body</h4>
+              <pre class="response body">{&quot;collection&quot;:{&quot;href&quot;:&quot;http://project-octopus.org/reviews/&quot;,&quot;version&quot;:&quot;1.0&quot;,&quot;links&quot;:[{&quot;href&quot;:&quot;http://project-octopus.org/reviews;template&quot;,&quot;rel&quot;:&quot;template&quot;,&quot;prompt&quot;:&quot;Add a Review&quot;},{&quot;href&quot;:&quot;http://project-octopus.org/domains&quot;,&quot;rel&quot;:&quot;domains&quot;,&quot;prompt&quot;:&quot;Domains&quot;},{&quot;href&quot;:&quot;http://project-octopus.org/reviews;queries&quot;,&quot;rel&quot;:&quot;queries&quot;,&quot;prompt&quot;:&quot;Search&quot;}],&quot;template&quot;:{&quot;data&quot;:[{&quot;name&quot;:&quot;url&quot;,&quot;prompt&quot;:&quot;Web Page URL&quot;},{&quot;name&quot;:&quot;name&quot;,&quot;prompt&quot;:&quot;Title&quot;},{&quot;name&quot;:&quot;contentUrl&quot;,&quot;prompt&quot;:&quot;Media File URL&quot;},{&quot;name&quot;:&quot;creator&quot;,&quot;prompt&quot;:&quot;Creator&quot;},{&quot;name&quot;:&quot;license&quot;,&quot;prompt&quot;:&quot;License&quot;},{&quot;name&quot;:&quot;description&quot;,&quot;prompt&quot;:&quot;Description&quot;},{&quot;name&quot;:&quot;isBasedOnUrl&quot;,&quot;prompt&quot;:&quot;Based on URL&quot;}]}}}</pre>
       </div>
     </div>
   </body>
