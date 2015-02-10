@@ -47,7 +47,7 @@ Re-compile the stylesheets:
 
 To run locally:
 
-    bundle exec ruby boot.rb
+    bundle exec rackup -p 8080
 
 The site will be available at `http://localhost:8080`
 
@@ -79,7 +79,7 @@ To customize the database used by the running app:
 Edit `development.rb` and change your database details. Then set up the database and run the app:
 
     bundle exec rake octopus:db:create[development]
-    bundle exec ruby boot.rb
+    bundle exec rackup -p 8080
 
 Updating the database is just as easy:
 
@@ -99,9 +99,11 @@ Edit `test.rb` and change your database details. then run the tests:
 
 Put production settings in `config/environments/production.rb` and create your database:
 
-    bundle exec rake octopus:db:create[development]
+    bundle exec rake octopus:db:create[production]
 
 The project has a `config.ru` file that works with Phusion Passenger.
+
+In your virtual host file you must specify `RackEnv production`.
 
 In addition, compile the stylesheets for a production environment:
 
