@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'octopodes'
   spec.version       = Octopodes::VERSION
   spec.authors       = ['Christopher Adams']
-  spec.email         = ['chris@raysend.com']
+  spec.email         = ['christopher@fabricatorz.com']
   spec.summary       = %q{Reviewing the Use of Creative Works, One URL at a Time}
   spec.description   = %q{A prototype hypermedia API for recording the use of creative works and media objects on the World Wide Web.}
   spec.homepage      = 'https://github.com/DiUS/pact_broker'
