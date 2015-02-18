@@ -8,10 +8,7 @@ A prototype hypermedia API for recording the use of creative works and media obj
 
 * Ruby
 * Bundler
-* Compass
 * CouchDB
-* rake
-* libmagic
 
 ## Installation
 
