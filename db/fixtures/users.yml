@@ -1,0 +1,17 @@
+user1:
+    id: 1
+    username: user1
+    email: user1@example.org
+    token: e2436dc4-291c-4c84-b0f9-7f7c980123de
+    password_digest: $2a$04$Qd6w/H6DEnG1FbLAfF.mueeo.ENcJFX0N4OJ2Tu1W46SP1KhfQpbK # pass1
+    created_at: 2015-02-10 13:12:51.550184
+    updated_at: 2015-02-10 13:12:51.550184
+user2:
+    id: 2
+    username: user2
+    email: user2@example.com
+    token: 34b778c7-dc17-4ace-bb93-a3493e72da25
+    password_digest: $2a$04$T0rYvxa6Znc/U4/B8P1pIepi6b.6lQeyd/t2Bff4PDrw37qbpTcE6 #pass2
+    created_at: 2015-02-15 13:12:51.550184
+    updated_at: 2015-02-15 13:12:51.550184
+

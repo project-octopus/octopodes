@@ -1,0 +1,28 @@
+ca:
+    id: 1
+    name: CA
+    creator: A Creator
+    uuid: cad36401-2e13-47ac-90b8-547937ec254b
+    url: http://example.org/a#ca
+    associated_media: http://example.com/img.jpg
+    created_at: 2015-02-22 13:12:51.550184
+    updated_at: 2015-02-22 13:12:51.550184
+    updated_by: user1
+cb:
+    id: 2
+    name: CB
+    creator: B Creator
+    uuid: c1fad786-dcc5-44c2-868a-eaf14ed95bc5
+    created_at: 2015-02-28 13:12:51.550184
+    updated_at: 2015-02-28 13:12:51.550184
+    updated_by: user1
+cc:
+    id: 3
+    name: CC
+    creator: B Creator
+    uuid: 33eae42b-5b47-46b2-b594-4905f5d049da
+    created_at: 2015-03-01 13:12:51.550184
+    updated_at: 2015-03-01 13:12:51.550184
+    updated_by: user1
+    example_of_work: ca
+    is_part_of: cb

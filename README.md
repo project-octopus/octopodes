@@ -6,25 +6,51 @@ A prototype hypermedia API for recording the use of creative works and media obj
 
 ## Requirements
 
-* Ruby
-* Bundler
-* CouchDB
+* Ruby 1.9.3 or 2.0+
+* Bundler (`gem install bundler`)
+* PostgreSQL 9.0+
+
+PostgreSQL needs to be installed with headers and dev packages. On Ubuntu/Debian this can be done by:
+
+    sudo apt-get install postgresql postgresql-contrib libpq-dev
 
 ## Installation
 
-You need to install the above requirements using the package manager for your operating system. You probably already have Ruby (>= 1.9.3) but the rest you will need to download.
+Grab a copy of the code:
 
-Next, install the needed Ruby gems using Bundler:
+    git clone git@github.com:project-octopus/octopodes.git && cd octopodes
+
+Install the needed Ruby gems using Bundler:
 
     bundle install
 
 ## Set Up
 
-Run rake to set up the database
+### Database
 
-    bundle exec rake octopus:db:create
+#### Configuration File
 
-Your database will be created at `http://localhost:5984/project-octopus`
+Make a copy of the config file
+
+  cp config/environments/sample.rb config/environments/development.rb
+
+Fill in `development.rb` with your database credentials.
+
+#### User, database, audit log
+
+Create a user role and database in PostgreSQL.
+
+**Note**: If you want to track database history, you need to import the `triggers/audit.sql` file into your database as the postgres admin user, and grant `USAGE` and `SELECT` privileges on the `audit` schema to the database user you've created. Then in your config file set `configatron.sequel.audit` to `true`.
+
+Consult the `db/README.md` file for specific instructions.
+
+#### Migrations
+
+Run the migration task:
+
+    bundle exec rake db:migrate
+
+### Assets
 
 Compile the stylesheets:
 
@@ -32,12 +58,11 @@ Compile the stylesheets:
 
 ## Updating
 
-If you already have a database, update it with the latest design documents:
+If you want to update your code: first pull any changes and install new gems, then re-run the migration and asset compilation tasks:
 
-    rake octopus:db:update
-
-Re-compile the stylesheets:
-
+    git pull origin master
+    bundle install
+    bundle exec rake db:migrate
     bundle exec compass compile
 
 ## Usage
@@ -50,45 +75,17 @@ The site will be available at `http://localhost:8080`
 
 ## Testing
 
-Run the test suite:
+To run the automated testing suite, create a new PostgreSQL database just for testing.
 
-    bundle exec rspec
+Make a copy of the config file
 
-***Note:*** Running tests will re-create the database and delete it when the tests are over.
+  cp config/environments/sample.rb config/environments/test.rb
 
-Consult the next section on how to configure a database just for testing.
+Fill in `test.rb` with the testing database credentials and run the migrations:
 
-## Custom database
+    bundle exec rake db:migrate RACK_ENV=test
 
-You can configure your database locations for testing or development.
-
-If you prefer to not install CouchDB locally, you can use a [gratis instance](https://cloudant.com/blog/build-more-with-50-free-each-month/) from Cloudant. In this case,
-your database configuration will look like:
-
-    configatron.octopus.database = 'https://USERNAME:PASSOWRD@USERNAME.cloudant.com/DBNAME'
-
-### Development
-
-To customize the database used by the running app:
-
-    cp config/environments/default.rb config/environments/development.rb
-
-Edit `development.rb` and change your database details. Then set up the database and run the app:
-
-    bundle exec rake octopus:db:create[development]
-    bundle exec rackup -p 8080
-
-Updating the database is just as easy:
-
-    rake octopus:db:update[development]
-
-### Testing
-
-To customize the database used by the tests:
-
-    cp config/environments/default.rb config/environments/test.rb
-
-Edit `test.rb` and change your database details. then run the tests:
+Finally, run the test suite:
 
     bundle exec rspec
 
@@ -96,7 +93,7 @@ Edit `test.rb` and change your database details. then run the tests:
 
 Put production settings in `config/environments/production.rb` and create your database:
 
-    bundle exec rake octopus:db:create[production]
+    bundle exec rake db:migrate RACK_ENV=production
 
 The project has a `config.ru` file that works with Phusion Passenger.
 
@@ -104,15 +101,11 @@ In your virtual host file you must specify `RackEnv production`.
 
 In addition, compile the stylesheets for a production environment:
 
-  bundle exec compass compile --output-style compressed --force
-
-## Migrations
-
-The software is currently in beta and does not offer data migrations between updates. Your current database may not be compatible with the latest commit.
+    bundle exec compass compile --output-style compressed --force
 
 ## Documentation
 
-[Read the Documentation](doc/api/index.markdown)
+[Read the API Documentation](http://project-octopus.org/docs/api/index.html)
 
 Documentation is generated with the following task:
 
@@ -122,4 +115,4 @@ Documentation is generated with the following task:
 
 The software only supports Basic Authentication.
 
-Passwords are stored in the same database as all other documents, using the bcrypt hash algorithm.
+Passwords are stored using the bcrypt hash algorithm.

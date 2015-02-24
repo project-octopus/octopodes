@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.email         = ['christopher@fabricatorz.com']
   spec.summary       = %q{Reviewing the Use of Creative Works, One URL at a Time}
   spec.description   = %q{A prototype hypermedia API for recording the use of creative works and media objects on the World Wide Web.}
-  spec.homepage      = 'https://github.com/DiUS/pact_broker'
-  spec.license       = 'CC0 1.0 Universal'
+  spec.homepage      = 'https://github.com/project-octopus/octopodes'
+  spec.license       = 'Apache License 2.0'
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
@@ -27,10 +27,12 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'collection-json'
 
   spec.add_runtime_dependency 'configatron', '~> 4.5.0'
+  spec.add_runtime_dependency 'uuidtools', '~> 2.1.4'
   spec.add_runtime_dependency 'bcrypt', '~> 3.1.10'
 
-  spec.add_runtime_dependency 'hashie', '~> 3.3.0'
-  spec.add_runtime_dependency 'activemodel', '~> 4.2.0'
+  spec.add_runtime_dependency 'pg'
+  spec.add_runtime_dependency 'sequel'
+  spec.add_runtime_dependency 'sequel_secure_password'
 
   spec.add_runtime_dependency 'compass', '~> 1.0.0'
   spec.add_runtime_dependency 'bootstrap-sass', '3.3.3'
@@ -39,4 +41,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec_api_documentation', '~> 4.3.0'
   spec.add_development_dependency 'rack-test', '~> 0.6.3'
   spec.add_development_dependency 'json_spec', '~> 1.1.4'
+  spec.add_development_dependency 'fixture_dependencies', '~> 1.4.0'
+
 end

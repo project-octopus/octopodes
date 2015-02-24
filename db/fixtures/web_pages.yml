@@ -1,0 +1,17 @@
+wa:
+    id: 4
+    name: WA
+    url: http://example.org/a
+    uuid: 8a3a340a-7eea-43a7-9876-be4565cd7846
+    created_at: 2015-02-25 13:12:51.550184
+    updated_at: 2015-02-25 13:12:51.550184
+    date_published: 2015
+    updated_by: user1
+wb:
+    id: 5
+    name: WB
+    url: http://example.com/b
+    uuid: 08fa2978-cb5d-4384-876d-b4053fba3e65
+    created_at: 2015-02-29 13:12:51.550184
+    updated_at: 2015-02-29 13:12:51.550184
+    updated_by: user2

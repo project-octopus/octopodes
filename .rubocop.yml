@@ -4,7 +4,6 @@ AllCops:
     - 'config/**/*'
     - 'config.rb'
     - 'octopodes.gemspec'
-    - 'spec/**/*'
 
 Lint/HandleExceptions:
   Enabled: true
@@ -25,22 +24,23 @@ Lint/UselessAssignment:
   Enabled: true
 
 Metrics/AbcSize:
-  Max: 68
+  Max: 35
 
 Metrics/ClassLength:
+  CountComments: false
   Max: 112
 
 Metrics/CyclomaticComplexity:
-  Max: 12
+  Max: 14
 
 Metrics/LineLength:
   Max: 100
 
 Metrics/MethodLength:
-  Max: 55
+  Max: 30
 
 Metrics/PerceivedComplexity:
-  Max: 15
+  Max: 12
 
 Style/AlignArray:
   Enabled: true

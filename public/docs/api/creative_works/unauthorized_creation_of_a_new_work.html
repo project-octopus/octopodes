@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Creative Works API</title>
+    <meta charset="utf-8">
+    <style>
+      
+body {
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 18px;
+  color: #404040;
+}
+
+.container {
+  width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+  zoom: 1;
+}
+
+pre {
+  background-color: #f5f5f5;
+  display: block;
+  padding: 8.5px;
+  margin: 0 0 18px;
+  line-height: 18px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+td.required .name:after {
+  float: right;
+  content: "required";
+  font-weight: normal;
+  color: #F08080;
+}
+
+a{
+  color: #0069d6;
+  text-decoration: none;
+  line-height: inherit;
+  font-weight: inherit;
+}
+
+p {
+  padding: 15px;
+  font-size: 130%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  color: #404040;
+}
+
+h1 {
+  margin-bottom: 18px;
+  font-size: 30px;
+  line-height: 36px;
+}
+h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+h3{
+  font-size: 18px;
+  line-height: 36px;
+}
+h4 {
+  font-size: 16px;
+  line-height: 36px;
+}
+
+table{
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 0;
+  border-collapse: separate;
+  font-size: 13px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+}
+
+table th {
+  padding-top: 9px;
+  font-weight: bold;
+  vertical-align: middle;
+  border-bottom: 1px solid #ddd;
+}
+table th+th, table td+td {
+  border-left: 1px solid #ddd;
+}
+table th, table td {
+  padding: 10px 10px 9px;
+  line-height: 18px;
+  text-align: left;
+}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Creative Works API</h1>
+
+      <div class="article">
+        <h2>Unauthorized creation of a new work</h2>
+        <h3>POST http://project-octopus.org/schema/creative-works</h3>
+
+
+
+          <h3>Request</h3>
+
+          <h4>Headers</h4>
+          <pre class="request headers">Accept: application/vnd.collection+json
+Content-Type: application/vnd.collection+json
+Authorization: Basic eHh4Onh4eA==
+Host: project-octopus.org
+Cookie: </pre>
+
+          <h4>Route</h4>
+          <pre class="request route highlight">POST http://project-octopus.org/schema/creative-works</pre>
+
+
+            <h4>Body</h4>
+            <pre class="request body">{"template":{"data":[{"name": "name", "value": "Title"}, {"name": "url", "value": "http://example.org/web"}]}}</pre>
+
+
+            <h3>Response</h3>
+            <h4>Headers</h4>
+            <pre class="response headers">WWW-Authenticate: Basic realm=&quot;Project Octopus&quot;
+Content-Length: 2517
+Date: Tue, 10 Mar 2015 07:49:53 GMT
+Server: Webmachine-Ruby/1.3.1 Rack/1.3</pre>
+            <h4>Status</h4>
+            <pre class="response status">401 Unauthorized</pre>
+              <h4>Body</h4>
+              <pre class="response body">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;&lt;/meta&gt;
+  &lt;title&gt;Project Octopus Please sign in&lt;/title&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+   &lt;link rel=&quot;feed&quot; type=&quot;application/atom+xml&quot; href=&quot;/feed&quot; title=&quot;Project Octopus Feed&quot;&gt;
+  &lt;link rel=&quot;icon&quot; type=&quot;image/x-icon&quot; href=&quot;/favicon.ico&quot; /&gt;
+  &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/assets/stylesheets/styles.css&quot;&gt;
+&lt;script&gt;
+  (function(i,s,o,g,r,a,m){i[&#39;GoogleAnalyticsObject&#39;]=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,&#39;script&#39;,&#39;//www.google-analytics.com/analytics.js&#39;,&#39;ga&#39;);
+
+  ga(&#39;create&#39;, &#39;UA-57294587-1&#39;, &#39;auto&#39;);
+  ga(&#39;send&#39;, &#39;pageview&#39;);
+
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;wrapper&quot;&gt;
+&lt;nav class=&quot;navbar navbar-inverse&quot; role=&quot;navigation&quot;&gt;
+  &lt;div class=&quot;container-fluid&quot;&gt;
+    &lt;div class=&quot;navbar-header&quot;&gt;
+      &lt;a class=&quot;navbar-brand&quot; href=&quot;/&quot;&gt;
+      &lt;img height=&quot;23px&quot; alt=&quot;Octopus Project&quot; src=&quot;/assets/octopus_white_small.png&quot;/&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;ul class=&quot;nav navbar-nav&quot;&gt;
+      &lt;li&gt;&lt;a href=&quot;http://about.project-octopus.org/&quot;&gt;About&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;http://about.project-octopus.org/2015/01/30/hello-draft-background/&quot;&gt;Read the Paper&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;ul class=&quot;nav navbar-nav navbar-right&quot;&gt;
+      
+        &lt;li&gt;&lt;a href=&quot;http://project-octopus.org/schema/things&quot;&gt;Works&lt;/a&gt;&lt;/li&gt;
+      
+        &lt;li&gt;&lt;a href=&quot;http://project-octopus.org/signups&quot;&gt;Sign up&lt;/a&gt;&lt;/li&gt;
+      
+        &lt;li&gt;&lt;a href=&quot;http://project-octopus.org/login&quot;&gt;Login&lt;/a&gt;&lt;/li&gt;
+      
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+&lt;div class=&quot;container-fluid&quot;&gt;
+  &lt;div class=&quot;row&quot;&gt;
+&lt;div class=&quot;col-sm-8 col-sm-offset-2&quot;&gt;
+
+  &lt;h1&gt;Please sign in&lt;/h1&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;push&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;footer&quot;&gt;
+&lt;nav class=&quot;navbar navbar-default&quot; role=&quot;navigation&quot;&gt;
+  &lt;div class=&quot;container-fluid&quot;&gt;
+    &lt;div class=&quot;navbar-header&quot;&gt;
+      &lt;a class=&quot;navbar-brand&quot; href=&quot;mailto:hello@project-octopus.org&quot;&gt;hello@project-octopus.org&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;ul class=&quot;nav navbar-nav&quot;&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/project-octopus/octopodes&quot;&gt;Github&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://twitter.com/helloocto&quot;&gt;Twitter&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;/docs/api/index.html&quot;&gt;API&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;ul class=&quot;nav navbar-nav navbar-right&quot;&gt;
+      &lt;li&gt;&lt;a rel=&quot;license&quot; href=&quot;https://creativecommons.org/publicdomain/zero/1.0/&quot;&gt;License&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+&lt;/body&gt;
+</pre>
+      </div>
+    </div>
+  </body>
+</html>

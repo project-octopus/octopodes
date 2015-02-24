@@ -5,3 +5,5 @@ use Rack::Static, urls: ['/favicon.ico', '/assets', '/docs'],
                   root: 'public'
 
 run App.adapter
+
+DB.disconnect

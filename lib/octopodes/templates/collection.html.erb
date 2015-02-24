@@ -52,7 +52,7 @@
       </div>
     <% end %>
     <% unless @inputs.nil? %>
-    <form role="form" method="POST" class="form-horizontal">
+    <form role="form" action="<%= @href %>" method="POST" class="form-horizontal">
     <% for @input in @inputs %>
       <% @type = @input.name == "password" ? "password" : "text" %>
       <div class="form-group">

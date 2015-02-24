@@ -4,4 +4,5 @@ config/environments/test.rb
 
 public/assets/stylesheets/styles.css
 
+Gemfile.lock
 .sass-cache
