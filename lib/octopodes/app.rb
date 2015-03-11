@@ -32,6 +32,7 @@ App = Webmachine::Application.new do |app|
 
     add ['feed'], Resources::Feed::Feed
     add ['u', :uuid], Resources::Feed::Item
+    add ['reviews', :uuid], Resources::Feed::Item
 
     if configatron.webmachine.trace
       add ['trace', :*], Webmachine::Trace::TraceResource
