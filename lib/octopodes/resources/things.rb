@@ -13,10 +13,6 @@ module Octopodes
         ['GET', 'POST']
       end
 
-      def base_uri
-        @request.base_uri.to_s
-      end
-
       # Check if Repositories module has a class by this name
       def resource_exists?
         Repositories.constants.include?(class_symbol)

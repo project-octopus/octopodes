@@ -50,6 +50,34 @@ module Octopodes
         find(uuid).first
       end
 
+      def self.find_by_hostname(hostname, options = {})
+        match_hostname = 'substring(url '\
+                         "from substring(url from '.*://([^/]*)' )) = ?",
+                         hostname
+        order = Sequel.lit('created_at DESC, uuid DESC')
+        limit = options[:limit]
+
+        if options[:startkey]
+          startkeys = options[:startkey].split(',')
+          created_at = startkeys.first
+          uuid = startkeys.last
+          match_startkey = '(created_at, uuid) < (?, ?)', created_at, uuid
+          match = domain.where(match_hostname).where(match_startkey)
+        else
+          match = domain.where(match_hostname)
+        end
+
+        dataset = match.order(order).limit(limit)
+        dataset.all
+      end
+
+      def self.count_by_hostname(hostname)
+        match_hostname = 'substring(url '\
+                         "from substring(url from '.*://([^/]*)' )) = ?",
+                         hostname
+        domain.where(match_hostname).count
+      end
+
       def self.history(_uuid)
       end
 

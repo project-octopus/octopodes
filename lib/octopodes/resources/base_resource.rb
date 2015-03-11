@@ -36,6 +36,7 @@ module Octopodes
       def menu
         base = @request.base_uri.to_s
         menu_items = [{ href: "#{base}schema/things", prompt: 'Works' }]
+        menu_items << { href: "#{base}hosts/", prompt: 'Hosts' }
 
         if @user.nil?
           menu_items << { href: "#{base}signups", prompt: 'Sign up' }

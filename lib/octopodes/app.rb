@@ -21,6 +21,9 @@ App = Webmachine::Application.new do |app|
 
     add ['schema', :type, :uuid, 'provenance'], Resources::Provenance
 
+    add ['hosts'], Resources::Hosts
+    add ['hosts', :hostname], Resources::Host
+
     add ['login'], Resources::Login
     add ['signups'], Resources::Signups
     add ['signups', :token], Resources::Signup

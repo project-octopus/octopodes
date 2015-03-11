@@ -56,6 +56,42 @@ module Octopodes
           end
         end
       end
+
+      describe 'find_by_hostname' do
+        subject { Repositories::Thing.find_by_hostname(hostname) }
+
+        context 'with no hostname' do
+          let(:hostname) {}
+
+          it 'returns an empty set' do
+            expect(subject).to eq []
+          end
+        end
+
+        context 'with a hostname' do
+          let(:hostname) { 'example.org' }
+
+          it 'returns all things with that hostname' do
+            load(:creative_works)
+            load(:web_pages)
+            expect(subject.count).to eq 2
+          end
+        end
+      end
+
+      describe 'count_by_hostname' do
+        subject { Repositories::Thing.count_by_hostname(hostname) }
+
+        context 'with a hostname' do
+          let(:hostname) { 'example.org' }
+
+          it 'counts the number of matching records' do
+            load(:creative_works)
+            load(:web_pages)
+            expect(subject).to eq 2
+          end
+        end
+      end
     end
   end
 end
