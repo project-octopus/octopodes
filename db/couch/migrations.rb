@@ -108,10 +108,9 @@ class CouchMigrations
       desc = doc['description']
       if doc.key?('reviewedBy')
         reviewed_by = doc['reviewedBy']['@id']
-        username = reviewed_by[6..-1]
-        user = psql[:users].where(username: username).first
+        user = psql[:users].where(username: reviewed_by).first
         if user
-          updated_by_id = user.id
+          updated_by_id = user[:id]
         else
           updated_by_id = nil
         end
