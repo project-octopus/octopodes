@@ -3,6 +3,7 @@ config/environments/production.rb
 config/environments/test.rb
 
 public/assets/stylesheets/styles.css
+public/docs/api
 
 Gemfile.lock
 .sass-cache
