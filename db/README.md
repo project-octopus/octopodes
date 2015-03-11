@@ -2,7 +2,14 @@
 
 Install PostgreSQL:
 
+Debian/Ubuntu:
+
     sudo apt-get install postgresql postgresql-contrib libpq-dev
+
+On Mac OS X (using homebrew):
+
+    ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+    brew install postgresql
 
 ## User Role
 
