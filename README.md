@@ -79,7 +79,7 @@ To run the automated testing suite, create a new PostgreSQL database just for te
 
 Make a copy of the config file
 
-  cp config/environments/sample.rb config/environments/test.rb
+    cp config/environments/sample.rb config/environments/test.rb
 
 Fill in `test.rb` with the testing database credentials and run the migrations:
 
