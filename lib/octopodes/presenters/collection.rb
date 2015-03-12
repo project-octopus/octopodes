@@ -10,12 +10,16 @@ module Octopodes
         paginate
       end
 
+      def to_hash
+        @to_hash ||= to_cj.to_hash
+      end
+
       def to_json
-        to_cj.to_json
+        @to_json ||= to_cj.to_json
       end
 
       def to_cj
-        CollectionJSON.generate_for(@collection_uri) do |builder|
+        @cj ||= CollectionJSON.generate_for(@collection_uri) do |builder|
           builder.set_version('1.0')
           add_links_to builder, @links
           add_items_to builder if @include_items

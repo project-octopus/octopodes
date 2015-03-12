@@ -1,5 +1,6 @@
 require 'configatron'
 require 'collection-json'
+require 'json'
 
 require 'octopodes/resources/base_resource'
 
@@ -26,7 +27,7 @@ module Octopodes
       end
 
       def to_cj
-        collection.to_json
+        JSON.pretty_generate(collection.to_hash)
       end
 
       def trace?
