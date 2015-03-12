@@ -1,9 +1,0 @@
-{
-  "_id": "_design/contexts",
-  "views": {
-    "all": {
-      "map": "function(doc) { emit(doc['@context'], 1); }",
-      "reduce": "_count"
-    }
-  }
-}

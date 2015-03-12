@@ -36,17 +36,6 @@ namespace :db do
     FixtureDependencies.load(:web_pages)
     FixtureDependencies.load(:users)
   end
-
-  desc 'Import CouchDB data to PostgreSQL'
-  task :import do |_t|
-    require 'sequel'
-    require_relative 'lib/couch/server'
-    require_relative 'db/couch/migrations.rb'
-    db = Sequel.connect(configatron.sequel.database)
-    couch = configatron.octopus.database
-
-    CouchMigrations.import(db, couch)
-  end
 end
 
 desc 'Generate API request documentation from API specs'
