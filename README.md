@@ -113,6 +113,6 @@ Documentation is generated with the following task:
 
 ## Security
 
-The software only supports Basic Authentication.
+The software supports Basic Authentication only and signed session cookies.
 
 Passwords are stored using the bcrypt hash algorithm.

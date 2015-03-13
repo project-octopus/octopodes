@@ -4,20 +4,16 @@ module Octopodes
   module Resources
     # Login Resource
     class Login < Collection
-      include Octopodes::Resources::ReadWriteProtected
-
-      def content_types_provided
-        [['text/html', :to_html]]
+      def resource_exists?
+        false
       end
 
-      private
-
-      def title
-        'Thank you for logging in'
+      def previously_existed?
+        true
       end
 
-      def unauthorized_response
-        Views::Collection.new(collection, 'Please try again or sign up for an account', menu).render
+      def moved_permanently?
+        base_uri + 'sessions/'
       end
     end
   end

@@ -5,6 +5,7 @@ resource 'Creative Works' do
   header 'Accept', :accept_header
   header 'Content-Type', :content_type
   header 'Authorization', :authorization
+  header 'Cookie', :cookie
 
   get 'https://project-octopus.org/schema/creative-works' do
     let(:accept_header) { 'application/vnd.collection+json' }

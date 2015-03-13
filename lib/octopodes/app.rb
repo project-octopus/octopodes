@@ -25,6 +25,9 @@ App = Webmachine::Application.new do |app|
     add ['hosts', :hostname], Resources::Host
 
     add ['login'], Resources::Login
+    add ['sessions'], Resources::Sessions
+    add ['sessions', 'new'], Resources::Session
+    add ['sessions', 'end'], Resources::EndSession
     add ['signups'], Resources::Signups
     add ['signups', :token], Resources::Signup
 
