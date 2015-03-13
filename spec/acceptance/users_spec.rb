@@ -5,7 +5,7 @@ resource 'Users' do
   header 'Accept', :accept_header
   header 'Content-Type', :content_type
 
-  get 'http://project-octopus.org/users' do
+  get 'https://project-octopus.org/users' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting all users' do
@@ -23,7 +23,7 @@ resource 'Users' do
     end
   end
 
-  get 'http://project-octopus.org/users' do
+  get 'https://project-octopus.org/users' do
     let(:accept_header) { 'text/html' }
 
     example 'Getting all users', document: false do
@@ -39,7 +39,7 @@ resource 'User' do
   header 'Content-Type', :content_type
   header 'Authorization', :authorization
 
-  get 'http://project-octopus.org/users/:username' do
+  get 'https://project-octopus.org/users/:username' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:username) { 'user1' }
 
@@ -58,7 +58,7 @@ resource 'User' do
     end
   end
 
-  get 'http://project-octopus.org/users/:username' do
+  get 'https://project-octopus.org/users/:username' do
     let(:accept_header) { 'text/html' }
     let(:username) { 'user1' }
 
@@ -70,7 +70,7 @@ resource 'User' do
     end
   end
 
-  get 'http://project-octopus.org/users/:username' do
+  get 'https://project-octopus.org/users/:username' do
     let(:username) { 'xxx' }
 
     example 'Getting a non-existent user', document: false do
@@ -82,7 +82,7 @@ resource 'User' do
     end
   end
 
-  get 'http://project-octopus.org/users/:username/settings' do
+  get 'https://project-octopus.org/users/:username/settings' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:username) { 'user1' }
 
@@ -97,7 +97,7 @@ resource 'User' do
     end
   end
 
-  get 'http://project-octopus.org/users/:username/settings' do
+  get 'https://project-octopus.org/users/:username/settings' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:username) { 'user1' }
 
@@ -110,7 +110,7 @@ resource 'User' do
     end
   end
 
-  get 'http://project-octopus.org/users/:username/settings' do
+  get 'https://project-octopus.org/users/:username/settings' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:username) { 'user0' }
 
@@ -125,7 +125,7 @@ resource 'User' do
     end
   end
 
-  post 'http://project-octopus.org/users/:username/settings' do
+  post 'https://project-octopus.org/users/:username/settings' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
 
@@ -144,7 +144,7 @@ resource 'User' do
     end
   end
 
-  post 'http://project-octopus.org/users/:username/settings' do
+  post 'https://project-octopus.org/users/:username/settings' do
     let(:accept_header) { 'text/html' }
     let(:content_type) { 'application/x-www-form-urlencoded' }
 

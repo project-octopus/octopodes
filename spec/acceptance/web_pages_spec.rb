@@ -6,7 +6,7 @@ resource 'Web Pages' do
   header 'Content-Type', :content_type
   header 'Authorization', :authorization
 
-  get 'http://project-octopus.org/schema/web-pages' do
+  get 'https://project-octopus.org/schema/web-pages' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting all web pages' do
@@ -22,13 +22,13 @@ resource 'Web Pages' do
       expect(response_body).to have_json_path('collection/items')
       expect(response_body).to have_json_size(s).at_path('collection/items')
 
-      expect(href).to eq 'http://project-octopus.org/schema/web-pages/'
+      expect(href).to eq 'https://project-octopus.org/schema/web-pages/'
 
       expect(status).to eq(200)
     end
   end
 
-  get 'http://project-octopus.org/schema/web-pages?limit=1' do
+  get 'https://project-octopus.org/schema/web-pages?limit=1' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting all web pages with limit of 1', document: false do
@@ -40,7 +40,7 @@ resource 'Web Pages' do
     end
   end
 
-  post 'http://project-octopus.org/schema/web-pages' do
+  post 'https://project-octopus.org/schema/web-pages' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
@@ -68,7 +68,7 @@ resource 'Web Page' do
   header 'Content-Type', :content_type
   header 'Authorization', :authorization
 
-  get 'http://project-octopus.org/schema/web-pages/:uuid' do
+  get 'https://project-octopus.org/schema/web-pages/:uuid' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting one web page' do
@@ -85,8 +85,8 @@ resource 'Web Page' do
       expect(response_body).to have_json_path('collection/items')
       expect(response_body).to have_json_size(1).at_path('collection/items')
 
-      expect(href).to eq 'http://project-octopus.org/schema/web-pages/'
-      expect(item_href).to eq 'http://project-octopus.org/schema/web-pages/' + wb.uuid
+      expect(href).to eq 'https://project-octopus.org/schema/web-pages/'
+      expect(item_href).to eq 'https://project-octopus.org/schema/web-pages/' + wb.uuid
 
       expect(status).to eq(200)
     end
@@ -108,7 +108,7 @@ resource 'Web Page' do
     end
   end
 
-  put 'http://project-octopus.org/schema/web-pages/:uuid' do
+  put 'https://project-octopus.org/schema/web-pages/:uuid' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
@@ -127,7 +127,7 @@ resource 'Web Page' do
     end
   end
 
-  get 'http://project-octopus.org/schema/web-pages/:uuid/template' do
+  get 'https://project-octopus.org/schema/web-pages/:uuid/template' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 

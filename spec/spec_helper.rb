@@ -16,6 +16,7 @@ FixtureDependencies.fixture_path = fixture_path
 RspecApiDocumentation.configure do |config|
   config.app = Webmachine::Adapters::Rack.new(App)
   config.format = :html
+  config.api_name = 'Octopodes Hypermedia API'
   config.docs_dir = Pathname.new('public/docs/api')
 end
 

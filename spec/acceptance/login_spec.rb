@@ -4,7 +4,7 @@ require 'rspec_api_documentation/dsl'
 resource 'Login' do
   header 'Authorization', :authorization
 
-  get 'http://project-octopus.org/login' do
+  get 'https://project-octopus.org/login' do
     example 'Authenticating with no authorization', document: false do
       load(:users)
       do_request
@@ -16,7 +16,7 @@ resource 'Login' do
     end
   end
 
-  get 'http://project-octopus.org/login' do
+  get 'https://project-octopus.org/login' do
     let(:authorization) { 'Basic ' + Base64.encode64('user1:oldpass').strip }
 
     example 'Authenticating with old password', document: false do
@@ -29,7 +29,7 @@ resource 'Login' do
     end
   end
 
-  get 'http://project-octopus.org/login' do
+  get 'https://project-octopus.org/login' do
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
     example 'Authenticating correctly', document: false do

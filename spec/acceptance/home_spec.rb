@@ -6,7 +6,7 @@ resource 'API Entry Point' do
   header 'Content-Type', :content_type
   header 'Authorization', :authorization
 
-  get 'http://project-octopus.org/' do
+  get 'https://project-octopus.org/' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting home resource' do

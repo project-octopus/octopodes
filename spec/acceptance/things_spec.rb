@@ -5,7 +5,7 @@ resource 'All Records' do
   header 'Accept', :accept_header
   header 'Content-Type', :content_type
 
-  get 'http://project-octopus.org/schema/things' do
+  get 'https://project-octopus.org/schema/things' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting all records' do
@@ -21,7 +21,7 @@ resource 'All Records' do
       expect(response_body).to have_json_path('collection/items')
       expect(response_body).to have_json_size(s).at_path('collection/items')
 
-      expect(href).to eq 'http://project-octopus.org/schema/things/'
+      expect(href).to eq 'https://project-octopus.org/schema/things/'
 
       expect(status).to eq(200)
     end

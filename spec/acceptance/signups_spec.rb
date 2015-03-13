@@ -5,7 +5,7 @@ resource 'Signups' do
   header 'Accept', :accept_header
   header 'Content-Type', :content_type
 
-  get 'http://project-octopus.org/signups' do
+  get 'https://project-octopus.org/signups' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting the signup form' do
@@ -21,7 +21,7 @@ resource 'Signups' do
     end
   end
 
-  post 'http://project-octopus.org/signups' do
+  post 'https://project-octopus.org/signups' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
 
@@ -38,7 +38,7 @@ resource 'Signups' do
     end
   end
 
-  post 'http://project-octopus.org/signups' do
+  post 'https://project-octopus.org/signups' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
 
@@ -56,7 +56,7 @@ resource 'Signups' do
     end
   end
 
-  post 'http://project-octopus.org/signups' do
+  post 'https://project-octopus.org/signups' do
     let(:accept_header) { 'text/html' }
     let(:content_type) { 'application/x-www-form-urlencoded' }
 
@@ -71,7 +71,7 @@ resource 'Signups' do
     end
   end
 
-  post 'http://project-octopus.org/signups' do
+  post 'https://project-octopus.org/signups' do
     let(:accept_header) { 'text/html' }
     let(:content_type) { 'application/x-www-form-urlencoded' }
 
@@ -91,7 +91,7 @@ resource 'Signup' do
   header 'Accept', :accept_header
   header 'Content-Type', :content_type
 
-  get 'http://project-octopus.org/signups/:token' do
+  get 'https://project-octopus.org/signups/:token' do
     let(:accept_header) { 'text/html' }
     let(:token) { 'e2436dc4-291c-4c84-b0f9-7f7c980123de' }
 

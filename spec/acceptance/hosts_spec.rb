@@ -4,7 +4,7 @@ require 'rspec_api_documentation/dsl'
 resource 'Hosts' do
   header 'Accept', :accept_header
 
-  get 'http://project-octopus.org/hosts/' do
+  get 'https://project-octopus.org/hosts/' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Listing web hosts listed by popularity' do
@@ -18,7 +18,7 @@ resource 'Hosts' do
 
       body = parse_json(response_body)
       href = body['collection']['href']
-      expect(href).to eq 'http://project-octopus.org/hosts/'
+      expect(href).to eq 'https://project-octopus.org/hosts/'
 
       expect(status).to eq(200)
     end
@@ -28,7 +28,7 @@ end
 resource 'Host' do
   header 'Accept', :accept_header
 
-  get 'http://project-octopus.org/hosts/:hostname' do
+  get 'https://project-octopus.org/hosts/:hostname' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:hostname) { 'example.org' }
 

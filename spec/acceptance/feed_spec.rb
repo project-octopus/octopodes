@@ -4,7 +4,7 @@ require 'rspec_api_documentation/dsl'
 resource 'Feed' do
   header 'Accept', :accept_header
 
-  get 'http://project-octopus.org/feed' do
+  get 'https://project-octopus.org/feed' do
     let(:accept_header) { 'application/atom+xml' }
 
     example 'Getting atom feed', document: false do
@@ -22,7 +22,7 @@ resource 'Feed' do
 end
 
 resource 'FeedItem' do
-  get 'http://project-octopus.org/u/:uuid' do
+  get 'https://project-octopus.org/u/:uuid' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting feed item', document: false do
@@ -32,7 +32,7 @@ resource 'FeedItem' do
     end
   end
 
-  get 'http://project-octopus.org/u/:id' do
+  get 'https://project-octopus.org/u/:id' do
     example 'Getting non-existent feed item', document: false do
       do_request(uuid: 'xxx')
       expect(status).to eq(404)

@@ -6,7 +6,7 @@ resource 'Creative Works' do
   header 'Content-Type', :content_type
   header 'Authorization', :authorization
 
-  get 'http://project-octopus.org/schema/creative-works' do
+  get 'https://project-octopus.org/schema/creative-works' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting all creative works' do
@@ -22,13 +22,13 @@ resource 'Creative Works' do
       expect(response_body).to have_json_path('collection/items')
       expect(response_body).to have_json_size(s).at_path('collection/items')
 
-      expect(href).to eq 'http://project-octopus.org/schema/creative-works/'
+      expect(href).to eq 'https://project-octopus.org/schema/creative-works/'
 
       expect(status).to eq(200)
     end
   end
 
-  get 'http://project-octopus.org/schema/creative-works?limit=1' do
+  get 'https://project-octopus.org/schema/creative-works?limit=1' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting all creative works with limit of 1', document: false do
@@ -42,7 +42,7 @@ resource 'Creative Works' do
     end
   end
 
-  post 'http://project-octopus.org/schema/creative-works' do
+  post 'https://project-octopus.org/schema/creative-works' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
@@ -64,7 +64,7 @@ resource 'Creative Works' do
     end
   end
 
-  get 'http://project-octopus.org/schema/creative-works/template' do
+  get 'https://project-octopus.org/schema/creative-works/template' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting unauthorized template', document: false do
@@ -75,7 +75,7 @@ resource 'Creative Works' do
     end
   end
 
-  post 'http://project-octopus.org/schema/creative-works' do
+  post 'https://project-octopus.org/schema/creative-works' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('xxx:xxx').strip }
@@ -101,7 +101,7 @@ resource 'Creative Work' do
   header 'Content-Type', :content_type
   header 'Authorization', :authorization
 
-  get 'http://project-octopus.org/schema/creative-works/:uuid' do
+  get 'https://project-octopus.org/schema/creative-works/:uuid' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting one creative work' do
@@ -118,8 +118,8 @@ resource 'Creative Work' do
       expect(response_body).to have_json_path('collection/items')
       expect(response_body).to have_json_size(2).at_path('collection/items')
 
-      expect(href).to eq 'http://project-octopus.org/schema/creative-works/'
-      expect(item_href).to eq 'http://project-octopus.org/schema/creative-works/' + ca.uuid
+      expect(href).to eq 'https://project-octopus.org/schema/creative-works/'
+      expect(item_href).to eq 'https://project-octopus.org/schema/creative-works/' + ca.uuid
 
       expect(status).to eq(200)
     end
@@ -141,7 +141,7 @@ resource 'Creative Work' do
     end
   end
 
-  put 'http://project-octopus.org/schema/creative-works/:uuid' do
+  put 'https://project-octopus.org/schema/creative-works/:uuid' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
@@ -160,7 +160,7 @@ resource 'Creative Work' do
     end
   end
 
-  get 'http://project-octopus.org/schema/creative-works/:uuid/template' do
+  get 'https://project-octopus.org/schema/creative-works/:uuid/template' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
@@ -175,7 +175,7 @@ resource 'Creative Work' do
     end
   end
 
-  get 'http://project-octopus.org/schema/creative-works/:uuid/provenance' do
+  get 'https://project-octopus.org/schema/creative-works/:uuid/provenance' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
@@ -192,7 +192,7 @@ resource 'Creative Work' do
     end
   end
 
-  get 'http://project-octopus.org/schema/creative-works/:uuid/' do
+  get 'https://project-octopus.org/schema/creative-works/:uuid/' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
     example 'Getting a work with hexdigest UUID', document: false do
@@ -204,7 +204,7 @@ resource 'Creative Work' do
     end
   end
 
-  put 'http://project-octopus.org/schema/creative-works/:uuid/provenance' do
+  put 'https://project-octopus.org/schema/creative-works/:uuid/provenance' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:content_type) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
