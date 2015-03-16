@@ -1,3 +1,6 @@
 User-agent: *
 Disallow: /login
-Disallow: /reviews;template
+Disallow: /sessions
+
+Disallow: /schema/creative-works/template
+Disallow: /schema/web-pages/template
