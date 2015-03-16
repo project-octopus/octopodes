@@ -29,12 +29,12 @@ module Octopodes
 
       def from_cj
         template = Presenters::CollectionTemplateDecoder.new(request.body.to_s)
-        process_data(:update, uuid, template, :to_cj)
+        process_data(:update, repository, uuid, template, :to_cj)
       end
 
       def from_urlencoded
         form = Presenters::WwwFormDecoder.new(request.body.to_s)
-        process_data(:update, uuid, form, :to_html)
+        process_data(:update, repository, uuid, form, :to_html)
       end
 
       def process_post
@@ -46,7 +46,7 @@ module Octopodes
         @collection_uri = base_uri + 'schema/' + type + '/' + uuid + '/'
         @response.headers['Location'] = @collection_uri
 
-        process_data(:update, uuid, form, :to_html)
+        process_data(:update, repository, uuid, form, :to_html)
       end
 
       private

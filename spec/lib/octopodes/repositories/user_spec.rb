@@ -52,12 +52,14 @@ module Octopodes
       end
 
       describe 'update' do
-        subject { Repositories::User.update(username, token, data) }
+        subject { Repositories::User.update(token, data, user) }
+
+        let(:user) { Repositories::User.find(username).first }
+        let(:username) { 'user1' }
+        let(:token) { Repositories::User.token }
 
         context 'with new password' do
-          let(:username) { 'user1' }
           let(:data) { { 'password' => 'new' } }
-          let(:token) { Repositories::User.token }
 
           it 'updates and returns a user' do
             load(:users)
@@ -68,9 +70,7 @@ module Octopodes
         end
 
         context 'without a new password' do
-          let(:username) { 'user1' }
           let(:data) { { 'password' => '' } }
-          let(:token) { Repositories::User.token }
 
           it 'returns the user with unchanged password' do
             load(:user__user1)
@@ -153,6 +153,21 @@ module Octopodes
             load(:user__user1)
             expect(subject.username).to eq 'user1'
             expect(subject.email).to eq 'user1@example.org'
+          end
+        end
+      end
+
+      describe 'authenticate_data' do
+        subject { Repositories::User.authenticate_data(data) }
+        let(:data) { { 'username' => username, 'password' => password } }
+
+        context 'with correct credentials' do
+          let(:username) { 'user1' }
+          let(:password) { 'pass1' }
+
+          it 'returns a user' do
+            load(:user__user1)
+            expect(subject.username).to eq 'user1'
           end
         end
       end

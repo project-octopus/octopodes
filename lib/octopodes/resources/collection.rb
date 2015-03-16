@@ -8,6 +8,9 @@ module Octopodes
   module Resources
     # Collection Resource
     class Collection < BaseResource
+      UNAUTHORIZED_ERROR = 401
+      UNPROCESSABLE_ENTITY_ERROR = 422
+
       def content_types_provided
         [['text/html', :to_html],
          ['application/vnd.collection+json', :to_cj]]
@@ -66,11 +69,40 @@ module Octopodes
         []
       end
 
-      def form_data
-        form = URI.decode_www_form(request.body.to_s)
-        form.each_with_object({}) do |value, hash|
-          hash[value.first] = value.last
+      # Generic method for processing and responding to request data. The
+      # `repo` is a Repositories class, and `action` names a method to accept
+      # the data, while `from_data` contains the input data and can respond
+      # to `valid?`, `error`, and `to_hash`. The `content_handler` names the
+      # resource method to respond with the correct content type. The `id` is
+      # a uuid that identifies the created resource.
+      def process_data(action, repo, id, from_data, content_handler)
+        if from_data.valid?
+          model = repo.send(action, id, from_data.to_hash, @user)
+          if model.valid?
+            @response.do_redirect if content_handler == :to_html
+          else
+            respond_with_model_error(model, content_handler)
+          end
+        else
+          respond_with_error(repository.new, from_data.error, content_handler,
+                             UNPROCESSABLE_ENTITY_ERROR)
         end
+      end
+
+      def respond_with_model_error(model, content_handler)
+        errors = model.errors.full_messages.join(', ')
+        error = { 'title' => 'Bad Input', 'message' => errors }
+        @include_template = true
+        @include_items = false
+        respond_with_error(model, error, content_handler,
+                           UNPROCESSABLE_ENTITY_ERROR)
+      end
+
+      def respond_with_error(model, error, content_handler, code)
+        @dataset = [model]
+        @error = error
+        @response.body = send(content_handler)
+        @response.code = code
       end
     end
   end

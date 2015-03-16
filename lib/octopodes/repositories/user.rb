@@ -16,7 +16,7 @@ module Octopodes
         Domain::User.new
       end
 
-      def self.create(token, data)
+      def self.create(token, data, _user = nil)
         pass = data['password']
         username = data['username']
         user_data = { token: token, username: username, password: pass,
@@ -25,14 +25,13 @@ module Octopodes
         model.valid? ? model.save : model
       end
 
-      def self.update(username, token, data)
-        model = find(username).first
-        if model
+      def self.update(token, data, user)
+        if user
           pass = data['password']
           user_data = { token: token, password: pass,
                         password_confirmation: pass }
-          model.set(user_data)
-          model.valid? ? model.save : model
+          user.set(user_data)
+          user.valid? ? user.save : model
         end
       end
 
@@ -57,8 +56,14 @@ module Octopodes
         Domain::User.where(token: token).first
       end
 
+      def self.authenticate_data(data = {})
+        username = data['username']
+        password = data['password']
+        authenticate(username, password)
+      end
+
       def self.authenticate(username, password)
-        user = find(username).first
+        user = username ? find(username).first : nil
         user.authenticate(password) if user
       end
 

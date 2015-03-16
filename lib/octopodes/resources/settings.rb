@@ -29,40 +29,18 @@ module Octopodes
 
       def from_cj
         template = Presenters::CollectionTemplateDecoder.new(request.body.to_s)
-        process_data(:update, create_id, template, :to_cj)
+        process_data(:update, repository, create_id, template, :to_cj)
       end
 
       def from_urlencoded
         form = Presenters::WwwFormDecoder.new(request.body.to_s)
-        process_data(:update, create_id, form, :to_html)
+        process_data(:update, repository, create_id, form, :to_html)
       end
 
       private
 
       def create_id
         @create_id ||= repository.token
-      end
-
-      def process_data(action, token, from_data, content_handler)
-        if from_data.valid?
-          model = repository.send(action, username, token, from_data.to_hash)
-          if model.valid?
-            @response.do_redirect if content_handler == :to_html
-          else
-            @dataset = [model]
-            errors = model.errors.full_messages.join(', ')
-            @error = { 'title' => 'Bad Input', 'message' => errors }
-            @include_template = true
-            @include_items = false
-            @response.body = send(content_handler)
-            @response.code = 422 # Unprocessable Entity
-          end
-        else
-          @dataset = [repository.new]
-          @error = from_data.error
-          @response.body = send(content_handler)
-          @response.code = 422
-        end
       end
 
       # Set the collection uri to this resource, so that the form `action`

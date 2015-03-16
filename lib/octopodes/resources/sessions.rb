@@ -11,12 +11,12 @@ module Octopodes
 
       def from_cj
         template = Presenters::CollectionTemplateDecoder.new(request.body.to_s)
-        process_data(:authenticate, create_id, template, :to_cj)
+        process_data(:authenticate_data, create_id, template, :to_cj)
       end
 
       def from_urlencoded
         form = Presenters::WwwFormDecoder.new(request.body.to_s)
-        process_data(:authenticate, create_id, form, :to_html)
+        process_data(:authenticate_data, create_id, form, :to_html)
       end
 
       def create_path
@@ -47,25 +47,19 @@ module Octopodes
 
       def process_data(action, _uuid, from_data, content_handler)
         if from_data.valid?
-          credentials = from_data.to_hash
-          username = credentials['username']
-          password = credentials['password']
-          model = repository.send(action, username, password)
-          if !model.nil?
+          model = repository.send(action, from_data.to_hash)
+          if model.nil?
+            errors = 'Wrong username or password'
+            error = { 'title' => 'Error', 'message' => errors }
+            respond_with_error(repository.new, error, content_handler,
+                               UNAUTHORIZED_ERROR)
+          else
             write_cookie_auth(model.username)
             @response.do_redirect if content_handler == :to_html
-          else
-            @dataset = [repository.new]
-            errors = 'Wrong username or password'
-            @error = { 'title' => 'Error', 'message' => errors }
-            @response.body = send(content_handler)
-            @response.code = 401 # Unauthorized
           end
         else
-          @dataset = [repository.new]
-          @error = from_data.error
-          @response.body = send(content_handler)
-          @response.code = 422 # Unprocessable Entity
+          respond_with_error(repository.new, from_data.error, content_handler,
+                             UNPROCESSABLE_ENTITY_ERROR)
         end
       end
     end
