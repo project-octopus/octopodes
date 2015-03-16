@@ -4,7 +4,7 @@ require 'octopodes/repositories/user'
 module Octopodes
   module Resources
     # User Setting Resource
-    class Setting < Collection
+    class Setting < Settings
       def allowed_methods
         ['GET']
       end
@@ -16,7 +16,19 @@ module Octopodes
       private
 
       def title
-        'Please login again'
+        'Settings updated'
+      end
+
+      def include_items?
+        false
+      end
+
+      def include_template?
+        false
+      end
+
+      def links
+        []
       end
 
       def token
