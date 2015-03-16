@@ -11,7 +11,7 @@
 <% end %>
 <div class="row">
   <div class="col-sm-8 col-sm-offset-2">
-    <h1><%= @title %></h1>
+    <h1><%= h(@title) %></h1>
     <% unless @body.nil? %>
       <p><em><%= @body %></em></p>
     <% end %>
