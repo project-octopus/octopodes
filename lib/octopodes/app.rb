@@ -12,14 +12,20 @@ App = Webmachine::Application.new do |app|
   app.routes do
     add [], Resources::Home
 
-    # TODO: hard-code URLs to supported types, either here
-    #   or in the resource
-    add ['schema', :type], Resources::Things
-    add ['schema', :type, 'template'], Resources::ThingsTemplate
-    add ['schema', :type, :uuid], Resources::Thing
-    add ['schema', :type, :uuid, 'template'], Resources::ThingTemplate
+    add ['schema', 'things'], Resources::Things, type: 'things'
 
-    add ['schema', :type, :uuid, 'provenance'], Resources::Provenance
+    creative_work_types = ['creative-works', 'web-pages']
+
+    creative_work_types.each do |type|
+      add ['schema', type], Resources::Things, type: type
+      add ['schema', type, 'template'], Resources::ThingsTemplate, type: type
+      add ['schema', type, :uuid], Resources::Thing, type: type
+      add ['schema', type, :uuid, 'template'], Resources::ThingTemplate,
+          type: type
+    end
+
+    add ['schema', 'creative-works', :uuid, 'provenance'],
+        Resources::Provenance, type: 'creative-works'
 
     add ['hosts'], Resources::Hosts
     add ['hosts', :hostname], Resources::Host
