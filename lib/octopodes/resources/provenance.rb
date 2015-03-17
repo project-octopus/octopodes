@@ -27,8 +27,7 @@ module Octopodes
       def process_post
         form = Presenters::WwwFormDecoder.new(request.body.to_s)
         @response.headers['Location'] = collection_uri + uuid + '/'
-        puts form.to_hash
-        process_data(:update_provenance, uuid, form, :to_html)
+        process_data(:update_provenance, repository, uuid, form, :to_html)
       end
 
       private

@@ -223,4 +223,20 @@ resource 'Creative Work' do
       expect(status).to eq(204)
     end
   end
+
+  post 'https://project-octopus.org/schema/creative-works/:uuid/provenance' do
+    let(:accept_header) { 'text/html' }
+    let(:content_type) { 'application/x-www-form-urlencoded' }
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
+
+    let(:raw_post) { 'is_part_of=&example_of_work=' }
+
+    example 'Updating a provenance information', document: false do
+      ca = load(:creative_work__ca)
+
+      do_request(uuid: ca.uuid)
+
+      expect(status).to eq(303)
+    end
+  end
 end
