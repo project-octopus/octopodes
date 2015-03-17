@@ -68,6 +68,16 @@ module Octopodes
             expect(subject.to_hash).to match('a' => '1')
           end
         end
+
+        context 'with leading and trailing whitespace in values' do
+          let(:json) do
+            '{"template":{"data":[{"name": "a", "value": " 1 "}]}}'
+          end
+
+          it 'strips the strings' do
+            expect(subject.to_hash).to match('a' => '1')
+          end
+        end
       end
     end
   end

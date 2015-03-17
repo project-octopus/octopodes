@@ -21,7 +21,7 @@ module Octopodes
       def to_hash
         @form.each_with_object({}) do |element, hash|
           key = element.first
-          value = element.last
+          value = element.last.strip
           if key.end_with?('[]')
             bare_key = key[0..-3]
             if hash.key?(bare_key)

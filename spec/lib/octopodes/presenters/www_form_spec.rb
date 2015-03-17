@@ -61,6 +61,14 @@ module Octopodes
           end
         end
 
+        context 'with leading and trailing whitespace in values' do
+          let(:url_encoded_data) { 'a=%201%20&b=2' }
+
+          it 'strips the strings' do
+            expect(subject.to_hash).to match('a' => '1', 'b' => '2')
+          end
+        end
+
         context 'with array-designated keys' do
           let(:url_encoded_data) { 'a=1&b%5B%5D=2&b%5B%5D=3' }
 

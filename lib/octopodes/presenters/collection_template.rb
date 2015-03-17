@@ -23,7 +23,7 @@ module Octopodes
         if valid?
           @cj.template.data.each_with_object({}) do |data, hash|
             nv = data.to_hash
-            hash[nv[:name]] = nv[:value] if nv[:name] && nv[:value]
+            hash[nv[:name]] = nv[:value].strip if nv[:name] && nv[:value]
           end
         else
           {}
