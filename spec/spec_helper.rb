@@ -18,6 +18,7 @@ RspecApiDocumentation.configure do |config|
   config.format = :html
   config.api_name = 'Octopodes Hypermedia API'
   config.docs_dir = Pathname.new('public/docs/api')
+  config.html_embedded_css_file = Pathname.new('app/css/docs.css')
 end
 
 RSpec.configure do |config|
