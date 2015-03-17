@@ -57,6 +57,44 @@ module Octopodes
         end
       end
 
+      describe 'search' do
+        subject { Repositories::Thing.search(text, options) }
+        let(:options) { {} }
+
+        context 'with no text' do
+          let(:text) { nil }
+
+          it 'has no results' do
+            load(:creative_works)
+            load(:web_pages)
+
+            expect(subject.count).to eq 0
+          end
+        end
+
+        context 'searching for a title' do
+          let(:text) { 'ca' }
+
+          it 'has one result' do
+            load(:creative_works)
+            load(:web_pages)
+
+            expect(subject.count).to eq 1
+          end
+        end
+
+        context 'searching for a url' do
+          let(:text) { 'example.org' }
+
+          it 'has two results' do
+            load(:creative_works)
+            load(:web_pages)
+
+            expect(subject.count).to eq 2
+          end
+        end
+      end
+
       describe 'find_by_hostname' do
         subject { Repositories::Thing.find_by_hostname(hostname) }
 

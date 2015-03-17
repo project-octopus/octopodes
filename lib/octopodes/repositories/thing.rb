@@ -81,8 +81,32 @@ module Octopodes
       def self.history(_uuid)
       end
 
-      # TODO: co-ordinate pagination strategy with Collection Presenter
       def self.recent(options = {})
+        recent_dataset(options).all
+      end
+
+      def self.count
+        domain.count
+      end
+
+      def self.search(text, options = {})
+        if !text.nil? && !text.empty?
+          search_dataset(text, options).all
+        else
+          []
+        end
+      end
+
+      def self.search_count(text)
+        if !text.nil? && !text.empty?
+          search_dataset(text).count
+        else
+          0
+        end
+      end
+
+      # TODO: co-ordinate pagination strategy with Collection Presenter
+      def self.recent_dataset(options = {})
         order = Sequel.lit('created_at DESC, uuid DESC')
         opts = { limit: options[:limit], order: order }
         if options[:startkey]
@@ -92,23 +116,25 @@ module Octopodes
           where = '(created_at, uuid) < (?, ?)', created_at, uuid
           opts[:where] = where
         end
-        all(opts)
+        all_dataset(opts)
       end
 
-      def self.count
-        domain.count
+      def self.search_dataset(text, options = {})
+        w_name = Sequel.ilike(:name, "%#{text}%")
+        w_url = Sequel.ilike(:url, "%#{text}%")
+        w_desc = Sequel.ilike(:description, "%#{text}%")
+        w_lic = Sequel.ilike(:license, "%#{text}%")
+        recent_dataset(options).where(w_name | w_url | w_desc | w_lic)
       end
 
-      # Returns all Things, regardless of type
-      def self.all(options = {})
+      def self.all_dataset(options = {})
         limit = options[:limit]
         where = options[:where]
         order = options[:order]
-        dataset = domain.where(where).order(order).limit(limit)
-        dataset.all
+        domain.where(where).order(order).limit(limit)
       end
 
-      private_class_method :all
+      private_class_method :all_dataset, :search_dataset, :recent_dataset
     end
   end
 end

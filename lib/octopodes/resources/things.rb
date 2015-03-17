@@ -81,6 +81,9 @@ module Octopodes
           end
         end
 
+        @links << { href: base_uri + 'search/',
+                    rel: 'queries', prompt: 'Search' }
+
         @links
       end
 

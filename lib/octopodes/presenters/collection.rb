@@ -23,6 +23,7 @@ module Octopodes
           builder.set_version('1.0')
           add_links_to builder, @links
           add_items_to builder if @include_items
+          add_queries_to builder
           add_template_to builder if @include_template
           builder.set_error @error unless @error.nil?
         end
@@ -39,6 +40,7 @@ module Octopodes
           include_item_link: true,
           include_template: false,
           links: [],
+          queries: [],
           limit: nil,
           total: 0,
           startkey: nil,
@@ -54,13 +56,22 @@ module Octopodes
         @links ||= []
       end
 
+      def add_link(link)
+        links << link
+      end
+
+      def queries
+        @queries ||= []
+      end
+
       # TODO: co-ordinate pagination strategy with Repositories
       def paginate
         if link_prev?
           start_key = URI(@collection_uri)
           start_params = [['startkey', @prevkey], ['limit', @limit]]
+          start_params.concat(query_params)
           start_key.query = URI.encode_www_form(start_params)
-          links << { href: start_key.to_s, rel: 'previous', prompt: 'Previous' }
+          add_link(href: start_key.to_s, rel: 'previous', prompt: 'Previous')
         end
 
         if link_next?
@@ -70,9 +81,23 @@ module Octopodes
           next_params = [['startkey', next_key],
                          ['prevkey', @startkey],
                          ['limit', @limit]]
+          next_params.concat(query_params)
           next_key_uri.query = URI.encode_www_form(next_params)
-          links << { href: next_key_uri.to_s, rel: 'next', prompt: 'Next' }
+          add_link(href: next_key_uri.to_s, rel: 'next', prompt: 'Next')
         end
+      end
+
+      # Any query templates with a non-blank value are transformed into
+      # parameter pairs for use in pagination.
+      def query_params
+        @query_params ||= queries.map { |q| q[:data] }
+                          .flatten(1)
+                          .select { |d| data_has_value?(d) }
+                          .map { |d| [d.first, d.last[:value]] }
+      end
+
+      def data_has_value?(d)
+        d.count == 2 && !d.last[:value].nil? && !d.last[:value].empty?
       end
 
       def link_prev?
@@ -108,6 +133,16 @@ module Octopodes
           builder.add_item(build_item_href(model)) do |item|
             add_data_to item, model.data
             add_links_to item, model.links
+          end
+        end
+      end
+
+      def add_queries_to(builder)
+        queries.each do |q|
+          builder.add_query(q[:href], q[:rel], prompt: q[:prompt]) do |query|
+            (q[:data] || []).each do
+              add_data_to(query, q[:data])
+            end
           end
         end
       end

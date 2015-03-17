@@ -27,6 +27,8 @@ App = Webmachine::Application.new do |app|
     add ['schema', 'creative-works', :uuid, 'provenance'],
         Resources::Provenance, type: 'creative-works'
 
+    add ['search'], Resources::Search
+
     add ['hosts'], Resources::Hosts
     add ['hosts', :hostname], Resources::Host
 

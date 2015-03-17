@@ -47,13 +47,11 @@ module Octopodes
       end
 
       # For all, limit dataset to just this type
-      def self.all(options = {})
+      def self.all_dataset(options = {})
         limit = options[:limit]
         where = options[:where]
         order = options[:order]
-        dataset = domain.where(where).where(type: domain.type).order(order)
-                  .limit(limit)
-        dataset.all
+        domain.where(where).where(type: domain.type).order(order).limit(limit)
       end
 
       def self.uuid_valid?(uuid)
