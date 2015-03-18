@@ -23,13 +23,13 @@ if audit[:exists]
     DB.run("SELECT audit.audit_table('creative_works', 'true', 'false')")
     DB.run("SELECT audit.audit_table('web_pages', 'true', 'false')")
   else
-    DB.run('DROP TRIGGER audit_trigger_row ON users')
-    DB.run('DROP TRIGGER audit_trigger_stm ON users')
-    DB.run('DROP TRIGGER audit_trigger_row ON things')
-    DB.run('DROP TRIGGER audit_trigger_stm ON things')
-    DB.run('DROP TRIGGER audit_trigger_row ON creative_works')
-    DB.run('DROP TRIGGER audit_trigger_stm ON creative_works')
-    DB.run('DROP TRIGGER audit_trigger_row ON web_pages')
-    DB.run('DROP TRIGGER audit_trigger_stm ON web_pages')
+    DB.run('DROP TRIGGER IF EXISTS audit_trigger_row ON users')
+    DB.run('DROP TRIGGER IF EXISTS audit_trigger_stm ON users')
+    DB.run('DROP TRIGGER IF EXISTS audit_trigger_row ON things')
+    DB.run('DROP TRIGGER IF EXISTS audit_trigger_stm ON things')
+    DB.run('DROP TRIGGER IF EXISTS audit_trigger_row ON creative_works')
+    DB.run('DROP TRIGGER IF EXISTS audit_trigger_stm ON creative_works')
+    DB.run('DROP TRIGGER IF EXISTS audit_trigger_row ON web_pages')
+    DB.run('DROP TRIGGER IF EXISTS audit_trigger_stm ON web_pages')
   end
 end
