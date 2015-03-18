@@ -19,7 +19,9 @@ module Octopodes
 
       def links
         [{ href: base_uri + 'schema/things/',
-           rel: 'things', prompt: 'All Records' }]
+           rel: 'things', prompt: 'All Records' },
+         { href: base_uri + 'hosts/',
+           rel: 'things', prompt: 'Hosts' }]
       end
     end
   end
