@@ -64,16 +64,18 @@ module Octopodes
 
         if class_title == 'Things'
           @links << { href: base_uri + 'schema/things/',
-                      rel: 'things', prompt: 'All Records' }
+                      rel: 'index', prompt: 'All Records' }
         else
           @links << { href: collection_uri,
-                      rel: 'things', prompt: class_title }
+                      rel: 'up', prompt: class_title }
 
           unless @user.nil?
             @links << { href: collection_uri + uuid + '/' + 'template/',
                         rel: 'template', prompt: 'Edit' }
-            @links << { href: collection_uri + uuid + '/' + 'provenance/',
-                        rel: 'template', prompt: 'Provenance' }
+            if class_title == 'Creative Works'
+              @links << { href: collection_uri + uuid + '/' + 'provenance/',
+                          rel: 'section', prompt: 'Provenance' }
+            end
           end
         end
 

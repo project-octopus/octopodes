@@ -58,7 +58,7 @@ module Octopodes
       end
 
       def links
-        [{ href: collection_uri, rel: 'settings', prompt: 'Cancel' }]
+        [{ href: collection_uri, rel: 'up', prompt: 'Cancel' }]
       end
     end
   end

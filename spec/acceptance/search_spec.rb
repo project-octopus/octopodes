@@ -22,7 +22,7 @@ resource 'Search' do
   get 'https://project-octopus.org/search?text=example' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
-    example 'Searching for text', document: false do
+    example 'Searching for records' do
       load(:creative_works)
       load(:web_pages)
       do_request

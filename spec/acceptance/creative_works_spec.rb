@@ -9,6 +9,7 @@ resource 'Creative Works' do
 
   get 'https://project-octopus.org/schema/creative-works' do
     let(:accept_header) { 'application/vnd.collection+json' }
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
     example 'Getting all creative works' do
       models = load(:creative_works)
@@ -31,6 +32,7 @@ resource 'Creative Works' do
 
   get 'https://project-octopus.org/schema/creative-works?limit=1' do
     let(:accept_header) { 'application/vnd.collection+json' }
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
     example 'Getting all creative works with limit of 1', document: false do
       load(:creative_works)
@@ -38,8 +40,20 @@ resource 'Creative Works' do
       do_request
       expect(response_body).to have_json_path('collection/links')
       expect(response_body).to have_json_size(1).at_path('collection/items')
+    end
+  end
 
-      # TODO: Test for 'links': [{'href': '...', 'rel': 'next', 'prompt': 'Next'}]
+  get 'https://project-octopus.org/schema/creative-works/template' do
+    let(:accept_header) { 'application/vnd.collection+json' }
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
+
+    example 'Getting a creative work template' do
+      load(:users)
+      do_request
+
+      expect(response_body).to have_json_path('collection/template')
+
+      expect(status).to eq(200)
     end
   end
 
@@ -86,7 +100,7 @@ resource 'Creative Works' do
       '{"name": "url", "value": "http://example.org/web"}]}}'
     end
 
-    example 'Unauthorized creation of a new work' do
+    example 'Unauthorized creation of a new work', document: false do
       load(:creative_works)
       load(:users)
 
@@ -104,8 +118,9 @@ resource 'Creative Work' do
 
   get 'https://project-octopus.org/schema/creative-works/:uuid' do
     let(:accept_header) { 'application/vnd.collection+json' }
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
-    example 'Getting one creative work' do
+    example 'Getting a creative work' do
       ca = load(:creative_work__ca)
       load(:creative_works)
 
@@ -180,7 +195,7 @@ resource 'Creative Work' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
-    example 'Getting a creative work provenance template' do
+    example 'Getting creative work provenance information' do
       cc = load(:creative_work__cc)
 
       do_request(uuid: cc.uuid)
@@ -215,7 +230,7 @@ resource 'Creative Work' do
       '{"name": "example_of_work", "value": ""}]}}'
     end
 
-    example 'Updating a creative work provenance information' do
+    example 'Updating creative work provenance information' do
       ca = load(:creative_work__ca)
 
       do_request(uuid: ca.uuid)

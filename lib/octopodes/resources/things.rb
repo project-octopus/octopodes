@@ -64,16 +64,15 @@ module Octopodes
       def links
         @links = []
         @links << { href: base_uri + 'schema/things/',
-                    rel: 'things', prompt: 'All Records' }
+                    rel: 'index', prompt: 'All Records' }
 
         if class_title == 'Things'
           @links << { href: base_uri + 'schema/creative-works/',
-                      rel: 'creative-works', prompt: 'Creative Works' }
+                      rel: 'section', prompt: 'Creative Works' }
           @links << { href: base_uri + 'schema/web-pages/',
-                      rel: 'web-pages', prompt: 'Web Pages' }
+                      rel: 'section', prompt: 'Web Pages' }
         else
-          @links << { href: collection_uri,
-                      rel: 'things', prompt: class_title }
+          @links << { href: collection_uri, prompt: class_title }
 
           unless @user.nil?
             @links << { href: collection_uri + 'template/', rel: 'template',

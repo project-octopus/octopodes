@@ -45,12 +45,12 @@ module Octopodes
         @links = []
 
         @links << { href: base_uri + 'schema/things/',
-                    rel: 'things', prompt: 'All Records' }
+                    rel: 'index', prompt: 'All Records' }
 
         @links << { href: base_uri + 'schema/creative-works/',
-                    rel: 'creative-works', prompt: 'Creative Works' }
+                    rel: 'section', prompt: 'Creative Works' }
         @links << { href: base_uri + 'schema/web-pages/',
-                    rel: 'web-pages', prompt: 'Web Pages' }
+                    rel: 'section', prompt: 'Web Pages' }
 
         @links << { href: base_uri + 'search/',
                     rel: 'queries', prompt: 'Search' }

@@ -32,10 +32,7 @@ module Octopodes
       end
 
       def links
-        @links = []
-        @links << { href: collection_uri,
-                    rel: 'hosts', prompt: 'All Hosts' }
-        @links
+        [{ href: collection_uri, rel: 'index', prompt: 'All Hosts' }]
       end
     end
 
@@ -72,10 +69,7 @@ module Octopodes
       end
 
       def links
-        @links = []
-        @links << { href: base_uri + 'hosts/',
-                    rel: 'hosts', prompt: 'All Hosts' }
-        @links
+        [{ href: base_uri + 'hosts/', rel: 'index', prompt: 'All Hosts' }]
       end
     end
   end

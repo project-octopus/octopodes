@@ -7,7 +7,7 @@ resource 'Hosts' do
   get 'https://project-octopus.org/hosts/' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
-    example 'Listing web hosts listed by popularity' do
+    example 'Listing web hosts by popularity' do
       load(:creative_works)
       load(:web_pages)
       do_request

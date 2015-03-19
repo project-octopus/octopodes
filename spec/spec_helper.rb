@@ -18,6 +18,9 @@ RspecApiDocumentation.configure do |config|
   config.format = :html
   config.api_name = 'Octopodes Hypermedia API'
   config.docs_dir = Pathname.new('public/docs/api')
+
+  config.request_headers_to_include = ['Accept', 'Authorization']
+  config.response_headers_to_include = ['Content-Type', 'Location']
 end
 
 RSpec.configure do |config|

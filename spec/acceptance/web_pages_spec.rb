@@ -8,8 +8,10 @@ resource 'Web Pages' do
 
   get 'https://project-octopus.org/schema/web-pages' do
     let(:accept_header) { 'application/vnd.collection+json' }
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
     example 'Getting all web pages' do
+      load(:users)
       models = load(:web_pages)
       s = models.count
 
@@ -37,6 +39,20 @@ resource 'Web Pages' do
       do_request
       expect(response_body).to have_json_path('collection/links')
       expect(response_body).to have_json_size(1).at_path('collection/items')
+    end
+  end
+
+  get 'https://project-octopus.org/schema/web-pages/template' do
+    let(:accept_header) { 'application/vnd.collection+json' }
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
+
+    example 'Getting a web page template' do
+      load(:users)
+      do_request
+
+      expect(response_body).to have_json_path('collection/template')
+
+      expect(status).to eq(200)
     end
   end
 
@@ -70,8 +86,10 @@ resource 'Web Page' do
 
   get 'https://project-octopus.org/schema/web-pages/:uuid' do
     let(:accept_header) { 'application/vnd.collection+json' }
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
 
-    example 'Getting one web page' do
+    example 'Getting a web page' do
+      load(:users)
       wb = load(:web_page__wb)
       load(:web_pages)
 

@@ -31,10 +31,10 @@ module Octopodes
 
         if class_title == 'Things'
           @links << { href: base_uri + 'schema/things/',
-                      rel: 'things', prompt: 'All Records' }
+                      rel: 'index', prompt: 'All Records' }
         else
           @links << { href: collection_uri,
-                      rel: 'template', prompt: 'View' }
+                      rel: 'up', prompt: 'View' }
         end
 
         @links

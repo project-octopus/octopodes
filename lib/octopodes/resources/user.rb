@@ -27,7 +27,7 @@ module Octopodes
         links = super
         if include_settings_link?
           links << { href: collection_uri + "#{username}/settings/",
-                     rel: 'settings', prompt: 'Settings' }
+                     rel: 'template', prompt: 'Settings' }
         end
         links
       end

@@ -33,7 +33,7 @@ resource 'Sessions' do
   get 'https://project-octopus.org/sessions' do
     let(:accept_header) { 'application/vnd.collection+json' }
 
-    example 'Getting a login page' do
+    example 'Getting a login page', document: false do
       do_request
       expect(response_body).to have_json_path('collection')
 

@@ -49,7 +49,7 @@ module Octopodes
       end
 
       def links
-        [{ href: collection_uri, rel: 'things', prompt: 'All Users' }]
+        [{ href: collection_uri, rel: 'index', prompt: 'All Users' }]
       end
     end
   end
