@@ -29,6 +29,8 @@ module Octopodes
           links << { href: collection_uri + "#{username}/settings/",
                      rel: 'template', prompt: 'Settings' }
         end
+        links << { href: collection_uri + "#{username}/edits/",
+                   rel: 'section', prompt: 'Edits' }
         links
       end
 

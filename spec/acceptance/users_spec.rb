@@ -82,6 +82,21 @@ resource 'User' do
     end
   end
 
+  get 'https://project-octopus.org/users/:username/edits' do
+    let(:accept_header) { 'application/vnd.collection+json' }
+    let(:username) { 'user1' }
+
+    let(:authorization) { 'Basic ' + Base64.encode64('user1:pass1').strip }
+
+    example 'Getting user edits', document: false do
+      load(:user__user1)
+
+      do_request
+
+      expect(status).to eq(200)
+    end
+  end
+
   get 'https://project-octopus.org/users/:username/settings' do
     let(:accept_header) { 'application/vnd.collection+json' }
     let(:username) { 'user1' }

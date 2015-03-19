@@ -41,6 +41,7 @@ App = Webmachine::Application.new do |app|
 
     add ['users'], Resources::Users
     add ['users', :username], Resources::User
+    add ['users', :username, 'edits'], Resources::Edits
     add ['users', :username, 'settings'], Resources::Settings
     add ['users', :username, 'settings', :token], Resources::Setting
 
